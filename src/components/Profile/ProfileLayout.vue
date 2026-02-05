@@ -6,25 +6,32 @@
                 <li v-for="item in menuItems" :key="item">{{ item }}</li>
             </ul>
         </aside>
-        <div class="side-menu__overlay" :class="{ 'side-menu__overlay--show': isMenuOpen }" @click="isMenuOpen = false"></div>
+        <div class="side-menu__overlay" :class="{ 'side-menu__overlay--show': isMenuOpen }" @click="closeMenu"></div>
 
-        <div class="profile-content">
-            <ProfileHero />
-            <BurgerMenuButton class="profile-burger" @toggle="toggleMenu" />
-            <ProductGrid />
+        <div class="site-shell">
+            <div class="profile-content">
+                <ProfileHero />
+                <BurgerMenuButton class="profile-burger" @toggle="toggleMenu" />
+                <ProductGrid />
+                <ReviewsSection />
+            </div>
         </div>
     </section>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import ProfileHero from './ProfileHero.vue';
 import BurgerMenuButton from './BurgerMenuButton.vue';
 import ProductGrid from './ProductGrid.vue';
+import ReviewsSection from './ReviewsSection.vue';
 
 const isMenuOpen = ref(false);
 const toggleMenu = () => {
     isMenuOpen.value = !isMenuOpen.value;
+};
+const closeMenu = () => {
+    isMenuOpen.value = false;
 };
 
 const menuItems = [
@@ -34,28 +41,68 @@ const menuItems = [
         '«Беговой клуб»',
         '«Расписание ежедневных практик»',
 ];
+
+const handleKeydown = (event) => {
+    if (event.key === 'Escape') {
+        closeMenu();
+    }
+};
+
+const handleReveal = () => {
+    const elements = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) {
+        elements.forEach((el) => el.classList.add('is-visible'));
+        return;
+    }
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        },
+        { threshold: 0.15 }
+    );
+    elements.forEach((el) => observer.observe(el));
+};
+
+onMounted(() => {
+    window.addEventListener('keydown', handleKeydown);
+    handleReveal();
+});
+
+onUnmounted(() => {
+    window.removeEventListener('keydown', handleKeydown);
+});
 </script>
 
 <style scoped>
 .profile-page {
-    background: #d9d9d9;
+    background: #ffffff;
     width: 100%;
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
+    padding: 0 0 60px;
+    box-sizing: border-box;
+}
+
+.site-shell {
+    background: #f6efe5;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
 }
 
 .profile-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px 18px 40px;
+    padding: 28px 32px 48px;
     box-sizing: border-box;
-    position: relative;
-    z-index: 2;
 }
 
 .profile-burger {
-    margin-top: 18px;
+    margin-top: 20px;
     margin-left: 6px;
 }
 
@@ -65,13 +112,14 @@ const menuItems = [
     left: 0;
     height: 100vh;
     width: 280px;
-    background: #efe4e4;
+    background: rgba(245, 236, 224, 0.98);
     box-shadow: 12px 0 30px rgba(0, 0, 0, 0.18);
     transform: translateX(-100%);
     transition: transform 250ms ease;
     padding: 24px 18px;
     box-sizing: border-box;
-    z-index: 5;
+    z-index: 10;
+    backdrop-filter: blur(14px);
 }
 
 .side-menu--open {
@@ -81,7 +129,7 @@ const menuItems = [
 .side-menu__title {
     font-size: 16px;
     font-weight: 600;
-    color: #2b2b2b;
+    color: #2b2520;
     margin-bottom: 16px;
 }
 
@@ -95,24 +143,37 @@ const menuItems = [
 
 .side-menu li {
     font-size: 13px;
-    color: #2b2b2b;
-    background: #f7eded;
-    border-radius: 8px;
+    color: #2b2520;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 12px;
     padding: 10px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
 .side-menu__overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.18);
+    background: rgba(20, 16, 12, 0.25);
     opacity: 0;
     pointer-events: none;
     transition: opacity 200ms ease;
-    z-index: 4;
+    z-index: 9;
 }
 
 .side-menu__overlay--show {
     opacity: 1;
     pointer-events: auto;
+}
+
+@media (max-width: 900px) {
+    .profile-content {
+        padding: 24px 20px 40px;
+    }
+}
+
+@media (max-width: 600px) {
+    .profile-content {
+        padding: 20px 16px 36px;
+    }
 }
 </style>

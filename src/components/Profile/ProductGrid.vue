@@ -1,43 +1,78 @@
 <template>
-    <div class="grid">
-        <ProductCard
-            v-for="card in cards"
-            :key="card.title"
-            :title="card.title"
-            :description="card.description"
-        />
-    </div>
+    <section class="services reveal">
+        <div class="services__header">
+            <h2 class="services__title">Услуги и форматы</h2>
+            <p class="services__subtitle">Выберите формат, который подходит вашему ритму и настроению.</p>
+        </div>
+
+        <div class="services__grid">
+            <ServiceCard
+                v-for="card in cards"
+                :key="card.title"
+                :title="card.title"
+                :description="card.description"
+                :duration="card.duration"
+                :price="card.price"
+                :image="card.image"
+                :href="card.href"
+            />
+        </div>
+    </section>
 </template>
 
 <script setup>
-import ProductCard from './ProductCard.vue';
+import ServiceCard from './ServiceCard.vue';
 
 const cards = [
-        { title: "Экскурсии в «Братство лосей»", description: "Заповедный маршрут и встречи с природой." },
-        { title: "Чайная церемония", description: "Спокойный ритуал и вкус момента." },
-        { title: "Mindfulness-практики", description: "Простые техники для фокуса и тишины." },
-        { title: "Утренние энергетические практики", description: "Мягкое включение тела и энергии." },
-        { title: "Мастер-классы", description: "Разбор тем, обмен опытом, практика." },
-        { title: "Игра самопознания «Лила»", description: "Мягкий формат и внутренний диалог." },
+        { title: 'Экскурсии в «Братство лосей»', description: 'Заповедный маршрут, истории о лесах и живые встречи с природой.', duration: '3–4 часа', price: 'от 3 500 ₽', image: '/card.png', href: '#' },
+        { title: 'Чайная церемония', description: 'Спокойный ритуал, вкус момента и пространство для тишины.', duration: '1,5 часа', price: 'от 2 200 ₽', image: '/card.png', href: '#' },
+        { title: 'Mindfulness‑практики', description: 'Простые техники для фокуса, дыхания и внутренней устойчивости.', duration: '60–75 мин', price: 'от 1 800 ₽', image: '/card.png', href: '#' },
+        { title: 'Утренние энергетические практики', description: 'Мягкое включение тела, дыхание и настрой на день.', duration: '60 мин', price: 'от 1 500 ₽', image: '/card.png', href: '#' },
+        { title: 'Мастер‑классы', description: 'Разбор тем, обмен опытом и спокойная практика в группе.', duration: '2 часа', price: 'от 2 000 ₽', image: '/card.png', href: '#' },
+        { title: 'Игра самопознания «Лила»', description: 'Глубокий диалог с собой в мягком и поддерживающем формате.', duration: '3 часа', price: 'от 2 800 ₽', image: '/card.png', href: '#' },
 ];
 </script>
 
 <style scoped>
-.grid {
-    margin-top: 16px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 18px 20px;
+.services {
+    max-width: 1280px;
+    margin: 24px auto 0;
 }
 
-@media (max-width: 900px) {
-    .grid {
-        grid-template-columns: repeat(2, 1fr);
+
+.services__header {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.services__title {
+    margin: 0;
+    font-size: 22px;
+    color: #2b2520;
+}
+
+.services__subtitle {
+    margin: 0;
+    font-size: 14px;
+    color: #3a2f27;
+    max-width: 560px;
+}
+
+.services__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 50px;
+}
+
+@media (max-width: 980px) {
+    .services__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
-@media (max-width: 520px) {
-    .grid {
+@media (max-width: 620px) {
+    .services__grid {
         grid-template-columns: 1fr;
     }
 }
