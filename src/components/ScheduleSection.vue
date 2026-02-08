@@ -1,6 +1,6 @@
 <template>
   <div class="schedule">
-    <article v-for="item in schedule" :key="item.day" class="schedule__card">
+    <article v-for="item in schedule" :key="item.day" class="schedule__card" v-reveal>
       <div class="schedule__day">{{ item.day }}</div>
       <div class="schedule__time">{{ item.time }}</div>
       <div class="schedule__title">{{ item.title }}</div>

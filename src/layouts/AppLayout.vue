@@ -1,5 +1,14 @@
 <script setup>
+import { onMounted } from 'vue'
 import AppHeader from '../components/AppHeader.vue'
+
+onMounted(() => {
+  if (typeof window === 'undefined') return
+  if (window.location.hash) {
+    history.replaceState(null, '', window.location.pathname + window.location.search)
+  }
+  window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+})
 </script>
 
 <template>

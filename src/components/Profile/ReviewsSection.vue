@@ -1,6 +1,7 @@
 <template>
   <div
     class="reviews"
+    v-reveal
     @mouseenter="pause"
     @mouseleave="resume"
     @focusin="pause"
@@ -14,7 +15,16 @@
           tabindex="0"
         >
           <div class="reviews__avatar">
-            <img :src="activeReview.avatarUrl" :alt="`Фото — ${activeReview.name}`" />
+            <img
+              :src="activeReview.avatarUrl"
+              :alt="`Фото — ${activeReview.name}`"
+              loading="lazy"
+              decoding="async"
+              width="64"
+              height="64"
+              class="img-lazy"
+              @load="markImageLoaded"
+            />
           </div>
 
           <div class="reviews__stars" aria-label="Рейтинг">
@@ -166,6 +176,10 @@ const restart = () => {
   start()
 }
 
+const markImageLoaded = (event) => {
+  event.target.classList.add('is-loaded')
+}
+
 onMounted(() => {
   start()
 })
@@ -194,7 +208,6 @@ onUnmounted(() => {
   text-align: center;
 }
 
-/* Если glass-card не определён глобально — добавь базу здесь */
 .glass-card {
   border-radius: 26px;
 }
@@ -250,9 +263,8 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   gap: 16px;
-   margin-top: 24px; /* отступ от карточки */
+  margin-top: 24px;
 }
-
 
 .nav-btn {
   width: 42px;

@@ -1,27 +1,24 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import AboutView from '../views/AboutView.vue'
-import BrotherhoodView from '../views/BrotherhoodView.vue'
-import VolunteerView from '../views/VolunteerView.vue'
-import RunningClubView from '../views/RunningClubView.vue'
-import ScheduleView from '../views/ScheduleView.vue'
-import ArticlesView from '../views/ArticlesView.vue'
-import NewsView from '../views/NewsView.vue'
-import ContactsView from '../views/ContactsView.vue'
 
 const router = createRouter({
   history: createWebHistory(),
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    }
+    return { left: 0, top: 0 }
+  },
   routes: [
-    { path: '/', name: 'home', component: HomeView },
-    { path: '/about', name: 'about', component: AboutView },
-    { path: '/moose', name: 'moose', component: BrotherhoodView },
-    { path: '/volunteer', name: 'volunteer', component: VolunteerView },
-    { path: '/running-club', name: 'running-club', component: RunningClubView },
+    { path: '/', name: 'home', component: () => import('../views/HomeView.vue') },
+    { path: '/about', name: 'about', component: () => import('../views/AboutView.vue') },
+    { path: '/moose', name: 'moose', component: () => import('../views/BrotherhoodView.vue') },
+    { path: '/volunteer', name: 'volunteer', component: () => import('../views/VolunteerView.vue') },
+    { path: '/running-club', name: 'running-club', component: () => import('../views/RunningClubView.vue') },
     { path: '/bronze-club', redirect: '/running-club' },
-    { path: '/schedule', name: 'schedule', component: ScheduleView },
-    { path: '/articles', name: 'articles', component: ArticlesView },
-    { path: '/news', name: 'news', component: NewsView },
-    { path: '/contacts', name: 'contacts', component: ContactsView },
+    { path: '/schedule', name: 'schedule', component: () => import('../views/ScheduleView.vue') },
+    { path: '/articles', name: 'articles', component: () => import('../views/ArticlesView.vue') },
+    { path: '/news', name: 'news', component: () => import('../views/NewsView.vue') },
+    { path: '/contacts', name: 'contacts', component: () => import('../views/ContactsView.vue') },
     { path: '/brotherhood', redirect: '/moose' },
     { path: '/:pathMatch(.*)*', redirect: '/' }
   ]

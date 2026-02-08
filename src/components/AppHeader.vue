@@ -20,8 +20,12 @@ const menuItems = [
 
 const isMenuOpen = ref(false)
 const isSticky = ref(false)
+const stickySentinel = ref(null)
 
 const isHome = computed(() => route.path === '/')
+
+let observer = null
+let useScrollFallback = false
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
@@ -49,20 +53,42 @@ const handleBack = () => {
   router.push('/')
 }
 
+const setupStickyObserver = () => {
+  if (!('IntersectionObserver' in window) || !stickySentinel.value) {
+    useScrollFallback = true
+    return
+  }
+
+  observer = new IntersectionObserver(
+    ([entry]) => {
+      isSticky.value = !entry.isIntersecting
+    },
+    { rootMargin: '-8px 0px 0px 0px', threshold: 0 }
+  )
+  observer.observe(stickySentinel.value)
+}
+
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll, { passive: true })
+  setupStickyObserver()
+  if (useScrollFallback) {
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll()
+  }
   window.addEventListener('keydown', handleKeydown)
-  handleScroll()
 })
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll)
+  if (useScrollFallback) {
+    window.removeEventListener('scroll', handleScroll)
+  }
+  observer?.disconnect()
   window.removeEventListener('keydown', handleKeydown)
 })
 </script>
 
 <template>
   <div v-if="!isHome" class="app-header">
+    <div ref="stickySentinel" class="app-header__sentinel" aria-hidden="true"></div>
     <header class="app-header__bar" :class="{ 'app-header__bar--stuck': isSticky }">
       <div class="app-header__inner">
         <button class="app-header__back" type="button" @click="handleBack" aria-label="Назад">
@@ -87,6 +113,8 @@ onUnmounted(() => {
       </div>
     </header>
 
+    <div class="app-header__spacer" aria-hidden="true"></div>
+
     <div class="app-header__overlay" :class="{ 'app-header__overlay--show': isMenuOpen }" @click="closeMenu"></div>
     <aside class="app-header__drawer" :class="{ 'app-header__drawer--open': isMenuOpen }">
       <div class="app-header__drawer-title">Меню</div>
@@ -110,9 +138,19 @@ onUnmounted(() => {
   z-index: 80;
 }
 
-.app-header__bar {
-  position: sticky;
+.app-header__sentinel {
+  position: absolute;
   top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.app-header__bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 80;
   background: color-mix(in srgb, var(--nav-surface) 65%, transparent);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -123,6 +161,10 @@ onUnmounted(() => {
 .app-header__bar--stuck {
   background: color-mix(in srgb, var(--nav-surface) 80%, transparent);
   box-shadow: 0 16px 30px var(--shadow);
+}
+
+.app-header__spacer {
+  height: var(--header-h, 72px);
 }
 
 .app-header__inner {

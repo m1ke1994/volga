@@ -1,5 +1,5 @@
 <template>
-  <section :id="id" class="app-section reveal">
+  <section :id="id" class="app-section" v-reveal>
     <div class="app-section__inner">
       <h2 class="app-section__title">{{ title }}</h2>
       <div class="app-section__content">

@@ -2,6 +2,12 @@ import { createApp } from 'vue'
 import './assets/css/main.css'
 import App from './App.vue'
 import router from './router'
+import { revealDirective } from './composables/useRevealOnScroll'
+
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual'
+}
+
 
 const initTheme = () => {
   const stored = localStorage.getItem('theme')
@@ -15,4 +21,4 @@ const initTheme = () => {
 
 initTheme()
 
-createApp(App).use(router).mount('#app')
+createApp(App).use(router).directive('reveal', revealDirective).mount('#app')

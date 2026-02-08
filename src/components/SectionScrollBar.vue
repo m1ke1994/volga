@@ -1,5 +1,5 @@
 <template>
-  <nav class="scrollbar" aria-label="Навигация по разделам">
+  <nav class="scrollbar" aria-label="Навигация по разделам" v-reveal>
     <div class="scrollbar__track">
       <button
         v-for="item in items"

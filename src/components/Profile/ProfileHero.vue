@@ -1,6 +1,5 @@
 <template>
-    <div class="hero reveal">
-
+    <div class="hero">
         <div class="hero-nav__overlay" :class="{ 'hero-nav__overlay--show': isMenuOpen }" @click="closeMenu"></div>
         <aside class="hero-nav__drawer" :class="{ 'hero-nav__drawer--open': isMenuOpen }">
             <div class="hero-nav__drawer-title">Меню</div>
@@ -17,6 +16,7 @@
         </aside>
 
         <div class="hero__top">
+            <div ref="stickySentinel" class="hero__sentinel" aria-hidden="true"></div>
             <header class="hero-nav" :class="{ 'hero-nav--stuck': isSticky }">
                 <div class="hero-nav__inner">
                     <nav class="hero-nav__links">
@@ -38,19 +38,35 @@
             </header>
         </div>
         <div class="hero__bottom">
-            <div class="avatar">
-                <img src="/avatar.png" alt="ФОТО">
+            <div class="avatar" v-reveal>
+                <img
+                    src="/avatar.png"
+                    alt="Фото"
+                    loading="lazy"
+                    decoding="async"
+                    width="190"
+                    height="190"
+                    class="img-lazy"
+                    @load="markImageLoaded"
+                >
             </div>
-            <div class="info">
+            <div class="info" v-reveal.delay="120">
                 <div class="info__name">Елизавета Стручкова</div>
                 <div class="info__row">
-                    <div class="info__about">Делюсь событиями, тишиной и теплыми практиками в Конаково. Я переехала из Москвы в Конаково и создала здесь пространство для осознанного отдыха, живых встреч и глубокого контакта с природой. Это место про замедление, внимание к себе и теплые человеческие связи — вдали от суеты и спешки. Я провожу экскурсии по природным местам, утренние практики, чайные церемонии и мастер-классы, объединяя их в цельный опыт. Для гостей Конаково становлюсь проводником, помогаю собрать день или путешествие под ваш ритм и интересы. А для местных создаю сообщество, где есть движение, поддержка, общение и ощущение «своего места».</div>
+                    <div class="info__about">
+                        Делюсь событиями, тишиной и теплыми практиками в Конаково. Я переехала из Москвы в Конаково
+                        и создала здесь пространство для осознанного отдыха, живых встреч и глубокого контакта с природой.
+                        Это место про замедление, внимание к себе и теплые человеческие связи — вдали от суеты и спешки.
+                        Я провожу экскурсии по природным местам, утренние практики, чайные церемонии и мастер-классы,
+                        объединяя их в цельный опыт. Для гостей Конаково становлюсь проводником, помогаю собрать день или
+                        путешествие под ваш ритм и интересы. А для местных создаю сообщество, где есть движение, поддержка,
+                        общение и ощущение «своего места».
+                    </div>
                     <button class="info__btn">Связаться со мной</button>
                 </div>
             </div>
         </div>
     </div>
-   
 </template>
 
 <script setup>
@@ -64,6 +80,13 @@ defineProps({
 
 const isMenuOpen = ref(false)
 const isSticky = ref(false)
+const stickySentinel = ref(null)
+
+let observer = null
+let preloadLink = null
+let useScrollFallback = false
+
+const heroImage = '/konakovo_lenta.JPG'
 
 const toggleMenu = () => {
     isMenuOpen.value = !isMenuOpen.value
@@ -73,31 +96,74 @@ const closeMenu = () => {
     isMenuOpen.value = false
 }
 
-const handleScroll = () => {
-    isSticky.value = window.scrollY > 8
-}
-
 const handleKeydown = (event) => {
     if (event.key === 'Escape') {
         closeMenu()
     }
 }
 
+const handleScroll = () => {
+    isSticky.value = window.scrollY > 8
+}
+
+const markImageLoaded = (event) => {
+    event.target.classList.add('is-loaded')
+}
+
+const setupStickyObserver = () => {
+    if (!('IntersectionObserver' in window) || !stickySentinel.value) {
+        useScrollFallback = true
+        return
+    }
+    observer = new IntersectionObserver(
+        ([entry]) => {
+            isSticky.value = !entry.isIntersecting
+        },
+        { rootMargin: '-8px 0px 0px 0px', threshold: 0 }
+    )
+    observer.observe(stickySentinel.value)
+}
+
+const setupHeroPreload = () => {
+    if (typeof document === 'undefined' || !heroImage) return
+    preloadLink = document.createElement('link')
+    preloadLink.rel = 'preload'
+    preloadLink.as = 'image'
+    preloadLink.href = heroImage
+    document.head.appendChild(preloadLink)
+}
+
 onMounted(() => {
-    window.addEventListener('scroll', handleScroll, { passive: true })
+    setupHeroPreload()
+    setupStickyObserver()
+    if (useScrollFallback) {
+        window.addEventListener('scroll', handleScroll, { passive: true })
+        handleScroll()
+    }
     window.addEventListener('keydown', handleKeydown)
-    handleScroll()
 })
 
 onUnmounted(() => {
-    window.removeEventListener('scroll', handleScroll)
+    observer?.disconnect()
+    if (useScrollFallback) {
+        window.removeEventListener('scroll', handleScroll)
+    }
     window.removeEventListener('keydown', handleKeydown)
+    preloadLink?.remove()
 })
 </script>
 
 <style scoped>
 .hero {
     position: relative;
+}
+
+.hero__sentinel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
 }
 
 .hero-nav {

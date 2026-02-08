@@ -9,19 +9,19 @@
                 <AppSection id="schedule" title="Расписание занятий">
                     <ScheduleSection />
                 </AppSection>
+                <AppSection id="feedback" title="Собери сценарий дня">
+                    <FeedbackSection />
+                </AppSection>
                 <AppSection id="reviews" title="Отзывы">
                     <ReviewsSection />
                 </AppSection>
-                <AppSection id="feedback" title="Обратная связь">
-                    <FeedbackSection />
-                </AppSection>
+                
             </div>
         </div>
     </section>
 </template>
 
 <script setup>
-import { onMounted, onUnmounted } from 'vue';
 import AppSection from '../ui/AppSection.vue';
 import ProfileHero from './ProfileHero.vue';
 import ProductGrid from './ProductGrid.vue';
@@ -39,33 +39,6 @@ const menuItems = [
     { label: 'Новости', to: '/news' },
     { label: 'Контакты', to: '/contacts' },
 ];
-
-
-const handleReveal = () => {
-    const elements = document.querySelectorAll('.reveal');
-    if (!('IntersectionObserver' in window)) {
-        elements.forEach((el) => el.classList.add('is-visible'));
-        return;
-    }
-    const observer = new IntersectionObserver(
-        (entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                }
-            });
-        },
-        { threshold: 0.15 }
-    );
-    elements.forEach((el) => observer.observe(el));
-};
-
-onMounted(() => {
-    handleReveal();
-});
-
-onUnmounted(() => {
-});
 </script>
 
 <style scoped>

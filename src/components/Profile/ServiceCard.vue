@@ -1,9 +1,18 @@
 <template>
-  <article class="card" :class="{ clickable: !!href }">
+  <article class="card" :class="{ clickable: !!href }" v-reveal>
     <a v-if="href" class="card-link" :href="href" aria-label="Открыть услугу"></a>
 
     <div class="media">
-      <img :src="image" :alt="title" loading="lazy" />
+      <img
+        :src="image"
+        :alt="title"
+        loading="lazy"
+        decoding="async"
+        width="800"
+        height="450"
+        class="media__img img-lazy"
+        @load="markImageLoaded"
+      />
       <div class="media-overlay"></div>
     </div>
 
@@ -48,6 +57,10 @@ const emit = defineEmits(["more"])
 const onMore = () => {
   emit("more")
 }
+
+const markImageLoaded = (event) => {
+  event.target.classList.add("is-loaded")
+}
 </script>
 
 <style scoped>
@@ -87,9 +100,10 @@ const onMore = () => {
   width: 100%;
   height: 180px;
   overflow: hidden;
+  background: rgba(0, 0, 0, 0.06);
 }
 
-.media img {
+.media__img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -98,7 +112,7 @@ const onMore = () => {
   display: block;
 }
 
-.card.clickable:hover .media img {
+.card.clickable:hover .media__img {
   transform: scale(1.06);
 }
 

@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted, onUnmounted } from 'vue'
 
 const props = defineProps({
   title: { type: String, default: '' },
@@ -14,21 +14,44 @@ const props = defineProps({
   cta: { type: Object, default: null },
 })
 
+let preloadLink = null
+
 const heroStyle = computed(() => ({
   backgroundImage: props.heroImage
     ? `linear-gradient(180deg, rgba(12, 9, 7, 0.65), rgba(12, 9, 7, 0.15)), url(${props.heroImage})`
     : 'linear-gradient(180deg, rgba(12, 9, 7, 0.65), rgba(12, 9, 7, 0.15))',
 }))
+
+const markImageLoaded = (event) => {
+  event.target.classList.add('is-loaded')
+}
+
+const preloadHeroImage = () => {
+  if (typeof document === 'undefined' || !props.heroImage) return
+  preloadLink = document.createElement('link')
+  preloadLink.rel = 'preload'
+  preloadLink.as = 'image'
+  preloadLink.href = props.heroImage
+  document.head.appendChild(preloadLink)
+}
+
+onMounted(() => {
+  preloadHeroImage()
+})
+
+onUnmounted(() => {
+  preloadLink?.remove()
+})
 </script>
 
 <template>
   <section class="page">
     <header class="page__hero" :style="heroStyle">
-      <div class="page__hero-inner">
+      <div class="page__hero-inner" v-reveal>
         <h1 class="page__title">{{ title }}</h1>
         <p v-if="subtitle" class="page__subtitle">{{ subtitle }}</p>
         <div v-if="stats.length" class="page__stats">
-          <div v-for="stat in stats" :key="stat.label" class="page__stat">
+          <div v-for="stat in stats" :key="stat.label" class="page__stat" v-reveal>
             <div class="page__stat-value">{{ stat.value }}</div>
             <div class="page__stat-label">{{ stat.label }}</div>
           </div>
@@ -38,19 +61,19 @@ const heroStyle = computed(() => ({
 
     <div class="page__content">
       <div v-if="highlights.length" class="page__highlights">
-        <article v-for="item in highlights" :key="item.title" class="page__highlight">
+        <article v-for="item in highlights" :key="item.title" class="page__highlight" v-reveal>
           <h2 class="page__highlight-title">{{ item.title }}</h2>
           <p class="page__highlight-text">{{ item.text }}</p>
         </article>
       </div>
 
-      <blockquote v-if="quote" class="page__quote">
+      <blockquote v-if="quote" class="page__quote" v-reveal>
         <p class="page__quote-text">{{ quote.text }}</p>
         <footer class="page__quote-author">{{ quote.author }}</footer>
       </blockquote>
 
       <div v-if="timeline.length" class="page__timeline">
-        <article v-for="item in timeline" :key="item.year" class="page__timeline-item">
+        <article v-for="item in timeline" :key="item.year" class="page__timeline-item" v-reveal>
           <div class="page__timeline-year">{{ item.year }}</div>
           <div>
             <h3 class="page__timeline-title">{{ item.title }}</h3>
@@ -60,7 +83,7 @@ const heroStyle = computed(() => ({
       </div>
 
       <div v-if="sections.length" class="page__sections">
-        <article v-for="section in sections" :key="section.title" class="page__section">
+        <article v-for="section in sections" :key="section.title" class="page__section" v-reveal>
           <h2 class="page__section-title">{{ section.title }}</h2>
           <p class="page__section-text">{{ section.text }}</p>
           <a v-if="section.action" class="page__action" :href="section.action.href">{{ section.action.label }}</a>
@@ -69,12 +92,21 @@ const heroStyle = computed(() => ({
       </div>
 
       <div v-if="gallery.length" class="page__gallery">
-        <div v-for="(image, index) in gallery" :key="`${image}-${index}`" class="page__gallery-item">
-          <img :src="image" alt="Gallery image" loading="lazy" />
+        <div v-for="(image, index) in gallery" :key="`${image}-${index}`" class="page__gallery-item" v-reveal>
+          <img
+            :src="image"
+            alt="Gallery image"
+            loading="lazy"
+            decoding="async"
+            width="800"
+            height="600"
+            class="img-lazy"
+            @load="markImageLoaded"
+          />
         </div>
       </div>
 
-      <div v-if="cta" class="page__cta">
+      <div v-if="cta" class="page__cta" v-reveal>
         <h2 class="page__cta-title">{{ cta.title }}</h2>
         <p class="page__cta-text">{{ cta.text }}</p>
         <button v-if="cta.buttonText" class="page__cta-button" type="button">
@@ -274,6 +306,8 @@ const heroStyle = computed(() => ({
   border-radius: 14px;
   overflow: hidden;
   box-shadow: 0 10px 18px var(--shadow);
+  background: rgba(0, 0, 0, 0.06);
+  aspect-ratio: 4 / 3;
 }
 
 .page__gallery-item img {
