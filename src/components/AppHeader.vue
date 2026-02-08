@@ -1,12 +1,10 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import BurgerMenuButton from './Profile/BurgerMenuButton.vue'
 import ThemeToggle from './ThemeToggle.vue'
 
 const route = useRoute()
-const router = useRouter()
-
 const menuItems = [
   { label: 'Обо мне', to: '/about' },
   { label: 'Братство лосей', to: '/moose' },
@@ -43,14 +41,6 @@ const handleKeydown = (event) => {
   if (event.key === 'Escape') {
     closeMenu()
   }
-}
-
-const handleBack = () => {
-  if (window.history.length > 1) {
-    router.back()
-    return
-  }
-  router.push('/')
 }
 
 const setupStickyObserver = () => {
@@ -91,9 +81,6 @@ onUnmounted(() => {
     <div ref="stickySentinel" class="app-header__sentinel" aria-hidden="true"></div>
     <header class="app-header__bar" :class="{ 'app-header__bar--stuck': isSticky }">
       <div class="app-header__inner">
-        <button class="app-header__back" type="button" @click="handleBack" aria-label="Назад">
-          ←
-        </button>
         <nav class="app-header__links">
           <router-link
             v-for="item in menuItems"
@@ -175,19 +162,6 @@ onUnmounted(() => {
   align-items: center;
   gap: 16px;
   box-sizing: border-box;
-}
-
-.app-header__back {
-  width: 34px;
-  height: 34px;
-  border-radius: 999px;
-  border: none;
-  background: color-mix(in srgb, var(--card) 70%, transparent);
-  color: var(--text);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .app-header__links {
