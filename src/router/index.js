@@ -17,6 +17,7 @@ const router = createRouter({
     { path: '/brotherhood', name: 'brotherhood', component: BrotherhoodView },
     { path: '/volunteer', name: 'volunteer', component: VolunteerView },
     { path: '/running-club', name: 'running-club', component: RunningClubView },
+    { path: '/bronze-club', name: 'bronze-club', component: RunningClubView },
     { path: '/schedule', name: 'schedule', component: ScheduleView },
     { path: '/articles', name: 'articles', component: ArticlesView },
     { path: '/news', name: 'news', component: NewsView },

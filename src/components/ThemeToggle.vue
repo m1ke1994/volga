@@ -1,12 +1,16 @@
 <template>
   <button class="theme-toggle" type="button" @click="toggleTheme" :aria-label="label">
-    <span class="theme-toggle__icon">{{ isDark ? "☾" : "☀" }}</span>
-    <span class="theme-toggle__text">{{ isDark ? "Тёмная" : "Светлая" }}</span>
+    <span class="theme-toggle__icon">{{ isDark ? "☀" : "☾" }}</span>
+    <span v-if="!iconOnly" class="theme-toggle__text">{{ isDark ? "Тёмная" : "Светлая" }}</span>
   </button>
 </template>
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
+
+const props = defineProps({
+  iconOnly: { type: Boolean, default: false },
+})
 
 const isDark = ref(false)
 

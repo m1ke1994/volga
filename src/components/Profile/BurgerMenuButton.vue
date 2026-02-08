@@ -20,12 +20,13 @@ const emit = defineEmits(['toggle']);
     width: 44px;
     height: 38px;
     background: var(--card);
-    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--card) 70%, transparent);
+    border: none;
     cursor: pointer;
     border-radius: 12px;
     box-shadow: 0 10px 18px var(--shadow);
     backdrop-filter: blur(10px);
-    transition: transform 200ms ease, box-shadow 200ms ease;
+    transition: transform 200ms ease, box-shadow 200ms ease, background 200ms ease;
 }
 
 .burger:hover {
