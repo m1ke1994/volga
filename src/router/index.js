@@ -19,6 +19,8 @@ const router = createRouter({
     { path: '/articles', name: 'articles', component: () => import('../views/ArticlesView.vue') },
     { path: '/news', name: 'news', component: () => import('../views/NewsView.vue') },
     { path: '/contacts', name: 'contacts', component: () => import('../views/ContactsView.vue') },
+    { path: '/privacy', name: 'privacy', component: () => import('../views/PrivacyView.vue') },
+    { path: '/terms', name: 'terms', component: () => import('../views/TermsView.vue') },
     { path: '/brotherhood', redirect: '/moose' },
     { path: '/:pathMatch(.*)*', redirect: '/' }
   ]

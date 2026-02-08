@@ -1,71 +1,15 @@
 ﻿<template>
   <div class="feedback">
     <div class="feedback__surface">
-      <form class="feedback__form" @submit.prevent="handleSubmit">
+      <form class="feedback__form">
         <ServiceBuilder @update="handleBuilderUpdate" />
-
-        <!-- Контакты для связи -->
-        <div class="feedback__contact">
-          <div class="feedback__contact-head">
-            <h3 class="feedback__contact-title">Контакт для связи</h3>
-            <p class="feedback__contact-subtitle">
-              Оставьте имя и удобный способ связи — чтобы мы могли уточнить детали.
-            </p>
-          </div>
-
-          <div class="feedback__contact-grid">
-            <label class="field">
-              <span class="field__label">Имя</span>
-              <input
-                v-model.trim="builderData.name"
-                class="field__input"
-                type="text"
-                placeholder="Например: Елизавета"
-                autocomplete="name"
-              />
-            </label>
-
-            <label class="field">
-              <span class="field__label">Телефон или Telegram</span>
-              <input
-                v-model.trim="builderData.contact"
-                class="field__input"
-                type="text"
-                placeholder="+7 (999) 000-00-00 или @username"
-                autocomplete="tel"
-                inputmode="tel"
-              />
-            </label>
-          </div>
-
-          <div class="feedback__actions">
-            <button class="btn btn--compact" type="submit">
-              Сформировать план
-            </button>
-
-            <p class="feedback__hint">
-              Ничего не отправляется — это mock. Мы просто соберём мини-резюме.
-            </p>
-          </div>
-        </div>
       </form>
     </div>
 
-    <div v-if="preview" class="feedback__preview">
+    <div class="feedback__preview">
       <div class="feedback__preview-head">
         <h3>Мини-резюме плана</h3>
         <span class="feedback__preview-total">{{ formatPrice(preview.total) }}</span>
-      </div>
-
-      <div class="feedback__preview-grid">
-        <div>
-          <p class="feedback__preview-label">Имя</p>
-          <p class="feedback__preview-value">{{ preview.name || "—" }}</p>
-        </div>
-        <div>
-          <p class="feedback__preview-label">Контакт</p>
-          <p class="feedback__preview-value">{{ preview.contact || "—" }}</p>
-        </div>
       </div>
 
       <div class="feedback__preview-grid">
@@ -75,7 +19,7 @@
         </div>
         <div>
           <p class="feedback__preview-label">Гостей</p>
-          <p class="feedback__preview-value">{{ preview.guests }}</p>
+          <p class="feedback__preview-value">{{ preview.guests || "—" }}</p>
         </div>
       </div>
 
@@ -90,12 +34,21 @@
         <p class="feedback__preview-label">Комментарий</p>
         <p class="feedback__preview-value">{{ preview.comment || "—" }}</p>
       </div>
+
+      <button class="feedback__preview-cta" type="button" @click="handleConfirm">
+        Согласовать план
+      </button>
+
+      <p class="feedback__preview-hint">
+        Ничего не отправляется — mock. TODO: backend integration.
+      </p>
+      </div>
     </div>
-  </div>
+  
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import ServiceBuilder from "./ServiceBuilder.vue";
 
 const builderData = ref({
@@ -104,27 +57,19 @@ const builderData = ref({
   date: "",
   guests: 1,
   comment: "",
-  name: "",
-  contact: "",
 });
 
-const preview = ref(null);
+const preview = computed(() => builderData.value);
 
 const handleBuilderUpdate = (payload) => {
-  // сохраняем всё, что пришло от билдера, но не теряем name/contact
-  builderData.value = {
-    ...builderData.value,
-    ...payload,
-  };
+  builderData.value = payload;
 };
 
 const formatPrice = (value) => `${Number(value || 0).toLocaleString("ru-RU")} ₽`;
 
-const handleSubmit = () => {
+const handleConfirm = () => {
   const payload = { ...builderData.value };
-  preview.value = payload;
-
-  // TODO: remove before production.
+  // TODO: backend integration.
   console.log(payload);
 };
 </script>
@@ -150,103 +95,6 @@ const handleSubmit = () => {
   padding: 28px;
   border: 1px solid var(--feedback-border);
   box-shadow: 0 18px 40px var(--feedback-shadow);
-}
-
-.feedback__form {
-  margin: 0;
-  display: grid;
-  gap: 18px;
-}
-
-/* Контактный блок */
-.feedback__contact {
-  border-radius: 18px;
-  padding: 16px;
-  background: var(--feedback-surface);
-  border: 1px solid var(--feedback-border);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 12px 24px var(--feedback-shadow);
-}
-
-.feedback__contact-head {
-  margin-bottom: 12px;
-}
-
-.feedback__contact-title {
-  margin: 0;
-  font-size: 16px;
-  color: var(--text-strong);
-}
-
-.feedback__contact-subtitle {
-  margin: 6px 0 0;
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.45;
-}
-
-.feedback__contact-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-/* Поля */
-.field {
-  display: grid;
-  gap: 6px;
-}
-
-.field__label {
-  font-size: 12px;
-  color: var(--muted);
-}
-
-.field__input {
-  height: 42px;
-  padding: 0 12px;
-  border-radius: 12px;
-  border: 1px solid var(--feedback-border);
-  background: var(--feedback-input);
-  color: var(--text);
-  outline: none;
-}
-
-.field__input:focus {
-  border-color: color-mix(in srgb, var(--primary) 45%, var(--feedback-border));
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent);
-}
-
-/* Кнопка */
-.feedback__actions {
-  margin-top: 12px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
-
-.btn {
-  border: 0;
-  cursor: pointer;
-  border-radius: 999px;
-  padding: 10px 14px;
-  font-weight: 650;
-  background: color-mix(in srgb, var(--text-strong) 88%, transparent);
-  color: color-mix(in srgb, var(--bg) 85%, white);
-}
-
-.btn--compact {
-  padding: 9px 14px; /* меньше, чем было */
-  font-size: 13px;
-  letter-spacing: 0.01em;
-}
-
-.feedback__hint {
-  margin: 0;
-  font-size: 12px;
-  color: var(--muted);
 }
 
 /* Preview */
@@ -309,13 +157,49 @@ const handleSubmit = () => {
   color: var(--text);
 }
 
+.feedback__preview-cta {
+  border: 0;
+  cursor: pointer;
+  border-radius: 999px;
+  padding: 8px 14px;
+  width: auto;
+  min-width: 240px;
+  justify-self: end;
+  font-weight: 650;
+  background: color-mix(in srgb, var(--text-strong) 88%, transparent);
+  color: color-mix(in srgb, var(--bg) 85%, white);
+  box-shadow: 0 12px 22px var(--feedback-shadow);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+@media (min-width: 900px) {
+  .feedback__preview-cta {
+    padding: 10px 22px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 720px) {
+  .feedback__preview-cta {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+.feedback__preview-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 26px var(--feedback-shadow);
+}
+
+.feedback__preview-hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
 @media (max-width: 720px) {
   .feedback__surface {
     padding: 20px;
-  }
-
-  .feedback__contact-grid {
-    grid-template-columns: 1fr;
   }
 
   .feedback__preview-grid {

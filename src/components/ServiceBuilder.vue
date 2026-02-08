@@ -78,7 +78,6 @@
           <textarea class="builder__input builder__textarea" rows="3" v-model="comment" placeholder="Что важно учесть?"></textarea>
         </label>
 
-        <button class="builder__submit" type="submit">Сформировать план</button>
       </div>
     </aside>
   </div>
@@ -365,24 +364,6 @@ watchEffect(() => {
 
 .builder__textarea {
   resize: vertical;
-}
-
-.builder__submit {
-  border: none;
-  border-radius: 999px;
-  padding: 12px 16px;
-  background: linear-gradient(135deg, #c8b89f, #b7a58c);
-  color: #2b2520;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 13px;
-  box-shadow: 0 10px 18px rgba(20, 15, 10, 0.16);
-  transition: transform 200ms ease, box-shadow 200ms ease;
-}
-
-.builder__submit:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 12px 22px rgba(20, 15, 10, 0.18);
 }
 
 @media (max-width: 980px) {
