@@ -3,7 +3,16 @@
         <aside class="side-menu" :class="{ 'side-menu--open': isMenuOpen }">
             <div class="side-menu__title">Новое Конаково</div>
             <ul>
-                <li v-for="item in menuItems" :key="item">{{ item }}</li>
+                <li v-for="item in menuItems" :key="item.to">
+                    <router-link
+                        class="side-menu__link"
+                        active-class="side-menu__link--active"
+                        :to="item.to"
+                        @click="closeMenu"
+                    >
+                        {{ item.label }}
+                    </router-link>
+                </li>
             </ul>
         </aside>
         <div class="side-menu__overlay" :class="{ 'side-menu__overlay--show': isMenuOpen }" @click="closeMenu"></div>
@@ -33,14 +42,14 @@ const closeMenu = () => {
 };
 
 const menuItems = [
-    'Обо мне',
-    'Братство Лосей',
-    'Волонтерские программы',
-    'Беговой Клуб',
-    'Расписание занятий',
-    'Статьи',
-    'Новости',
-    'Контакты',
+    { label: 'Обо мне', to: '/about' },
+    { label: 'Братство Лосей', to: '/brotherhood' },
+    { label: 'Волонтерские программы', to: '/volunteer' },
+    { label: 'Беговой Клуб', to: '/running-club' },
+    { label: 'Расписание занятий', to: '/schedule' },
+    { label: 'Статьи', to: '/articles' },
+    { label: 'Новости', to: '/news' },
+    { label: 'Контакты', to: '/contacts' },
 ];
 
 const handleKeydown = (event) => {
@@ -137,13 +146,26 @@ onUnmounted(() => {
     gap: 10px;
 }
 
-.side-menu li {
+.side-menu__link {
+    display: block;
     font-size: 13px;
     color: #2b2520;
     background: rgba(255, 255, 255, 0.6);
     border-radius: 12px;
     padding: 10px 12px;
     border: 1px solid rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    transition: transform 200ms ease, box-shadow 200ms ease, background 200ms ease;
+}
+
+.side-menu__link:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(20, 16, 12, 0.12);
+}
+
+.side-menu__link--active {
+    background: rgba(200, 169, 107, 0.28);
+    border-color: rgba(200, 169, 107, 0.5);
 }
 
 .side-menu__overlay {
