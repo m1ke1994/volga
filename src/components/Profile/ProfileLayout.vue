@@ -31,7 +31,7 @@ import FeedbackSection from '../FeedbackSection.vue';
 
 const menuItems = [
     { label: 'Обо мне', to: '/about' },
-    { label: 'Братство Лосей', to: '/brotherhood' },
+    { label: 'Братство лосей', to: '/moose' },
     { label: 'Волонтерские программы', to: '/volunteer' },
     { label: 'Беговой клуб', to: '/running-club' },
     { label: 'Расписание занятий', to: '/schedule' },

@@ -17,3 +17,10 @@
 Блоки галереи, отзывов и прочие дополнительные маркетинговые элементы на текущем этапе исключаются и не являются обязательными. Основной акцент — структура, логика услуг и понятная навигация.
 
 На всём сайте должна быть реализована возможность связи с заказчиком (кнопка «Написать мне», форма связи или ссылки на мессенджеры). Тексты, изображения и медиа-контент полностью предоставляет заказчик. Сайт должен быть сделан так, чтобы в дальнейшем можно было легко подключить серверную часть для управления текстами, изображениями и услугами, но на текущем этапе фокус делается на корректной структуре, пользовательском сценарии и визуальном представлении проекта.
+
+Section to component map (main profile page):
+- Hero / header: src/components/Profile/ProfileHero.vue
+- Services grid: src/components/Profile/ProductGrid.vue (wrapped by src/components/ui/AppSection.vue)
+- Schedule: src/components/ScheduleSection.vue (wrapped by src/components/ui/AppSection.vue)
+- Reviews: src/components/Profile/ReviewsSection.vue (wrapped by src/components/ui/AppSection.vue)
+- Feedback/contact: src/components/FeedbackSection.vue (wrapped by src/components/ui/AppSection.vue)

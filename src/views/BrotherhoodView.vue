@@ -2,7 +2,7 @@
 import PageTemplate from '../components/PageTemplate.vue';
 
 const pageData = {
-    title: 'Братство Лосей',
+    title: 'Братство лосей',
     subtitle:
         'Экскурсии и встречи в духе «Нового Конаково»: мягкий ритм, внимательные истории и контакт с природой, который остаётся с вами надолго.',
     heroImage: '/2.jpeg',

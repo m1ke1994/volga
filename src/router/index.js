@@ -14,7 +14,7 @@ const router = createRouter({
   routes: [
     { path: '/', name: 'home', component: HomeView },
     { path: '/about', name: 'about', component: AboutView },
-    { path: '/brotherhood', name: 'brotherhood', component: BrotherhoodView },
+    { path: '/moose', name: 'moose', component: BrotherhoodView },
     { path: '/volunteer', name: 'volunteer', component: VolunteerView },
     { path: '/running-club', name: 'running-club', component: RunningClubView },
     { path: '/bronze-club', redirect: '/running-club' },
@@ -22,6 +22,7 @@ const router = createRouter({
     { path: '/articles', name: 'articles', component: ArticlesView },
     { path: '/news', name: 'news', component: NewsView },
     { path: '/contacts', name: 'contacts', component: ContactsView },
+    { path: '/brotherhood', redirect: '/moose' },
     { path: '/:pathMatch(.*)*', redirect: '/' }
   ]
 })
