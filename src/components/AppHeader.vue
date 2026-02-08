@@ -6,6 +6,7 @@ import ThemeToggle from './ThemeToggle.vue'
 
 const route = useRoute()
 const menuItems = [
+  { label: 'Главная', to: '/' },
   { label: 'Обо мне', to: '/about' },
   { label: 'Братство лосей', to: '/moose' },
   { label: 'Волонтерские программы', to: '/volunteer' },
