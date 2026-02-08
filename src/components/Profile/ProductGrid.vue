@@ -1,23 +1,16 @@
 <template>
-    <section class="services reveal">
-        <div class="services__header">
-            <h2 class="services__title">Услуги и форматы</h2>
-            <p class="services__subtitle">Выберите формат, который подходит вашему ритму и настроению.</p>
-        </div>
-
-        <div class="services__grid">
-            <ServiceCard
-                v-for="card in cards"
-                :key="card.title"
-                :title="card.title"
-                :description="card.description"
-                :duration="card.duration"
-                :price="card.price"
-                :image="card.image"
-                :href="card.href"
-            />
-        </div>
-    </section>
+    <div class="services">
+        <ServiceCard
+            v-for="card in cards"
+            :key="card.title"
+            :title="card.title"
+            :description="card.description"
+            :duration="card.duration"
+            :price="card.price"
+            :image="card.image"
+            :href="card.href"
+        />
+    </div>
 </template>
 
 <script setup>
@@ -36,44 +29,19 @@ const cards = [
 
 <style scoped>
 .services {
-    max-width: 1280px;
-    margin: 24px auto 0;
-}
-
-
-.services__header {
-    display: grid;
-    gap: 8px;
-    margin-bottom: 18px;
-}
-
-.services__title {
-    margin: 0;
-    font-size: 22px;
-    color: #2b2520;
-}
-
-.services__subtitle {
-    margin: 0;
-    font-size: 14px;
-    color: #3a2f27;
-    max-width: 560px;
-}
-
-.services__grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 50px;
+    gap: 32px;
 }
 
 @media (max-width: 980px) {
-    .services__grid {
+    .services {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
 @media (max-width: 620px) {
-    .services__grid {
+    .services {
         grid-template-columns: 1fr;
     }
 }

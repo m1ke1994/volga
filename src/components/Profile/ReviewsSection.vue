@@ -1,19 +1,11 @@
 <template>
-  <section
-    class="reviews reveal"
+  <div
+    class="reviews"
     @mouseenter="pause"
     @mouseleave="resume"
     @focusin="pause"
     @focusout="resume"
   >
-    <div class="reviews__header">
-      <div class="reviews__eyebrow">ОТЗЫВЫ ГОСТЕЙ</div>
-      <h2 class="reviews__title">Нам доверяют</h2>
-      <p class="reviews__subtitle">
-        Гости выбирают «Новое Конаково» за атмосферу, заботу и внимание к деталям.
-      </p>
-    </div>
-
     <div class="reviews__card-wrap">
       <Transition name="fade-rise" mode="out-in">
         <article
@@ -65,7 +57,7 @@
         ›
       </button>
     </div>
-  </section>
+  </div>
 </template>
 
 <script setup>
@@ -185,35 +177,7 @@ onUnmounted(() => {
 
 <style scoped>
 .reviews {
-  max-width: 1280px;
-  margin: 24px auto 0;
- 
-}
-
-.reviews__header {
-  display: grid;
-  gap: 10px;
-  margin-bottom: 32px; /* ← вот этот отступ */
-}
-
-.reviews__eyebrow {
-  font-size: 12px;
-  letter-spacing: 2.4px;
-  text-transform: uppercase;
-  color: #6e5b45;
-}
-
-.reviews__title {
-  margin: 0;
-  font-size: 28px;
-  color: #2b2520;
-}
-
-.reviews__subtitle {
-  margin: 0;
-  font-size: 14px;
-  color: #3a2f27;
-  max-width: 640px;
+  width: 100%;
 }
 
 .reviews__card-wrap {
@@ -233,20 +197,15 @@ onUnmounted(() => {
 /* Если glass-card не определён глобально — добавь базу здесь */
 .glass-card {
   border-radius: 26px;
-  background: rgba(255, 255, 255, 0.48);
-  border: 1px solid rgba(255, 255, 255, 0.58);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  box-shadow: 0 18px 40px rgba(20, 16, 12, 0.10);
 }
 
 .reviews__avatar {
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 10px 20px rgba(20, 16, 12, 0.12);
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 20px var(--shadow);
   overflow: hidden;
 }
 
@@ -261,7 +220,7 @@ onUnmounted(() => {
   display: inline-flex;
   gap: 6px;
   font-size: 16px;
-  color: #c8a96b;
+  color: var(--primary);
 }
 
 .star.muted {
@@ -271,19 +230,19 @@ onUnmounted(() => {
 .reviews__text {
   font-size: 16px;
   font-style: italic;
-  color: #2b2520;
+  color: var(--text);
   margin: 0;
   line-height: 1.6;
 }
 
 .reviews__name {
   font-weight: 600;
-  color: #2b2520;
+  color: var(--text-strong);
 }
 
 .reviews__meta {
   font-size: 13px;
-  color: #6e5b45;
+  color: var(--muted);
 }
 
 .reviews__nav {
@@ -299,12 +258,12 @@ onUnmounted(() => {
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--border);
+  background: var(--card);
   backdrop-filter: blur(12px);
   cursor: pointer;
-  color: #3a2f27;
-  box-shadow: 0 10px 20px rgba(20, 16, 12, 0.12);
+  color: var(--text);
+  box-shadow: 0 10px 20px var(--shadow);
   transition: transform 200ms ease, box-shadow 200ms ease;
   font-size: 20px;
   line-height: 1;
@@ -312,7 +271,7 @@ onUnmounted(() => {
 
 .nav-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 12px 24px rgba(20, 16, 12, 0.16);
+  box-shadow: 0 12px 24px var(--shadow);
 }
 
 .dots {
@@ -347,10 +306,6 @@ onUnmounted(() => {
 }
 
 @media (max-width: 720px) {
-  .reviews__title {
-    font-size: 24px;
-  }
-
   .reviews__card {
     padding: 22px 18px;
   }

@@ -1,0 +1,59 @@
+<template>
+  <button class="theme-toggle" type="button" @click="toggleTheme" :aria-label="label">
+    <span class="theme-toggle__icon">{{ isDark ? "☾" : "☀" }}</span>
+    <span class="theme-toggle__text">{{ isDark ? "Тёмная" : "Светлая" }}</span>
+  </button>
+</template>
+
+<script setup>
+import { computed, onMounted, ref } from 'vue'
+
+const isDark = ref(false)
+
+const applyTheme = (theme) => {
+  document.documentElement.dataset.theme = theme
+  localStorage.setItem("theme", theme)
+  isDark.value = theme === "dark"
+}
+
+const toggleTheme = () => {
+  applyTheme(isDark.value ? "light" : "dark")
+}
+
+const label = computed(() => (isDark.value ? "Переключить на светлую тему" : "Переключить на тёмную тему"))
+
+onMounted(() => {
+  const stored = localStorage.getItem("theme")
+  if (stored === "light" || stored === "dark") {
+    applyTheme(stored)
+  } else {
+    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches
+    applyTheme(prefersDark ? "dark" : "light")
+  }
+})
+</script>
+
+<style scoped>
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.theme-toggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px var(--shadow);
+}
+
+.theme-toggle__icon {
+  font-size: 14px;
+}
+</style>

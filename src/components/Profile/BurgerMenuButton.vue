@@ -19,18 +19,18 @@ const emit = defineEmits(['toggle']);
     justify-content: center;
     width: 44px;
     height: 38px;
-    background: rgba(214, 198, 178, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.6);
+    background: var(--card);
+    border: 1px solid var(--border);
     cursor: pointer;
     border-radius: 12px;
-    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 10px 18px var(--shadow);
     backdrop-filter: blur(10px);
     transition: transform 200ms ease, box-shadow 200ms ease;
 }
 
 .burger:hover {
     transform: translateY(-1px);
-    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 12px 20px var(--shadow);
 }
 
 .burger__icon {
@@ -43,6 +43,6 @@ const emit = defineEmits(['toggle']);
     display: block;
     width: 18px;
     height: 2px;
-    background: #3a2f27;
+    background: var(--text);
 }
 </style>

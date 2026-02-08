@@ -94,7 +94,7 @@ onUnmounted(() => {
 
 <style scoped>
 .page {
-    background: #f6efe5;
+    background: var(--bg);
     min-height: 100vh;
     color: #2b2520;
 }
@@ -110,7 +110,7 @@ onUnmounted(() => {
 }
 
 .page__hero-inner {
-    max-width: 1280px;
+    max-width: var(--container-max);
     margin: 0 auto;
     width: 100%;
 }
@@ -123,7 +123,7 @@ onUnmounted(() => {
 }
 
 .page__body {
-    max-width: 1280px;
+    max-width: var(--container-max);
     margin: 0 auto;
     padding: 28px 32px 60px;
     box-sizing: border-box;
@@ -132,7 +132,7 @@ onUnmounted(() => {
 .page__subtitle {
     margin: 0 0 24px;
     font-size: 15px;
-    color: #3a2f27;
+    color: var(--muted);
     max-width: 720px;
 }
 
@@ -143,11 +143,11 @@ onUnmounted(() => {
 }
 
 .page__section {
-    background: rgba(255, 255, 255, 0.7);
+    background: var(--card);
     border-radius: 18px;
     padding: 18px 20px;
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    box-shadow: 0 10px 20px rgba(20, 16, 12, 0.08);
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 20px var(--shadow);
 }
 
 .page__section-title {
@@ -158,14 +158,14 @@ onUnmounted(() => {
 .page__section-text {
     margin: 0 0 12px;
     font-size: 14px;
-    color: #3a2f27;
+    color: var(--muted);
     line-height: 1.6;
 }
 
 .page__list {
     margin: 0;
     padding-left: 18px;
-    color: #3a2f27;
+    color: var(--muted);
     display: grid;
     gap: 6px;
     font-size: 14px;
@@ -175,10 +175,10 @@ onUnmounted(() => {
     margin-top: 10px;
     padding: 18px;
     border-radius: 14px;
-    border: 1px dashed rgba(43, 37, 32, 0.3);
-    color: #5b4c3e;
+    border: 1px dashed var(--border);
+    color: var(--muted);
     text-align: center;
-    background: rgba(255, 255, 255, 0.45);
+    background: var(--bg-elevated);
 }
 
 .page__action {
@@ -188,18 +188,18 @@ onUnmounted(() => {
     margin-top: 12px;
     padding: 10px 18px;
     border-radius: 999px;
-    background: linear-gradient(135deg, #c8b89f, #b7a58c);
+    background: var(--primary);
     color: #2b2520;
     text-decoration: none;
     font-size: 13px;
     font-weight: 600;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 8px 16px var(--shadow);
     transition: transform 200ms ease, box-shadow 200ms ease;
 }
 
 .page__action:hover {
     transform: translateY(-1px) scale(1.02);
-    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 10px 18px var(--shadow);
 }
 
 .page__gallery {
@@ -215,7 +215,7 @@ onUnmounted(() => {
     cursor: pointer;
     border-radius: 14px;
     overflow: hidden;
-    box-shadow: 0 10px 20px rgba(20, 16, 12, 0.12);
+    box-shadow: 0 10px 20px var(--shadow);
 }
 
 .page__thumb img {
@@ -245,7 +245,7 @@ onUnmounted(() => {
     position: relative;
     max-width: 960px;
     width: min(960px, 100%);
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--card);
     border-radius: 18px;
     padding: 18px;
     box-sizing: border-box;
@@ -266,11 +266,11 @@ onUnmounted(() => {
     height: 32px;
     border-radius: 50%;
     border: none;
-    background: rgba(255, 255, 255, 0.8);
+    background: var(--bg-elevated);
     cursor: pointer;
     font-size: 22px;
     line-height: 1;
-    color: #2b2520;
+    color: var(--text);
 }
 
 @media (max-width: 980px) {

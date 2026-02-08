@@ -1,5 +1,16 @@
 <template>
     <section class="profile-page">
+        <header class="site-header" :class="{ 'site-header--stuck': isSticky }">
+            <div class="site-header__inner">
+                <div class="site-header__title">Новое Конаково</div>
+                <div class="site-header__actions">
+                    <ThemeToggle />
+                    <BurgerMenuButton class="site-header__burger" @toggle="toggleMenu" />
+                </div>
+            </div>
+            <SectionScrollBar :items="scrollItems" />
+        </header>
+
         <aside class="side-menu" :class="{ 'side-menu--open': isMenuOpen }">
             <div class="side-menu__title">Новое Конаково</div>
             <ul>
@@ -19,9 +30,19 @@
 
         <div class="site-shell">
             <div class="profile-content">
-                <ProfileHero @toggle-menu="toggleMenu" />
-                <ProductGrid />
-                <ReviewsSection />
+                <ProfileHero />
+                <AppSection id="services" title="Услуги и форматы">
+                    <ProductGrid />
+                </AppSection>
+                <AppSection id="schedule" title="Расписание занятий">
+                    <ScheduleSection />
+                </AppSection>
+                <AppSection id="reviews" title="Отзывы">
+                    <ReviewsSection />
+                </AppSection>
+                <AppSection id="feedback" title="Обратная связь">
+                    <FeedbackSection />
+                </AppSection>
             </div>
         </div>
     </section>
@@ -29,11 +50,18 @@
 
 <script setup>
 import { onMounted, onUnmounted, ref } from 'vue';
+import AppSection from '../ui/AppSection.vue';
+import SectionScrollBar from '../SectionScrollBar.vue';
+import ThemeToggle from '../ThemeToggle.vue';
 import ProfileHero from './ProfileHero.vue';
+import BurgerMenuButton from './BurgerMenuButton.vue';
 import ProductGrid from './ProductGrid.vue';
 import ReviewsSection from './ReviewsSection.vue';
+import ScheduleSection from '../ScheduleSection.vue';
+import FeedbackSection from '../FeedbackSection.vue';
 
 const isMenuOpen = ref(false);
+const isSticky = ref(false);
 const toggleMenu = () => {
     isMenuOpen.value = !isMenuOpen.value;
 };
@@ -51,6 +79,17 @@ const menuItems = [
     { label: 'Новости', to: '/news' },
     { label: 'Контакты', to: '/contacts' },
 ];
+
+const scrollItems = [
+    { id: 'services', label: 'Услуги' },
+    { id: 'schedule', label: 'Расписание' },
+    { id: 'reviews', label: 'Отзывы' },
+    { id: 'feedback', label: 'Обратная связь' },
+];
+
+const handleScroll = () => {
+    isSticky.value = window.scrollY > 8;
+};
 
 const handleKeydown = (event) => {
     if (event.key === 'Escape') {
@@ -79,35 +118,74 @@ const handleReveal = () => {
 
 onMounted(() => {
     window.addEventListener('keydown', handleKeydown);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     handleReveal();
+    handleScroll();
 });
 
 onUnmounted(() => {
     window.removeEventListener('keydown', handleKeydown);
+    window.removeEventListener('scroll', handleScroll);
 });
 </script>
 
 <style scoped>
 .profile-page {
-    background: #ffffff;
+    background: var(--bg);
     width: 100%;
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
     padding: 0 0 60px;
     box-sizing: border-box;
+    --header-offset: 124px;
+}
+
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--bg);
+    transition: box-shadow 200ms ease, background 200ms ease;
+}
+
+.site-header--stuck {
+    box-shadow: 0 10px 20px var(--shadow);
+}
+
+.site-header__inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+.site-header__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-strong);
+    letter-spacing: 0.4px;
+}
+
+.site-header__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .site-shell {
-    background: #f6efe5;
     width: 100%;
     margin: 0 auto;
     position: relative;
     overflow: hidden;
+    background: var(--bg);
 }
 
 .profile-content {
-    padding: 28px 32px 48px;
+    padding: 0;
     box-sizing: border-box;
 }
 
@@ -117,13 +195,13 @@ onUnmounted(() => {
     left: 0;
     height: 100vh;
     width: 280px;
-    background: rgba(245, 236, 224, 0.98);
-    box-shadow: 12px 0 30px rgba(0, 0, 0, 0.18);
+    background: var(--bg-elevated);
+    box-shadow: 12px 0 30px var(--shadow);
     transform: translateX(-100%);
     transition: transform 250ms ease;
     padding: 24px 18px;
     box-sizing: border-box;
-    z-index: 10;
+    z-index: 60;
     backdrop-filter: blur(14px);
 }
 
@@ -134,7 +212,7 @@ onUnmounted(() => {
 .side-menu__title {
     font-size: 16px;
     font-weight: 600;
-    color: #2b2520;
+    color: var(--text-strong);
     margin-bottom: 16px;
 }
 
@@ -149,33 +227,33 @@ onUnmounted(() => {
 .side-menu__link {
     display: block;
     font-size: 13px;
-    color: #2b2520;
-    background: rgba(255, 255, 255, 0.6);
+    color: var(--text);
+    background: var(--card);
     border-radius: 12px;
     padding: 10px 12px;
-    border: 1px solid rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--border);
     text-decoration: none;
     transition: transform 200ms ease, box-shadow 200ms ease, background 200ms ease;
 }
 
 .side-menu__link:hover {
     transform: translateY(-1px);
-    box-shadow: 0 10px 20px rgba(20, 16, 12, 0.12);
+    box-shadow: 0 10px 20px var(--shadow);
 }
 
 .side-menu__link--active {
-    background: rgba(200, 169, 107, 0.28);
-    border-color: rgba(200, 169, 107, 0.5);
+    background: var(--primary-soft);
+    border-color: var(--primary);
 }
 
 .side-menu__overlay {
     position: fixed;
     inset: 0;
-    background: rgba(20, 16, 12, 0.25);
+    background: rgba(20, 16, 12, 0.35);
     opacity: 0;
     pointer-events: none;
     transition: opacity 200ms ease;
-    z-index: 9;
+    z-index: 55;
 }
 
 .side-menu__overlay--show {
@@ -184,14 +262,14 @@ onUnmounted(() => {
 }
 
 @media (max-width: 900px) {
-    .profile-content {
-        padding: 24px 20px 40px;
+    .site-header__inner {
+        padding: 12px 18px;
     }
 }
 
 @media (max-width: 600px) {
-    .profile-content {
-        padding: 20px 16px 36px;
+    .site-header__inner {
+        padding: 10px 14px;
     }
 }
 </style>

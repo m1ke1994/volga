@@ -1,12 +1,11 @@
 <template>
     <div class="hero reveal">
         <div class="hero__top">
-            <BurgerMenuButton class="hero__menu" @toggle="emit('toggle-menu')" />
             <div class="hero__title">Новое Конаково</div>
         </div>
         <div class="hero__bottom">
             <div class="avatar">
-                <img src="/9.jpeg" alt="ФОТО">
+                <img src="/avatar.png" alt="ФОТО">
             </div>
             <div class="info">
                 <div class="info__name">Елизавета Стручкова</div>
@@ -17,13 +16,8 @@
             </div>
         </div>
     </div>
+   
 </template>
-
-<script setup>
-import BurgerMenuButton from './BurgerMenuButton.vue';
-
-const emit = defineEmits(['toggle-menu']);
-</script>
 
 <style scoped>
 .hero {
@@ -32,19 +26,13 @@ const emit = defineEmits(['toggle-menu']);
 
 .hero__top {
     position: relative;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0)) , url('/8.webp') center/cover no-repeat;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0)) , url('/konakovo_lenta.JPG') center/cover no-repeat;
     height: 420px;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0 16px;
     box-sizing: border-box;
-}
-
-.hero__menu {
-    position: absolute;
-    right: 16px;
-    top: 16px;
 }
 
 .hero__title {
@@ -58,7 +46,7 @@ const emit = defineEmits(['toggle-menu']);
 }
 
 .hero__bottom {
-    background: #e8dfd2;
+    background: var(--bg-elevated);
     padding: 72px 32px 32px;
     position: relative;
     box-sizing: border-box;
@@ -71,12 +59,12 @@ const emit = defineEmits(['toggle-menu']);
     width: 190px;
     height: 190px;
     border-radius: 50%;
-    background: #e9b5b5;
+    background: var(--card);
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    box-shadow: 0 24px 40px rgba(27, 22, 18, 0.22);
+    box-shadow: 0 24px 40px var(--shadow);
     border: 3px solid rgba(255, 255, 255, 0.75);
 }
 
@@ -94,7 +82,7 @@ const emit = defineEmits(['toggle-menu']);
 
 .info__name {
     font-size: 26px;
-    color: #2b2520;
+    color: var(--text-strong);
     margin-bottom: 12px;
     font-weight: 600;
     letter-spacing: 0.2px;
@@ -107,7 +95,7 @@ const emit = defineEmits(['toggle-menu']);
 
 .info__about {
     font-size: 14px;
-    color: #3a2f27;
+    color: var(--muted);
     line-height: 1.6;
 }
 
@@ -119,14 +107,14 @@ const emit = defineEmits(['toggle-menu']);
     color: #2b2520;
     cursor: pointer;
     border-radius: 999px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 8px 16px var(--shadow);
     transition: transform 200ms ease, box-shadow 200ms ease;
     justify-self: flex-start;
 }
 
 .info__btn:hover {
     transform: translateY(-1px) scale(1.02);
-    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 10px 18px var(--shadow);
 }
 
 @media (max-width: 1100px) {
