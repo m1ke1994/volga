@@ -290,7 +290,7 @@ watchEffect(() => {
 
 .panel__grid {
   display: grid;
-  grid-template-columns: 1fr 120px;
+  grid-template-columns: minmax(0, 1fr) 120px;
   gap: 12px;
 }
 
@@ -298,6 +298,7 @@ watchEffect(() => {
 .field {
   display: grid;
   gap: 6px;
+  min-width: 0;
 }
 .field--full {
   margin-top: 2px;
