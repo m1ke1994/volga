@@ -10,8 +10,7 @@
 
         <div class="site-shell">
             <div class="profile-content">
-                <ProfileHero />
-                <BurgerMenuButton class="profile-burger" @toggle="toggleMenu" />
+                <ProfileHero @toggle-menu="toggleMenu" />
                 <ProductGrid />
                 <ReviewsSection />
             </div>
@@ -22,7 +21,6 @@
 <script setup>
 import { onMounted, onUnmounted, ref } from 'vue';
 import ProfileHero from './ProfileHero.vue';
-import BurgerMenuButton from './BurgerMenuButton.vue';
 import ProductGrid from './ProductGrid.vue';
 import ReviewsSection from './ReviewsSection.vue';
 
@@ -35,11 +33,14 @@ const closeMenu = () => {
 };
 
 const menuItems = [
-        '«Братство лосей»',
-        '«Волонтерская программа»',
-        '«Беговая»',
-        '«Беговой клуб»',
-        '«Расписание ежедневных практик»',
+    'Обо мне',
+    'Братство Лосей',
+    'Волонтерские программы',
+    'Беговой Клуб',
+    'Расписание занятий',
+    'Статьи',
+    'Новости',
+    'Контакты',
 ];
 
 const handleKeydown = (event) => {
@@ -99,11 +100,6 @@ onUnmounted(() => {
 .profile-content {
     padding: 28px 32px 48px;
     box-sizing: border-box;
-}
-
-.profile-burger {
-    margin-top: 20px;
-    margin-left: 6px;
 }
 
 .side-menu {

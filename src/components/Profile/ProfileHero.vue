@@ -1,6 +1,7 @@
 <template>
     <div class="hero reveal">
         <div class="hero__top">
+            <BurgerMenuButton class="hero__menu" @toggle="emit('toggle-menu')" />
             <div class="hero__title">Новое Конаково</div>
         </div>
         <div class="hero__bottom">
@@ -18,12 +19,19 @@
     </div>
 </template>
 
+<script setup>
+import BurgerMenuButton from './BurgerMenuButton.vue';
+
+const emit = defineEmits(['toggle-menu']);
+</script>
+
 <style scoped>
 .hero {
     position: relative;
 }
 
 .hero__top {
+    position: relative;
     background: linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0)) , url('/konakovo_lenta.JPG') center/cover no-repeat;
     height: 420px;
     display: flex;
@@ -31,6 +39,12 @@
     justify-content: center;
     padding: 0 16px;
     box-sizing: border-box;
+}
+
+.hero__menu {
+    position: absolute;
+    right: 16px;
+    top: 16px;
 }
 
 .hero__title {
