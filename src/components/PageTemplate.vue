@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 
 const props = defineProps({
   title: { type: String, default: '' },
@@ -15,6 +15,10 @@ const props = defineProps({
 })
 
 let preloadLink = null
+let galleryObserver = null
+
+const galleryRef = ref(null)
+const isGalleryVisible = ref(false)
 
 const heroStyle = computed(() => ({
   backgroundImage: props.heroImage
@@ -37,10 +41,26 @@ const preloadHeroImage = () => {
 
 onMounted(() => {
   preloadHeroImage()
+  if (typeof window === 'undefined') return
+  if (!('IntersectionObserver' in window) || !galleryRef.value) {
+    isGalleryVisible.value = true
+    return
+  }
+  galleryObserver = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting) {
+        isGalleryVisible.value = true
+        galleryObserver?.disconnect()
+      }
+    },
+    { rootMargin: '200px 0px', threshold: 0.01 }
+  )
+  galleryObserver.observe(galleryRef.value)
 })
 
 onUnmounted(() => {
   preloadLink?.remove()
+  galleryObserver?.disconnect()
 })
 </script>
 
@@ -91,13 +111,15 @@ onUnmounted(() => {
         </article>
       </div>
 
-      <div v-if="gallery.length" class="page__gallery">
+      <div v-if="gallery.length" ref="galleryRef" class="page__gallery">
         <div v-for="(image, index) in gallery" :key="`${image}-${index}`" class="page__gallery-item" v-reveal>
           <img
+            v-if="isGalleryVisible"
             :src="image"
             alt="Gallery image"
             loading="lazy"
             decoding="async"
+            fetchpriority="low"
             width="800"
             height="600"
             class="img-lazy"

@@ -22,12 +22,13 @@
 </template>
 
 <script setup>
+import { defineAsyncComponent } from 'vue';
 import AppSection from '../ui/AppSection.vue';
 import ProfileHero from './ProfileHero.vue';
 import ProductGrid from './ProductGrid.vue';
-import ReviewsSection from './ReviewsSection.vue';
-import ScheduleSection from '../ScheduleSection.vue';
-import FeedbackSection from '../FeedbackSection.vue';
+const ReviewsSection = defineAsyncComponent(() => import('./ReviewsSection.vue'));
+const ScheduleSection = defineAsyncComponent(() => import('../ScheduleSection.vue'));
+const FeedbackSection = defineAsyncComponent(() => import('../FeedbackSection.vue'));
 
 const menuItems = [
     { label: 'Обо мне', to: '/about' },

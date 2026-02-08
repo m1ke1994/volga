@@ -8,6 +8,7 @@
         :alt="title"
         loading="lazy"
         decoding="async"
+        fetchpriority="low"
         width="800"
         height="450"
         class="media__img img-lazy"

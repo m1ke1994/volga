@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="reviewsRef"
     class="reviews"
     v-reveal
     @mouseenter="pause"
@@ -20,6 +21,7 @@
               :alt="`Фото — ${activeReview.name}`"
               loading="lazy"
               decoding="async"
+              fetchpriority="low"
               width="64"
               height="64"
               class="img-lazy"
@@ -71,64 +73,66 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from "vue"
 
 const reviews = [
   {
     id: 1,
-    name: 'Мария К.',
+    name: "Мария К.",
     text:
-      'Экскурсия в «Братство лосей» — очень тёплый и спокойный опыт. Всё организовано бережно, без спешки, с вниманием к деталям.',
+      "Экскурсия в «Братство лосей» — очень тёплый и спокойный опыт. Всё организовано бережно, без спешки, с вниманием к деталям.",
     rating: 5,
-    service: 'Экскурсия',
-    date: '15 октября 2024',
-    avatarUrl: '/avatar.png',
+    service: "Экскурсия",
+    date: "15 октября 2024",
+    avatarUrl: "/avatar.png",
   },
   {
     id: 2,
-    name: 'Екатерина Д.',
+    name: "Екатерина Д.",
     text:
-      'Утренние практики помогли перезагрузиться и настроиться на день. После занятий появляется ясность и спокойствие — очень рекомендую.',
+      "Утренние практики помогли перезагрузиться и настроиться на день. После занятий появляется ясность и спокойствие — очень рекомендую.",
     rating: 5,
-    service: 'Утренние практики',
-    date: '28 сентября 2024',
-    avatarUrl: '/avatar.png',
+    service: "Утренние практики",
+    date: "28 сентября 2024",
+    avatarUrl: "/avatar.png",
   },
   {
     id: 3,
-    name: 'Алина Р.',
+    name: "Алина Р.",
     text:
-      'Чайная церемония — как маленький ритуал тишины и уюта. Атмосфера мягкая, уютная, хочется возвращаться снова.',
+      "Чайная церемония — как маленький ритуал тишины и уюта. Атмосфера мягкая, уютная, хочется возвращаться снова.",
     rating: 5,
-    service: 'Чайная церемония',
-    date: '7 ноября 2024',
-    avatarUrl: '/avatar.png',
+    service: "Чайная церемония",
+    date: "7 ноября 2024",
+    avatarUrl: "/avatar.png",
   },
   {
     id: 4,
-    name: 'Игорь С.',
+    name: "Игорь С.",
     text:
-      'Мастер-класс прошёл легко и интересно. Понравился подход: спокойно, дружелюбно и при этом очень содержательно.',
+      "Мастер-класс прошёл легко и интересно. Понравился подход: спокойно, дружелюбно и при этом очень содержательно.",
     rating: 4,
-    service: 'Мастер-класс',
-    date: '22 августа 2024',
-    avatarUrl: '/avatar.png',
+    service: "Мастер-класс",
+    date: "22 августа 2024",
+    avatarUrl: "/avatar.png",
   },
   {
     id: 5,
-    name: 'Ольга Н.',
+    name: "Ольга Н.",
     text:
-      'Игра «Лила» оказалась глубже, чем я ожидала. Без давления, с уважением и поддержкой — очень ценный опыт.',
+      "Игра «Лила» оказалась глубже, чем я ожидала. Без давления, с уважением и поддержкой — очень ценный опыт.",
     rating: 5,
-    service: 'Игра «Лила»',
-    date: '2 июля 2024',
-    avatarUrl: '/avatar.png',
+    service: "Игра «Лила»",
+    date: "2 июля 2024",
+    avatarUrl: "/avatar.png",
   },
 ]
 
 const activeIndex = ref(0)
 const isPaused = ref(false)
+const reviewsRef = ref(null)
 let timerId = null
+let visibilityObserver = null
 
 const activeReview = computed(() => reviews[activeIndex.value])
 
@@ -177,15 +181,31 @@ const restart = () => {
 }
 
 const markImageLoaded = (event) => {
-  event.target.classList.add('is-loaded')
+  event.target.classList.add("is-loaded")
 }
 
 onMounted(() => {
-  start()
+  if (typeof window === "undefined") return
+  if (!("IntersectionObserver" in window) || !reviewsRef.value) {
+    start()
+    return
+  }
+  visibilityObserver = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting) {
+        start()
+      } else {
+        stop()
+      }
+    },
+    { rootMargin: "200px 0px", threshold: 0.01 }
+  )
+  visibilityObserver.observe(reviewsRef.value)
 })
 
 onUnmounted(() => {
   stop()
+  visibilityObserver?.disconnect()
 })
 </script>
 

@@ -268,17 +268,22 @@ onUnmounted(() => {
     top: 0;
     right: 0;
     height: 100vh;
-    width: min(320px, 90vw);
-    background: var(--nav-surface);
+    width: min(88vw, 360px);
+    background: color-mix(in srgb, var(--nav-surface) 80%, transparent);
     border-left: 1px solid rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(16px);
+    backdrop-filter: blur(18px);
     transform: translateX(100%);
     transition: transform 250ms ease;
-    padding: 24px 20px;
-    display: grid;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
     gap: 10px;
     z-index: 80;
     box-shadow: 0 24px 50px var(--shadow);
+    border-radius: 18px 0 0 18px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    margin: 60px 0;
 }
 
 .hero-nav__drawer--open {
@@ -286,21 +291,24 @@ onUnmounted(() => {
 }
 
 .hero-nav__drawer-title {
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 600;
     color: var(--text-strong);
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    opacity: 0.7;
+    letter-spacing: 0.2px;
 }
 
 .hero-nav__drawer-link {
     padding: 10px 12px;
     border-radius: 12px;
-    background: transparent;
+    background: rgba(255, 255, 255, 0.06);
     border: none;
     color: var(--text);
     font-size: 14px;
+    line-height: 1.3;
     position: relative;
-    transition: color 200ms ease;
+    transition: color 200ms ease, background 200ms ease, transform 200ms ease;
 }
 
 .hero-nav__drawer-link:hover {
@@ -311,22 +319,8 @@ onUnmounted(() => {
     color: var(--text-strong);
 }
 
-.hero-nav__drawer-link::after {
-    content: '';
-    position: absolute;
-    left: 12px;
-    right: 12px;
-    bottom: 6px;
-    height: 2px;
-    background: var(--primary);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 220ms ease;
-}
-
-.hero-nav__drawer-link:hover::after,
-.hero-nav__drawer-link--active::after {
-    transform: scaleX(1);
+.hero-nav__drawer-link:active {
+    transform: scale(0.99);
 }
 
 .hero__top {
@@ -450,6 +444,14 @@ onUnmounted(() => {
 @media (max-width: 768px) {
     .hero-nav {
         width: calc(100% - 24px);
+    }
+
+    .hero-nav__inner {
+        justify-content: flex-end;
+    }
+
+    .hero-nav__actions {
+        margin-left: auto;
     }
 
     .hero-nav__links {
