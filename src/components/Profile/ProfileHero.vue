@@ -6,7 +6,7 @@
         </div>
         <div class="hero__bottom">
             <div class="avatar">
-                <img src="/avatar.png" alt="ФОТО">
+                <img src="/9.jpeg" alt="ФОТО">
             </div>
             <div class="info">
                 <div class="info__name">Елизавета Стручкова</div>
@@ -32,7 +32,7 @@ const emit = defineEmits(['toggle-menu']);
 
 .hero__top {
     position: relative;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0)) , url('/konakovo_lenta.JPG') center/cover no-repeat;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0)) , url('/8.webp') center/cover no-repeat;
     height: 420px;
     display: flex;
     align-items: center;
