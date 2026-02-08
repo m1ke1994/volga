@@ -36,7 +36,7 @@
         </div>
 
         <div class="footer__bottom">
-          <span>© {{ year }} Volga. Все права защищены.</span>
+          <span>© {{ year }} New Konakovo. Все права защищены.</span>
           <div class="footer__bottom-links">
             <router-link class="footer__link footer__link--small" to="/privacy">Политика</router-link>
             <router-link class="footer__link footer__link--small" to="/terms">Условия</router-link>
