@@ -106,15 +106,16 @@ onUnmounted(() => {
     z-index: 60;
     width: min(1100px, calc(100% - 32px));
     margin: 16px auto 0;
-    border-radius: 999px;
-    background: var(--nav-surface);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(14px);
-    box-shadow: 0 14px 30px var(--shadow);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--nav-surface) 60%, transparent);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 12px 26px var(--shadow);
     transition: box-shadow 200ms ease, background 200ms ease, transform 200ms ease;
 }
 
 .hero-nav--stuck {
+    background: color-mix(in srgb, var(--nav-surface) 75%, transparent);
     box-shadow: 0 18px 36px var(--shadow);
 }
 
@@ -134,24 +135,40 @@ onUnmounted(() => {
 }
 
 .hero-nav__link {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--text);
-    padding: 7px 12px;
-    border-radius: 999px;
-    background: var(--card);
-    background: color-mix(in srgb, var(--card) 70%, transparent);
+    padding: 6px 6px;
+    border-radius: 0;
+    background: transparent;
     border: none;
-    transition: transform 200ms ease, box-shadow 200ms ease, background 200ms ease;
+    position: relative;
+    transition: color 200ms ease;
 }
 
 .hero-nav__link:hover {
-    transform: translateY(-1px);
-    background: color-mix(in srgb, var(--card) 85%, transparent);
-    box-shadow: 0 8px 16px var(--shadow);
+    color: var(--text-strong);
 }
 
 .hero-nav__link--active {
-    background: color-mix(in srgb, var(--primary-soft) 80%, transparent);
+    color: var(--text-strong);
+}
+
+.hero-nav__link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 2px;
+    background: var(--primary);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 220ms ease;
+}
+
+.hero-nav__link:hover::after,
+.hero-nav__link--active::after {
+    transform: scaleX(1);
 }
 
 .hero-nav__actions {
@@ -212,21 +229,38 @@ onUnmounted(() => {
 .hero-nav__drawer-link {
     padding: 10px 12px;
     border-radius: 12px;
-    background: var(--card);
-    background: color-mix(in srgb, var(--card) 70%, transparent);
+    background: transparent;
     border: none;
     color: var(--text);
-    font-size: 13px;
-    transition: background 200ms ease, transform 200ms ease;
+    font-size: 14px;
+    position: relative;
+    transition: color 200ms ease;
 }
 
 .hero-nav__drawer-link:hover {
-    background: color-mix(in srgb, var(--card) 85%, transparent);
-    transform: translateX(2px);
+    color: var(--text-strong);
 }
 
 .hero-nav__drawer-link--active {
-    background: color-mix(in srgb, var(--primary-soft) 80%, transparent);
+    color: var(--text-strong);
+}
+
+.hero-nav__drawer-link::after {
+    content: '';
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 6px;
+    height: 2px;
+    background: var(--primary);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 220ms ease;
+}
+
+.hero-nav__drawer-link:hover::after,
+.hero-nav__drawer-link--active::after {
+    transform: scaleX(1);
 }
 
 .hero__top {

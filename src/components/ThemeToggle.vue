@@ -1,5 +1,5 @@
 <template>
-  <button class="theme-toggle" type="button" @click="toggleTheme" :aria-label="label">
+  <button class="theme-toggle" :class="{ 'theme-toggle--icon': iconOnly }" type="button" @click="toggleTheme" :aria-label="label">
     <span class="theme-toggle__icon">{{ isDark ? "☀" : "☾" }}</span>
     <span v-if="!iconOnly" class="theme-toggle__text">{{ isDark ? "Тёмная" : "Светлая" }}</span>
   </button>
@@ -58,6 +58,26 @@ onMounted(() => {
 }
 
 .theme-toggle__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-size: 14px;
+  background: color-mix(in srgb, var(--card) 70%, transparent);
+}
+
+.theme-toggle--icon {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.theme-toggle--icon .theme-toggle__icon {
+  width: 100%;
+  height: 100%;
+  background: transparent;
 }
 </style>

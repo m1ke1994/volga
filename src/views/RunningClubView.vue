@@ -2,7 +2,7 @@
 import PageTemplate from '../components/PageTemplate.vue';
 
 const pageData = {
-    title: 'Бронзовый клуб',
+    title: 'Беговой клуб',
     subtitle:
         'Клуб для регулярных встреч, тёплых практик и участия в жизни «Нового Конаково» без спешки и лишнего формализма.',
     heroImage: '/5.jpeg',

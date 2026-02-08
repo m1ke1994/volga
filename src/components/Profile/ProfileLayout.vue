@@ -33,7 +33,7 @@ const menuItems = [
     { label: 'Обо мне', to: '/about' },
     { label: 'Братство Лосей', to: '/brotherhood' },
     { label: 'Волонтерские программы', to: '/volunteer' },
-    { label: 'Бронзовый клуб', to: '/bronze-club' },
+    { label: 'Беговой клуб', to: '/running-club' },
     { label: 'Расписание занятий', to: '/schedule' },
     { label: 'Статьи', to: '/articles' },
     { label: 'Новости', to: '/news' },
