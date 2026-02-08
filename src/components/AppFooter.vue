@@ -4,7 +4,7 @@
       <div class="footer__inner">
         <div class="footer__grid">
           <div class="footer__brand">
-            <div class="footer__logo">Volga</div>
+            <div class="footer__logo">Новое Конаково</div>
             <p class="footer__tagline">Тихий отдых • Природа • Внимание к деталям</p>
           </div>
 
@@ -60,37 +60,78 @@ const scrollToTop = () => {
 <style scoped>
 .footer {
   width: 100%;
-  padding: 40px 16px 28px;
+  padding: 56px 16px 32px;
   background: var(--bg);
   color: var(--text);
 }
 
 .footer__glass {
-  background: color-mix(in srgb, var(--card) 70%, transparent);
-  border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+  background: linear-gradient(
+      140deg,
+      color-mix(in srgb, var(--card) 82%, transparent),
+      color-mix(in srgb, var(--bg) 35%, transparent),
+      color-mix(in srgb, var(--card) 68%, transparent)
+    );
+  border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
   border-radius: 24px;
-  box-shadow: 0 -12px 30px var(--shadow);
-  backdrop-filter: blur(16px);
+  box-shadow: 0 -16px 34px color-mix(in srgb, var(--shadow) 85%, transparent);
+  backdrop-filter: blur(18px);
+  position: relative;
+  overflow: hidden;
+}
+
+.footer__glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+      circle at 12% 0%,
+      rgba(255, 255, 255, 0.16),
+      transparent 55%
+    ),
+    radial-gradient(circle at 90% 20%, rgba(255, 255, 255, 0.08), transparent 50%);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.footer__glass::after {
+  content: '';
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--border) 60%, transparent),
+    transparent
+  );
+  pointer-events: none;
 }
 
 .footer__inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 28px 24px;
+  padding: 32px 28px;
   display: grid;
-  gap: 24px;
+  gap: 28px;
   box-sizing: border-box;
+  position: relative;
+  z-index: 1;
 }
 
 .footer__grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
+  gap: 36px;
+  align-items: start;
 }
 
 .footer__logo {
-  font-size: 22px;
-  font-weight: 600;
+  font-size: 26px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
   color: var(--text-strong);
   margin-bottom: 8px;
 }
@@ -98,20 +139,23 @@ const scrollToTop = () => {
 .footer__tagline {
   margin: 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 13.5px;
 }
 
 .footer__nav {
   display: grid;
-  gap: 8px;
+  gap: 10px 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .footer__link {
   position: relative;
   color: var(--text);
-  font-size: 13px;
+  font-size: 12.5px;
+  line-height: 1.65;
   padding-bottom: 2px;
   width: fit-content;
+  opacity: 0.9;
 }
 
 .footer__link::after {
@@ -121,21 +165,22 @@ const scrollToTop = () => {
   right: 0;
   bottom: -2px;
   height: 2px;
-  background: var(--primary);
+  background: color-mix(in srgb, var(--primary) 75%, transparent);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 220ms ease;
 }
 
-.footer__link:hover::after {
+.footer__link:hover::after,
+.footer__link:focus-visible::after {
   transform: scaleX(1);
 }
 
 .footer__contacts {
   display: grid;
-  gap: 10px;
+  gap: 12px;
   color: var(--text);
-  font-size: 13px;
+  font-size: 12.5px;
 }
 
 .footer__contact-item {
@@ -157,8 +202,8 @@ const scrollToTop = () => {
   gap: 12px;
   color: var(--muted);
   font-size: 12px;
-  border-top: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
-  padding-top: 16px;
+  border-top: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
+  padding-top: 20px;
 }
 
 .footer__bottom-links {
@@ -183,12 +228,12 @@ const scrollToTop = () => {
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(10px);
-  transition: transform 200ms ease, box-shadow 200ms ease;
+  transition: box-shadow 200ms ease, background 200ms ease;
 }
 
 .footer__to-top:hover {
-  transform: translateY(-1px);
   box-shadow: 0 8px 16px var(--shadow);
+  background: color-mix(in srgb, var(--card) 85%, transparent);
 }
 
 @media (max-width: 900px) {
@@ -208,11 +253,16 @@ const scrollToTop = () => {
 
   .footer__grid {
     grid-template-columns: 1fr;
+    gap: 24px;
   }
 
   .footer__bottom {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .footer__nav {
+    grid-template-columns: 1fr;
   }
 }
 </style>
