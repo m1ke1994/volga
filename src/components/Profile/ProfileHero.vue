@@ -51,7 +51,7 @@
                 >
             </div>
             <div class="info" v-reveal.delay="120">
-                <div class="info__name">Елизавета Стручкова</div>
+                <div class="info__name">Лиза Стручкова</div>
                 <div class="info__row">
                     <div class="info__about">
                         Делюсь событиями, тишиной и теплыми практиками в Конаково. Я переехала из Москвы в Конаково

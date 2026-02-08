@@ -31,19 +31,17 @@
       </p>
 
       <footer class="bottom">
-        <button class="btn" type="button" @click="onMore">
+        <button class="btn btn--ghost" type="button" @click="onMore">
           Подробнее
           <span class="arrow">→</span>
         </button>
-
-        <slot name="extra" />
       </footer>
     </div>
   </article>
 </template>
 
 <script setup>
-const props = defineProps({
+defineProps({
   image: { type: String, required: true },
   title: { type: String, required: true },
   description: { type: String, default: "" },
@@ -121,9 +119,9 @@ const markImageLoaded = (event) => {
   inset: 0;
   background: linear-gradient(
     to bottom,
-    rgba(0,0,0,0.0) 0%,
-    rgba(0,0,0,0.10) 55%,
-    rgba(0,0,0,0.18) 100%
+    rgba(0, 0, 0, 0.0) 0%,
+    rgba(0, 0, 0, 0.10) 55%,
+    rgba(0, 0, 0, 0.18) 100%
   );
 }
 
@@ -196,6 +194,7 @@ const markImageLoaded = (event) => {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .btn {
@@ -221,6 +220,22 @@ const markImageLoaded = (event) => {
 .btn:active {
   transform: translateY(0);
   box-shadow: 0 10px 22px var(--shadow);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--text-strong);
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+
+.btn--ghost:hover {
+  background: var(--bg-elevated);
+  transform: translateY(-1px);
+}
+
+.btn--ghost:active {
+  transform: translateY(0);
 }
 
 .arrow {
