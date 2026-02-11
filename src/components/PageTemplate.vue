@@ -81,7 +81,7 @@ onUnmounted(() => {
 
     <div class="page__content">
       <div v-if="highlights.length" class="page__highlights">
-        <article v-for="item in highlights" :key="item.title" class="page__highlight" v-reveal>
+        <article v-for="item in highlights" :key="item.title" class="page__highlight glass-card" v-reveal>
           <h2 class="page__highlight-title">{{ item.title }}</h2>
           <p class="page__highlight-text">{{ item.text }}</p>
         </article>
@@ -103,7 +103,7 @@ onUnmounted(() => {
       </div>
 
       <div v-if="sections.length" class="page__sections">
-        <article v-for="section in sections" :key="section.title" class="page__section" v-reveal>
+        <article v-for="section in sections" :key="section.title" class="page__section glass-card" v-reveal>
           <h2 class="page__section-title">{{ section.title }}</h2>
           <p class="page__section-text">{{ section.text }}</p>
           <a v-if="section.action" class="page__action" :href="section.action.href">{{ section.action.label }}</a>
@@ -128,7 +128,7 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <div v-if="cta" class="page__cta" v-reveal>
+      <div v-if="cta" class="page__cta glass-card" v-reveal>
         <h2 class="page__cta-title">{{ cta.title }}</h2>
         <p class="page__cta-text">{{ cta.text }}</p>
         <button v-if="cta.buttonText" class="page__cta-button" type="button">
@@ -215,10 +215,7 @@ onUnmounted(() => {
 }
 
 .page__highlight {
-  background: var(--card);
-  border-radius: 16px;
   padding: 16px 18px;
-  box-shadow: 0 10px 20px var(--shadow);
 }
 
 .page__highlight-title {
@@ -283,10 +280,7 @@ onUnmounted(() => {
 }
 
 .page__section {
-  background: var(--card);
-  border-radius: 16px;
   padding: 18px 20px;
-  box-shadow: 0 10px 18px var(--shadow);
 }
 
 .page__section-title {
@@ -340,10 +334,7 @@ onUnmounted(() => {
 }
 
 .page__cta {
-  background: var(--bg-elevated);
-  border-radius: 18px;
   padding: 20px;
-  box-shadow: 0 10px 18px var(--shadow);
 }
 
 .page__cta-title {

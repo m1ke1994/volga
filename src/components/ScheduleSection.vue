@@ -1,6 +1,6 @@
 <template>
   <div class="schedule">
-    <article v-for="item in schedule" :key="item.day" class="schedule__card" v-reveal>
+    <article v-for="item in schedule" :key="item.day" class="schedule__card glass-card" v-reveal>
       <div class="schedule__day">{{ item.day }}</div>
       <div class="schedule__time">{{ item.time }}</div>
       <div class="schedule__title">{{ item.title }}</div>
@@ -26,11 +26,7 @@ const schedule = [
 }
 
 .schedule__card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
   padding: 16px;
-  box-shadow: 0 10px 18px var(--shadow);
   display: grid;
   gap: 8px;
 }

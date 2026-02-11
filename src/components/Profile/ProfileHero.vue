@@ -1,8 +1,11 @@
-<template>
+﻿<template>
     <div class="hero">
         <div class="hero-nav__overlay" :class="{ 'hero-nav__overlay--show': isMenuOpen }" @click="closeMenu"></div>
         <aside class="hero-nav__drawer" :class="{ 'hero-nav__drawer--open': isMenuOpen }">
-            <div class="hero-nav__drawer-title">Меню</div>
+            <div class="hero-nav__drawer-head">
+                <div class="hero-nav__drawer-title">Меню</div>
+                <button class="hero-nav__drawer-close" type="button" aria-label="Закрыть меню" @click="closeMenu">×</button>
+            </div>
             <router-link
                 v-for="item in menuItems"
                 :key="item.to"
@@ -56,7 +59,7 @@
                     <div class="info__about">
                         Делюсь событиями, тишиной и теплыми практиками в Конаково. Я переехала из Москвы в Конаково
                         и создала здесь пространство для осознанного отдыха, живых встреч и глубокого контакта с природой.
-                        Это место про замедление, внимание к себе и теплые человеческие связи — вдали от суеты и спешки.
+                        Это место про замедление, внимание к себе и теплые человеческие связи - вдали от суеты и спешки.
                         Я провожу экскурсии по природным местам, утренние практики, чайные церемонии и мастер-классы,
                         объединяя их в цельный опыт. Для гостей Конаково становлюсь проводником, помогаю собрать день или
                         путешествие под ваш ритм и интересы. А для местных создаю сообщество, где есть движение, поддержка,
@@ -70,7 +73,7 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 import BurgerMenuButton from './BurgerMenuButton.vue'
 import ThemeToggle from '../ThemeToggle.vue'
 
@@ -94,6 +97,13 @@ const toggleMenu = () => {
 
 const closeMenu = () => {
     isMenuOpen.value = false
+}
+
+const setBodyScrollLock = (locked) => {
+    if (typeof document === 'undefined') return
+    const overflowValue = locked ? 'hidden' : ''
+    document.body.style.overflow = overflowValue
+    document.documentElement.style.overflow = overflowValue
 }
 
 const handleKeydown = (event) => {
@@ -143,6 +153,10 @@ onMounted(() => {
     window.addEventListener('keydown', handleKeydown)
 })
 
+watch(isMenuOpen, (opened) => {
+    setBodyScrollLock(opened)
+})
+
 onUnmounted(() => {
     observer?.disconnect()
     if (useScrollFallback) {
@@ -150,6 +164,7 @@ onUnmounted(() => {
     }
     window.removeEventListener('keydown', handleKeydown)
     preloadLink?.remove()
+    setBodyScrollLock(false)
 })
 </script>
 
@@ -250,8 +265,8 @@ onUnmounted(() => {
 .hero-nav__overlay {
     position: fixed;
     inset: 0;
-    background: rgba(16, 13, 10, 0.45);
-    backdrop-filter: blur(2px);
+    background: rgba(16, 13, 10, 0.54);
+    backdrop-filter: blur(3px);
     opacity: 0;
     pointer-events: none;
     transition: opacity 200ms ease;
@@ -265,29 +280,40 @@ onUnmounted(() => {
 
 .hero-nav__drawer {
     position: fixed;
-    top: 0;
-    right: 0;
-    height: 100vh;
-    width: min(88vw, 360px);
-    background: color-mix(in srgb, var(--nav-surface) 80%, transparent);
-    border-left: 1px solid rgba(255, 255, 255, 0.12);
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    width: auto;
+    max-height: calc(100dvh - 24px);
+    background: color-mix(in srgb, var(--nav-surface) 86%, transparent);
+    border: 1px solid rgba(255, 255, 255, 0.14);
     backdrop-filter: blur(18px);
-    transform: translateX(100%);
-    transition: transform 250ms ease;
-    padding: 14px 16px;
+    transform: translateY(-10px) scale(0.98);
+    opacity: 0;
+    transition: transform 240ms ease, opacity 240ms ease;
+    padding: 14px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     z-index: 80;
     box-shadow: 0 24px 50px var(--shadow);
-    border-radius: 18px 0 0 18px;
-    max-height: calc(100vh - 120px);
+    border-radius: 18px;
     overflow-y: auto;
-    margin: 60px 0;
+    margin: 0;
+    pointer-events: none;
 }
 
 .hero-nav__drawer--open {
-    transform: translateX(0);
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.hero-nav__drawer-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
 }
 
 .hero-nav__drawer-title {
@@ -297,6 +323,21 @@ onUnmounted(() => {
     margin-bottom: 10px;
     opacity: 0.7;
     letter-spacing: 0.2px;
+}
+
+.hero-nav__drawer-close {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: color-mix(in srgb, var(--card) 76%, transparent);
+    color: var(--text);
+    font-size: 20px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 
 .hero-nav__drawer-link {
@@ -366,7 +407,7 @@ onUnmounted(() => {
 
 .avatar {
     position: absolute;
-    top: -82px;
+    top: 0;
     left: 140px;
     width: 190px;
     height: 190px;
@@ -378,6 +419,7 @@ onUnmounted(() => {
     overflow: hidden;
     box-shadow: 0 24px 40px var(--shadow);
     border: 3px solid rgba(255, 255, 255, 0.75);
+    transform: translateY(-50%);
 }
 
 .avatar img {
@@ -432,8 +474,8 @@ onUnmounted(() => {
 @media (max-width: 1100px) {
     .avatar {
         left: 90px;
-        width: 170px;
-        height: 170px;
+        width: 200px;
+        height: 200px;
     }
 
     .info {
@@ -461,16 +503,23 @@ onUnmounted(() => {
     .hero-nav__burger {
         display: inline-flex;
     }
+
+    .hero-nav__drawer {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        max-height: calc(100dvh - 20px);
+    }
 }
 
 @media (max-width: 820px) {
-    .hero__bottom {
-        padding: 130px 20px 28px;
-    }
+  .hero__bottom {
+    padding: 130px 20px 28px;
+  }
 
     .avatar {
         left: 50%;
-        transform: translateX(-50%);
+        transform: translate(-50%, -50%);
     }
 
     .info {
@@ -478,8 +527,18 @@ onUnmounted(() => {
         text-align: center;
     }
 
-    .info__btn {
-        justify-self: center;
-    }
+  .info__btn {
+    justify-self: center;
+  }
+}
+
+@media (max-width: 520px) {
+  .avatar {
+    left: calc(50% - 54px);
+  }
+
+  .hero__top {
+    background-position: calc(50% - clamp(8px, 3vw, 16px)) center;
+  }
 }
 </style>
