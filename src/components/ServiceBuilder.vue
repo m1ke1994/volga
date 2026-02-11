@@ -3,7 +3,7 @@
     <section class="builder__column">
       <header class="builder__header">
         <p class="builder__eyebrow">Выбор форматов</p>
-        <h3 class="builder__headline">Соберите сценарий дня</h3>
+        <h3 class="builder__headline">{{ sectionTitle }}</h3>
         <p class="builder__subhead">Комбинируйте активности, чтобы получить идеальный ритм.</p>
       </header>
 
@@ -29,10 +29,10 @@
               @click="toggleService(service.id)"
             >
               <span class="builder__toggle-icon" aria-hidden="true">
-                {{ selectedIds.includes(service.id) ? "✓" : "+" }}
+                {{ selectedIds.includes(service.id) ? '✓' : '+' }}
               </span>
               <span class="builder__toggle-text">
-                {{ selectedIds.includes(service.id) ? "Убрать" : "Добавить" }}
+                {{ selectedIds.includes(service.id) ? 'Убрать' : 'Добавить' }}
               </span>
             </button>
           </div>
@@ -40,7 +40,6 @@
       </div>
     </section>
 
-    <!-- Right panel: compact premium form -->
     <aside class="builder__aside">
       <div class="panel">
         <div class="panel__head">
@@ -59,13 +58,7 @@
           <label class="field">
             <span class="field__label">Гостей</span>
             <div class="field__control">
-              <input
-                class="field__input"
-                type="number"
-                min="1"
-                max="10"
-                v-model.number="guests"
-              />
+              <input class="field__input" type="number" min="1" max="10" v-model.number="guests" />
             </div>
           </label>
         </div>
@@ -82,54 +75,66 @@
           </div>
         </label>
 
-        <p class="panel__note">
-          План обновляется автоматически — ничего нажимать не нужно.
-        </p>
+        <p class="panel__note">План обновляется автоматически — ничего нажимать не нужно.</p>
       </div>
     </aside>
   </div>
 </template>
 
 <script setup>
-import { computed, ref, watchEffect } from "vue";
+import { computed, ref, watchEffect } from 'vue'
 
-const emit = defineEmits(["update"]);
+import { parseJsonField } from '../api/client'
+import { useSection } from '../composables/useSection'
 
-const services = [
-  { id: 1, name: "Экскурсия в «Братство лосей»", desc: "Тихий маршрут и живые истории природы.", price: 3500 },
-  { id: 2, name: "Чайная церемония", desc: "Неспешный ритуал и вкус момента.", price: 2200 },
-  { id: 3, name: "Утренние практики", desc: "Дыхание, внимание и мягкий старт дня.", price: 1500 },
-  { id: 4, name: "Мастер-класс", desc: "Тёплая групповая практика.", price: 2000 },
-  { id: 5, name: "Mindfulness", desc: "Фокус, устойчивость, восстановление.", price: 1800 },
-  { id: 6, name: "Игра «Лила»", desc: "Глубокий диалог с собой.", price: 2800 },
-];
+const emit = defineEmits(['update'])
 
-const selectedIds = ref([]);
-const date = ref("");
-const guests = ref(1);
-const comment = ref("");
+const { data: dayScenarioSection } = useSection('day-scenario')
 
-const selectedServices = computed(() => services.filter((s) => selectedIds.value.includes(s.id)));
+const fallbackServices = [
+  { id: 1, name: 'Экскурсия в «Братство лосей»', desc: 'Тихий маршрут и живые истории природы.', price: 3500 },
+  { id: 2, name: 'Чайная церемония', desc: 'Неспешный ритуал и вкус момента.', price: 2200 },
+  { id: 3, name: 'Утренние практики', desc: 'Дыхание, внимание и мягкий старт дня.', price: 1500 },
+]
 
-const total = computed(() => selectedServices.value.reduce((sum, s) => sum + s.price, 0));
+const sectionTitle = computed(() => dayScenarioSection.value?.title || 'Собери сценарий дня')
+
+const services = computed(() => {
+  const items = parseJsonField(dayScenarioSection.value?.scenario_items_json, fallbackServices)
+  if (!Array.isArray(items) || !items.length) return fallbackServices
+  return items.map((item) => ({
+    id: item.id,
+    name: item.name || item.title || 'Формат',
+    desc: item.desc || item.description || '',
+    price: Number(item.price || 0),
+  }))
+})
+
+const selectedIds = ref([])
+const date = ref('')
+const guests = ref(1)
+const comment = ref('')
+
+const selectedServices = computed(() => services.value.filter((s) => selectedIds.value.includes(s.id)))
+const total = computed(() => selectedServices.value.reduce((sum, s) => sum + Number(s.price || 0), 0))
 
 const toggleService = (id) => {
   selectedIds.value = selectedIds.value.includes(id)
     ? selectedIds.value.filter((x) => x !== id)
-    : [...selectedIds.value, id];
-};
+    : [...selectedIds.value, id]
+}
 
-const formatPrice = (value) => `${value.toLocaleString("ru-RU")} ₽`;
+const formatPrice = (value) => `${Number(value || 0).toLocaleString('ru-RU')} ₽`
 
 watchEffect(() => {
-  emit("update", {
+  emit('update', {
     services: selectedServices.value,
     total: total.value,
     date: date.value,
     guests: guests.value,
     comment: comment.value,
-  });
-});
+  })
+})
 </script>
 
 <style scoped>
@@ -145,7 +150,6 @@ watchEffect(() => {
   gap: 24px;
 }
 
-/* header */
 .builder__header {
   margin-bottom: 18px;
 }
@@ -167,7 +171,6 @@ watchEffect(() => {
   font-size: 13px;
 }
 
-/* cards */
 .builder__grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -252,13 +255,11 @@ watchEffect(() => {
   line-height: 1;
 }
 
-/* aside */
 .builder__aside {
   display: grid;
   gap: 16px;
 }
 
-/* premium panel */
 .panel {
   background: var(--glass);
   border: 1px solid var(--border);
@@ -294,7 +295,6 @@ watchEffect(() => {
   gap: 12px;
 }
 
-/* fields */
 .field {
   display: grid;
   gap: 6px;
@@ -343,7 +343,6 @@ watchEffect(() => {
   color: var(--muted);
 }
 
-/* responsive */
 @media (max-width: 980px) {
   .builder {
     grid-template-columns: 1fr;

@@ -1,45 +1,38 @@
-<template>
+﻿<template>
   <footer class="footer">
     <div class="footer__glass">
       <div class="footer__inner">
         <div class="footer__grid">
           <div class="footer__brand">
-            <div class="footer__logo">Новое Конаково</div>
-            <p class="footer__tagline">Тихий отдых • Природа • Внимание к деталям</p>
+            <div class="footer__logo">{{ footerLogo }}</div>
+            <p class="footer__tagline">{{ footerTagline }}</p>
           </div>
 
           <nav class="footer__nav" aria-label="Навигация">
-            <router-link class="footer__link" to="/about">Обо мне</router-link>
-            <router-link class="footer__link" to="/moose">Братство лосей</router-link>
-            <router-link class="footer__link" to="/volunteer">Волонтерские программы</router-link>
-            <router-link class="footer__link" to="/running-club">Беговой клуб</router-link>
-            <router-link class="footer__link" to="/schedule">Расписание занятий</router-link>
-            <router-link class="footer__link" to="/articles">Статьи</router-link>
-            <router-link class="footer__link" to="/news">Новости</router-link>
-            <router-link class="footer__link" to="/contacts">Контакты</router-link>
+            <router-link v-for="item in navLinks" :key="item.to" class="footer__link" :to="item.to">{{ item.label }}</router-link>
           </nav>
 
           <div class="footer__contacts">
             <div class="footer__contact-item">
               <span class="footer__label">Телефон</span>
-              <span>+7 (999) 000-00-00</span>
+              <span>{{ phone }}</span>
             </div>
             <div class="footer__contact-item">
               <span class="footer__label">Email</span>
-              <span>hello@example.com</span>
+              <span>{{ email }}</span>
             </div>
             <div class="footer__contact-item">
               <span class="footer__label">Telegram</span>
-              <span>@username</span>
+              <span>{{ telegram }}</span>
             </div>
           </div>
         </div>
 
         <div class="footer__bottom">
-          <span>© {{ year }} New Konakovo. Все права защищены.</span>
+          <span>{{ copyrightText || `© ${year} ${footerLogo}. Все права защищены.` }}</span>
           <div class="footer__bottom-links">
-            <router-link class="footer__link footer__link--small" to="/privacy">Политика</router-link>
-            <router-link class="footer__link footer__link--small" to="/terms">Условия</router-link>
+            <router-link class="footer__link footer__link--small" :to="privacyTo">Политика</router-link>
+            <router-link class="footer__link footer__link--small" :to="termsTo">Условия</router-link>
             <button class="footer__to-top" type="button" @click="scrollToTop">↑</button>
           </div>
         </div>
@@ -49,7 +42,44 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
+
+import { parseJsonField } from '../api/client'
+import { useSection } from '../composables/useSection'
+
 const year = new Date().getFullYear()
+
+const { data: footerSection } = useSection('footer')
+
+const footerLogo = computed(() => footerSection.value?.logo_text || 'Новое Конаково')
+const footerTagline = computed(() => footerSection.value?.tagline || 'Тихий отдых • Природа • Внимание к деталям')
+const phone = computed(() => footerSection.value?.phone || '+7 (999) 000-00-00')
+const email = computed(() => footerSection.value?.email || 'hello@example.com')
+const telegram = computed(() => footerSection.value?.telegram || '@username')
+const copyrightText = computed(() => footerSection.value?.copyright_text || '')
+const privacyTo = computed(() => footerSection.value?.privacy_to || '/privacy')
+const termsTo = computed(() => footerSection.value?.terms_to || '/terms')
+
+const navLinks = computed(() => {
+  const fallback = [
+    { label: 'Обо мне', href: '/about' },
+    { label: 'Братство лосей', href: '/moose' },
+    { label: 'Волонтерские программы', href: '/volunteer' },
+    { label: 'Беговой клуб', href: '/running-club' },
+    { label: 'Расписание занятий', href: '/schedule' },
+    { label: 'Статьи', href: '/articles' },
+    { label: 'Новости', href: '/news' },
+    { label: 'Контакты', href: '/contacts' },
+  ]
+  const links = parseJsonField(footerSection.value?.nav_links_json, fallback)
+  if (!Array.isArray(links) || !links.length) {
+    return fallback.map((item) => ({ label: item.label, to: item.href }))
+  }
+  return links.map((item) => ({
+    label: item.label || item.title || 'Раздел',
+    to: item.href || item.to || '/',
+  }))
+})
 
 const scrollToTop = () => {
   if (typeof window === 'undefined') return
@@ -84,11 +114,7 @@ const scrollToTop = () => {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-      circle at 12% 0%,
-      rgba(255, 255, 255, 0.16),
-      transparent 55%
-    ),
+  background: radial-gradient(circle at 12% 0%, rgba(255, 255, 255, 0.16), transparent 55%),
     radial-gradient(circle at 90% 20%, rgba(255, 255, 255, 0.08), transparent 50%);
   opacity: 0.6;
   pointer-events: none;

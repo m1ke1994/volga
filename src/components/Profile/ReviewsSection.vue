@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div
     ref="reviewsRef"
     class="reviews"
@@ -10,11 +10,7 @@
   >
     <div class="reviews__card-wrap">
       <Transition name="fade-rise" mode="out-in">
-        <article
-          class="reviews__card glass-card"
-          :key="activeReview.id"
-          tabindex="0"
-        >
+        <article class="reviews__card glass-card" :key="activeReview.id" tabindex="0">
           <div class="reviews__avatar">
             <img
               :src="activeReview.avatarUrl"
@@ -30,12 +26,7 @@
           </div>
 
           <div class="reviews__stars" aria-label="Рейтинг">
-            <span
-              v-for="n in 5"
-              :key="n"
-              :class="['star', { muted: n > activeReview.rating }]"
-              aria-hidden="true"
-            >
+            <span v-for="n in 5" :key="n" :class="['star', { muted: n > activeReview.rating }]" aria-hidden="true">
               ★
             </span>
           </div>
@@ -49,9 +40,7 @@
     </div>
 
     <div class="reviews__nav">
-      <button class="nav-btn" type="button" aria-label="Предыдущий отзыв" @click="prev">
-        ‹
-      </button>
+      <button class="nav-btn" type="button" aria-label="Предыдущий отзыв" @click="prev">‹</button>
 
       <div class="dots" role="tablist" aria-label="Слайды">
         <button
@@ -65,68 +54,44 @@
         ></button>
       </div>
 
-      <button class="nav-btn" type="button" aria-label="Следующий отзыв" @click="next">
-        ›
-      </button>
+      <button class="nav-btn" type="button" aria-label="Следующий отзыв" @click="next">›</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from "vue"
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 
-const reviews = [
+import { normalizeImageUrl, parseJsonField } from '../../api/client'
+import { useSection } from '../../composables/useSection'
+
+const { data: reviewsSection } = useSection('reviews')
+
+const fallbackReviews = [
   {
     id: 1,
-    name: "Мария К.",
-    text:
-      "Экскурсия в «Братство лосей» — очень тёплый и спокойный опыт. Всё организовано бережно, без спешки, с вниманием к деталям.",
+    name: 'Мария К.',
+    text: 'Экскурсия в «Братство лосей» — очень теплый и спокойный опыт.',
     rating: 5,
-    service: "Экскурсия",
-    date: "15 октября 2024",
-    avatarUrl: "/avatar.png",
-  },
-  {
-    id: 2,
-    name: "Екатерина Д.",
-    text:
-      "Утренние практики помогли перезагрузиться и настроиться на день. После занятий появляется ясность и спокойствие — очень рекомендую.",
-    rating: 5,
-    service: "Утренние практики",
-    date: "28 сентября 2024",
-    avatarUrl: "/avatar.png",
-  },
-  {
-    id: 3,
-    name: "Алина Р.",
-    text:
-      "Чайная церемония — как маленький ритуал тишины и уюта. Атмосфера мягкая, уютная, хочется возвращаться снова.",
-    rating: 5,
-    service: "Чайная церемония",
-    date: "7 ноября 2024",
-    avatarUrl: "/avatar.png",
-  },
-  {
-    id: 4,
-    name: "Игорь С.",
-    text:
-      "Мастер-класс прошёл легко и интересно. Понравился подход: спокойно, дружелюбно и при этом очень содержательно.",
-    rating: 4,
-    service: "Мастер-класс",
-    date: "22 августа 2024",
-    avatarUrl: "/avatar.png",
-  },
-  {
-    id: 5,
-    name: "Ольга Н.",
-    text:
-      "Игра «Лила» оказалась глубже, чем я ожидала. Без давления, с уважением и поддержкой — очень ценный опыт.",
-    rating: 5,
-    service: "Игра «Лила»",
-    date: "2 июля 2024",
-    avatarUrl: "/avatar.png",
+    service: 'Экскурсия',
+    date: '15 октября 2024',
+    avatarUrl: '/avatar.png',
   },
 ]
+
+const reviews = computed(() => {
+  const items = parseJsonField(reviewsSection.value?.reviews_json, fallbackReviews)
+  if (!Array.isArray(items) || !items.length) return fallbackReviews
+  return items.map((item, index) => ({
+    id: item.id || index + 1,
+    name: item.author || item.name || 'Гость',
+    text: item.text || '',
+    rating: Number(item.rating || 5),
+    service: item.service || 'Отзыв',
+    date: item.date || '',
+    avatarUrl: normalizeImageUrl(item.avatar || item.avatarUrl || '/avatar.png'),
+  }))
+})
 
 const activeIndex = ref(0)
 const isPaused = ref(false)
@@ -134,15 +99,15 @@ const reviewsRef = ref(null)
 let timerId = null
 let visibilityObserver = null
 
-const activeReview = computed(() => reviews[activeIndex.value])
+const activeReview = computed(() => reviews.value[activeIndex.value] || reviews.value[0] || fallbackReviews[0])
 
 const next = () => {
-  activeIndex.value = (activeIndex.value + 1) % reviews.length
+  activeIndex.value = (activeIndex.value + 1) % reviews.value.length
   restart()
 }
 
 const prev = () => {
-  activeIndex.value = (activeIndex.value - 1 + reviews.length) % reviews.length
+  activeIndex.value = (activeIndex.value - 1 + reviews.value.length) % reviews.value.length
   restart()
 }
 
@@ -154,8 +119,8 @@ const goTo = (idx) => {
 const start = () => {
   stop()
   timerId = setInterval(() => {
-    if (!isPaused.value) {
-      activeIndex.value = (activeIndex.value + 1) % reviews.length
+    if (!isPaused.value && reviews.value.length > 1) {
+      activeIndex.value = (activeIndex.value + 1) % reviews.value.length
     }
   }, 4500)
 }
@@ -181,12 +146,26 @@ const restart = () => {
 }
 
 const markImageLoaded = (event) => {
-  event.target.classList.add("is-loaded")
+  event.target.classList.add('is-loaded')
 }
 
+watch(
+  reviews,
+  (list) => {
+    if (!list.length) {
+      activeIndex.value = 0
+      return
+    }
+    if (activeIndex.value > list.length - 1) {
+      activeIndex.value = 0
+    }
+  },
+  { immediate: true }
+)
+
 onMounted(() => {
-  if (typeof window === "undefined") return
-  if (!("IntersectionObserver" in window) || !reviewsRef.value) {
+  if (typeof window === 'undefined') return
+  if (!('IntersectionObserver' in window) || !reviewsRef.value) {
     start()
     return
   }
@@ -198,7 +177,7 @@ onMounted(() => {
         stop()
       }
     },
-    { rootMargin: "200px 0px", threshold: 0.01 }
+    { rootMargin: '200px 0px', threshold: 0.01 }
   )
   visibilityObserver.observe(reviewsRef.value)
 })

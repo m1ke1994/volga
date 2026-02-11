@@ -1,27 +1,32 @@
-<script setup>
+﻿<script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+
+import { parseJsonField } from '../api/client'
+import { useSection } from '../composables/useSection'
 import BurgerMenuButton from './Profile/BurgerMenuButton.vue'
 import ThemeToggle from './ThemeToggle.vue'
 
 const route = useRoute()
-const menuItems = [
-  { label: 'Главная', to: '/' },
-  { label: 'Обо мне', to: '/about' },
-  { label: 'Братство лосей', to: '/moose' },
-  { label: 'Волонтерские программы', to: '/volunteer' },
-  { label: 'Беговой клуб', to: '/running-club' },
-  { label: 'Расписание занятий', to: '/schedule' },
-  { label: 'Статьи', to: '/articles' },
-  { label: 'Новости', to: '/news' },
-  { label: 'Контакты', to: '/contacts' },
-]
+const { data: headerSection } = useSection('header')
 
 const isMenuOpen = ref(false)
 const isSticky = ref(false)
 const stickySentinel = ref(null)
 
 const isHome = computed(() => route.path === '/')
+
+const menuItems = computed(() => {
+  const links = parseJsonField(headerSection.value?.nav_links_json, [])
+  const prepared = Array.isArray(links)
+    ? links.map((item) => ({
+        label: item.label || item.title || 'Раздел',
+        to: item.href || item.to || '/',
+      }))
+    : []
+
+  return [{ label: 'Главная', to: '/' }, ...prepared]
+})
 
 let observer = null
 let useScrollFallback = false

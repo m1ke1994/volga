@@ -1,24 +1,39 @@
-<script setup>
-import { newsItems } from '../data/news'
+﻿<script setup>
+import { computed } from 'vue'
+
+import { normalizeImageUrl, parseJsonField } from '../api/client'
+import { usePage } from '../composables/usePage'
+
+const { data: newsPage } = usePage('news')
+
+const newsContent = computed(() => parseJsonField(newsPage.value?.content, {}))
+
+const title = computed(() => newsPage.value?.title || 'Новости')
+const subtitle = computed(
+  () =>
+    newsContent.value?.subtitle ||
+    'Актуальные события «Нового Конаково»: новые форматы, сезонные обновления и важные анонсы.'
+)
+
+const newsItems = computed(() => {
+  const items = newsContent.value?.newsItems
+  if (!Array.isArray(items)) return []
+  return items.map((item) => ({
+    ...item,
+    image: normalizeImageUrl(item.image || ''),
+  }))
+})
 </script>
 
 <template>
   <section class="news">
     <header class="news__hero">
-      <h1 class="news__title">Новости</h1>
-      <p class="news__subtitle">
-        Актуальные события «Нового Конаково»: новые форматы, сезонные обновления и важные анонсы.
-      </p>
+      <h1 class="news__title">{{ title }}</h1>
+      <p class="news__subtitle">{{ subtitle }}</p>
     </header>
 
     <div class="news__grid">
-      <router-link
-        v-for="item in newsItems"
-        :key="item.id"
-        :to="`/news/${item.slug}`"
-        class="news__card glass-card"
-        v-reveal
-      >
+      <router-link v-for="item in newsItems" :key="item.id" :to="`/news/${item.slug}`" class="news__card glass-card" v-reveal>
         <div class="news__media">
           <img :src="item.image" :alt="item.title" loading="lazy" decoding="async" class="news__image" />
         </div>

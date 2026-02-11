@@ -1,6 +1,6 @@
-<template>
+﻿<template>
   <div class="schedule">
-    <article v-for="item in schedule" :key="item.day" class="schedule__card glass-card" v-reveal>
+    <article v-for="item in schedule" :key="`${item.day}-${item.time}`" class="schedule__card glass-card" v-reveal>
       <div class="schedule__day">{{ item.day }}</div>
       <div class="schedule__time">{{ item.time }}</div>
       <div class="schedule__title">{{ item.title }}</div>
@@ -9,13 +9,23 @@
 </template>
 
 <script setup>
-const schedule = [
-  { day: "Понедельник", time: "08:00", title: "Утренняя практика и дыхание" },
-  { day: "Среда", time: "19:00", title: "Чайная церемония и беседа" },
-  { day: "Пятница", time: "07:30", title: "Энергетические практики" },
-  { day: "Суббота", time: "11:00", title: "Семейные активности и прогулка" },
-  { day: "Воскресенье", time: "10:00", title: "Тихий маршрут и mindfulness" },
+import { computed } from 'vue'
+
+import { parseJsonField } from '../api/client'
+import { useSection } from '../composables/useSection'
+
+const { data: scheduleSection } = useSection('schedule')
+
+const fallbackSchedule = [
+  { day: 'Понедельник', time: '08:00', title: 'Утренняя практика и дыхание' },
+  { day: 'Среда', time: '19:00', title: 'Чайная церемония и беседа' },
+  { day: 'Пятница', time: '07:30', title: 'Энергетические практики' },
 ]
+
+const schedule = computed(() => {
+  const items = parseJsonField(scheduleSection.value?.schedule_items_json, fallbackSchedule)
+  return Array.isArray(items) && items.length ? items : fallbackSchedule
+})
 </script>
 
 <style scoped>

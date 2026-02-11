@@ -1,11 +1,24 @@
-<script setup>
+﻿<script setup>
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { getNewsBySlug } from '../data/news'
+
+import { normalizeImageUrl, parseJsonField } from '../api/client'
+import { usePage } from '../composables/usePage'
 
 const route = useRoute()
+const { data: newsPage } = usePage('news')
 
-const newsItem = computed(() => getNewsBySlug(route.params.slug))
+const newsItems = computed(() => {
+  const content = parseJsonField(newsPage.value?.content, {})
+  const items = Array.isArray(content.newsItems) ? content.newsItems : []
+  return items.map((item) => ({
+    ...item,
+    image: normalizeImageUrl(item.image || ''),
+    content: Array.isArray(item.content) ? item.content : [],
+  }))
+})
+
+const newsItem = computed(() => newsItems.value.find((item) => item.slug === route.params.slug) || null)
 </script>
 
 <template>

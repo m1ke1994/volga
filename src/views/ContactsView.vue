@@ -1,29 +1,15 @@
-<script setup>
-import PageTemplate from "../components/PageTemplate.vue";
-import ContactsMap from "../components/ContactsMap.vue";
+﻿<script setup>
+import PageTemplate from '../components/PageTemplate.vue'
+import ContactsMap from '../components/ContactsMap.vue'
+import { usePageData } from '../composables/usePageData'
 
-const pageData = {
-  title: "Контакты",
-  subtitle:
-    "Мы на связи и рады помочь. Пишите или приезжайте в «Новое Коноково» — здесь всегда найдётся место для тёплой встречи.",
-  heroImage: "/1.jpeg",
-  sections: [
-    {
-      title: "Адрес",
-      text: "Тверская область, Конаковский район, природный кластер «Новое Коноково».",
-    },
-    {
-      title: "Связаться с нами",
-      text: "Телефон: +7 (999) 000-00-00 · Email: hello@novoe-konakovo.ru",
-      action: { label: "Написать", href: "mailto:hello@novoe-konakovo.ru" },
-    },
-    {
-      title: "Время работы",
-      text: "Ежедневно с 09:00 до 20:00, по предварительной записи.",
-    },
-  ],
-  gallery: ["/1.jpeg", "/2.jpeg", "/3.jpeg", "/5.jpeg"],
-};
+const { pageData } = usePageData('contacts', {
+  title: 'Контакты',
+  subtitle: '',
+  heroImage: '/1.jpeg',
+  sections: [],
+  gallery: [],
+})
 </script>
 
 <template>

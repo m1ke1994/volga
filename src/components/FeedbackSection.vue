@@ -39,9 +39,7 @@
         Согласовать план
       </button>
 
-      <p class="feedback__preview-hint">
-        Ничего не отправляется — mock. TODO: backend integration.
-      </p>
+
       </div>
     </div>
   

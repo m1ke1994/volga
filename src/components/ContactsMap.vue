@@ -1,17 +1,54 @@
-<script setup>
+﻿<script setup>
+import { computed } from 'vue'
+
+import { parseJsonField } from '../api/client'
+import { usePage } from '../composables/usePage'
+import { useSection } from '../composables/useSection'
+
+const { data: contactsPage } = usePage('contacts')
+const { data: footerSection } = useSection('footer')
+
+const fallbackContacts = {
+  title: 'Контакты',
+  subtitle: 'Как нас найти и связаться.',
+  address: 'Тверская область, Конаковский район, природный кластер «Новое Конаково».',
+  phone: '+7 (999) 000-00-00',
+  email: 'hello@novoe-konakovo.ru',
+  telegram: '@username',
+  mapEmbed: 'https://yandex.com/map-widget/v1/?ll=4.892559%2C52.373059&z=10',
+  mapLink: 'https://yandex.com/maps/-/CCU05ZxoWA',
+}
+
+const contactsContent = computed(() => {
+  const pageContent = parseJsonField(contactsPage.value?.content, {})
+  const contacts = pageContent.contacts || {}
+  return {
+    ...fallbackContacts,
+    title: contactsPage.value?.title || fallbackContacts.title,
+    subtitle: pageContent.subtitle || fallbackContacts.subtitle,
+    address: contacts.address || fallbackContacts.address,
+    phone: footerSection.value?.phone || contacts.phone || fallbackContacts.phone,
+    email: footerSection.value?.email || contacts.email || fallbackContacts.email,
+    telegram: footerSection.value?.telegram || contacts.telegram || fallbackContacts.telegram,
+    mapEmbed: contacts.mapEmbed || fallbackContacts.mapEmbed,
+    mapLink: contacts.mapLink || fallbackContacts.mapLink,
+  }
+})
+
+const emailLink = computed(() => `mailto:${contactsContent.value.email}`)
+
 const handleSubmit = (event) => {
   const form = event.target
   form.classList.add('is-submitted')
   if (!form.checkValidity()) return
-  // TODO: backend integration.
 }
 </script>
 
 <template>
   <section class="contacts">
     <div class="contacts__head">
-      <h2 class="contacts__title">Контакты</h2>
-      <p class="contacts__subtitle">Как нас найти и связаться.</p>
+      <h2 class="contacts__title">{{ contactsContent.title }}</h2>
+      <p class="contacts__subtitle">{{ contactsContent.subtitle }}</p>
     </div>
 
     <div class="contacts__grid">
@@ -21,31 +58,25 @@ const handleSubmit = (event) => {
             <div class="contacts__item">
               <span class="contacts__icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5">
-                  <path
-                    d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"
-                  />
+                  <path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z" />
                   <circle cx="12" cy="10" r="2.5" />
                 </svg>
               </span>
               <div>
                 <p class="contacts__label">Адрес</p>
-                <p class="contacts__value">
-                  Тверская область, Конаковский район, природный кластер «Новое Конаково».
-                </p>
+                <p class="contacts__value">{{ contactsContent.address }}</p>
               </div>
             </div>
 
             <div class="contacts__item">
               <span class="contacts__icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5">
-                  <path
-                    d="M4.5 6.5c0 6.6 5.4 12 12 12h2.5a1 1 0 0 0 1-1v-3.2a1 1 0 0 0-.76-.97l-3.1-.78a1 1 0 0 0-1.05.43l-1 1.5a10.7 10.7 0 0 1-4.6-4.6l1.5-1a1 1 0 0 0 .43-1.05l-.78-3.1A1 1 0 0 0 9 4.5H5.5a1 1 0 0 0-1 1v1z"
-                  />
+                  <path d="M4.5 6.5c0 6.6 5.4 12 12 12h2.5a1 1 0 0 0 1-1v-3.2a1 1 0 0 0-.76-.97l-3.1-.78a1 1 0 0 0-1.05.43l-1 1.5a10.7 10.7 0 0 1-4.6-4.6l1.5-1a1 1 0 0 0 .43-1.05l-.78-3.1A1 1 0 0 0 9 4.5H5.5a1 1 0 0 0-1 1v1z" />
                 </svg>
               </span>
               <div>
                 <p class="contacts__label">Телефон</p>
-                <p class="contacts__value">+7 (999) 000-00-00</p>
+                <p class="contacts__value">{{ contactsContent.phone }}</p>
               </div>
             </div>
 
@@ -58,7 +89,7 @@ const handleSubmit = (event) => {
               </span>
               <div>
                 <p class="contacts__label">Email</p>
-                <p class="contacts__value">hello@novoe-konakovo.ru</p>
+                <p class="contacts__value">{{ contactsContent.email }}</p>
               </div>
             </div>
 
@@ -70,7 +101,7 @@ const handleSubmit = (event) => {
               </span>
               <div>
                 <p class="contacts__label">Telegram</p>
-                <p class="contacts__value">@username</p>
+                <p class="contacts__value">{{ contactsContent.telegram }}</p>
               </div>
             </div>
           </div>
@@ -79,19 +110,14 @@ const handleSubmit = (event) => {
         <div class="contacts__card contacts__card--map glass-card">
           <iframe
             class="contacts__frame"
-            src="https://yandex.com/map-widget/v1/?ll=4.892559%2C52.373059&z=10"
+            :src="contactsContent.mapEmbed"
             loading="lazy"
             referrerpolicy="no-referrer-when-downgrade"
             allowfullscreen
             title="Карта — Конаково"
           ></iframe>
 
-          <a
-            class="contacts__cta"
-            href="https://yandex.com/maps/-/CCU05ZxoWA"
-            target="_blank"
-            rel="noopener"
-          >
+          <a class="contacts__cta" :href="contactsContent.mapLink" target="_blank" rel="noopener">
             Открыть в Яндекс Картах
           </a>
         </div>
@@ -100,40 +126,21 @@ const handleSubmit = (event) => {
       <form class="contacts__form glass-card" novalidate @submit.prevent="handleSubmit">
         <label class="contacts__field">
           <span class="contacts__field-label">Имя</span>
-          <input
-            class="contacts__input"
-            type="text"
-            name="name"
-            placeholder=" "
-            autocomplete="name"
-            required
-          />
+          <input class="contacts__input" type="text" name="name" placeholder=" " autocomplete="name" required />
         </label>
 
         <label class="contacts__field">
           <span class="contacts__field-label">Телефон или Email</span>
-          <input
-            class="contacts__input"
-            type="text"
-            name="contact"
-            placeholder=" "
-            autocomplete="email"
-            required
-          />
+          <input class="contacts__input" type="text" name="contact" placeholder=" " autocomplete="email" required />
         </label>
 
         <label class="contacts__field">
           <span class="contacts__field-label">Сообщение</span>
-          <textarea
-            class="contacts__input contacts__input--area"
-            name="message"
-            rows="5"
-            placeholder=" "
-            required
-          ></textarea>
+          <textarea class="contacts__input contacts__input--area" name="message" rows="5" placeholder=" " required></textarea>
         </label>
 
         <button class="contacts__submit" type="submit">Отправить</button>
+        <a class="contacts__cta" :href="emailLink">Написать на email</a>
       </form>
     </div>
   </section>

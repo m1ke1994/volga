@@ -1,29 +1,16 @@
-<script setup>
-import PageTemplate from '../components/PageTemplate.vue';
+﻿<script setup>
+import PageTemplate from '../components/PageTemplate.vue'
+import { usePageData } from '../composables/usePageData'
 
-const pageData = {
-    title: 'Братство лосей',
-    subtitle:
-        'Экскурсии и встречи в духе «Нового Конаково»: мягкий ритм, внимательные истории и контакт с природой, который остаётся с вами надолго.',
-    heroImage: '/2.jpeg',
-    sections: [
-        {
-            title: 'Экскурсии с заботой',
-            text: 'Маршруты строятся так, чтобы вы успели замедлиться, услышать лес и увидеть главное — без спешки.',
-        },
-        {
-            title: 'Наблюдение и тишина',
-            text: 'Встречи с животными, наблюдения за природой и небольшие практики внимания.',
-        },
-        {
-            title: 'Сообщество',
-            text: 'После прогулки остаётся желание вернуться: общение, поддержка и ощущение «своего круга».',
-        },
-    ],
-    gallery: ['/2.jpeg', '/1.jpeg', '/3.jpeg', '/6.jpeg'],
-};
+const { pageData } = usePageData('moose', {
+  title: 'Братство лосей',
+  subtitle: '',
+  heroImage: '/2.jpeg',
+  sections: [],
+  gallery: [],
+})
 </script>
 
 <template>
-    <PageTemplate v-bind="pageData" />
+  <PageTemplate v-bind="pageData" />
 </template>
