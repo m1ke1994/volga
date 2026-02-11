@@ -11,6 +11,8 @@ const props = defineProps({
   timeline: { type: Array, default: () => [] },
   sections: { type: Array, default: () => [] },
   gallery: { type: Array, default: () => [] },
+  galleryTitle: { type: String, default: 'Галерея' },
+  gallerySubtitle: { type: String, default: 'Кадры атмосферы и пространства.' },
   cta: { type: Object, default: null },
 })
 
@@ -111,22 +113,32 @@ onUnmounted(() => {
         </article>
       </div>
 
-      <div v-if="gallery.length" ref="galleryRef" class="page__gallery">
-        <div v-for="(image, index) in gallery" :key="`${image}-${index}`" class="page__gallery-item" v-reveal>
-          <img
-            v-if="isGalleryVisible"
-            :src="image"
-            alt="Gallery image"
-            loading="lazy"
-            decoding="async"
-            fetchpriority="low"
-            width="800"
-            height="600"
-            class="img-lazy"
-            @load="markImageLoaded"
-          />
+      <section v-if="gallery.length" ref="galleryRef" class="page__gallery-block">
+        <div class="page__gallery-head" v-reveal>
+          <div>
+            <h2 class="page__gallery-title">{{ galleryTitle }}</h2>
+            <p v-if="gallerySubtitle" class="page__gallery-subtitle">{{ gallerySubtitle }}</p>
+          </div>
+          <span class="page__gallery-count">{{ gallery.length }} фото</span>
         </div>
-      </div>
+
+        <div class="page__gallery">
+          <div v-for="(image, index) in gallery" :key="`${image}-${index}`" class="page__gallery-item" v-reveal>
+            <img
+              v-if="isGalleryVisible"
+              :src="image"
+              alt="Фото галереи"
+              loading="lazy"
+              decoding="async"
+              fetchpriority="low"
+              width="800"
+              height="600"
+              class="img-lazy"
+              @load="markImageLoaded"
+            />
+          </div>
+        </div>
+      </section>
 
       <div v-if="cta" class="page__cta glass-card" v-reveal>
         <h2 class="page__cta-title">{{ cta.title }}</h2>
@@ -312,6 +324,43 @@ onUnmounted(() => {
   color: var(--muted);
 }
 
+.page__gallery-block {
+  display: grid;
+  gap: 14px;
+}
+
+.page__gallery-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.page__gallery-title {
+  margin: 0;
+  font-size: 22px;
+  color: var(--text-strong);
+}
+
+.page__gallery-subtitle {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.page__gallery-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 72%, transparent);
+  font-size: 12px;
+  color: var(--text);
+  backdrop-filter: blur(10px);
+}
+
 .page__gallery {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -364,6 +413,11 @@ onUnmounted(() => {
 
   .page__title {
     font-size: 26px;
+  }
+
+  .page__gallery-head {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 </style>
