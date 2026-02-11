@@ -24,3 +24,4 @@ Section to component map (main profile page):
 - Schedule: src/components/ScheduleSection.vue (wrapped by src/components/ui/AppSection.vue)
 - Reviews: src/components/Profile/ReviewsSection.vue (wrapped by src/components/ui/AppSection.vue)
 - Feedback/contact: src/components/FeedbackSection.vue (wrapped by src/components/ui/AppSection.vue)
+ фронт
