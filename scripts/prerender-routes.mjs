@@ -1,4 +1,4 @@
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+﻿import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -7,11 +7,11 @@ import { newsItems } from '../src/data/news.js'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-const SITE_URL = (process.env.VITE_SITE_URL || 'http://localhost:5173').replace(/\/$/, '')
+const SITE_URL = (process.env.VITE_SITE_URL || 'http://localhost').replace(/\/$/, '')
 const DIST_DIR = resolve(__dirname, '../dist')
 const DIST_INDEX = resolve(DIST_DIR, 'index.html')
 
-const DEFAULT_IMAGE = `${SITE_URL}/avatar.png`
+const DEFAULT_IMAGE = `${SITE_URL}/images/avatar.png`
 
 const staticPages = [
   {
@@ -20,7 +20,7 @@ const staticPages = [
     description: 'Main page of Novoe Konakovo: services, schedule, feedback, and contact.',
     keywords: 'Novoe Konakovo, Konakovo, guided tours, wellness practices, schedule',
     type: 'website',
-    image: `${SITE_URL}/1.jpeg`,
+    image: `${SITE_URL}/images/1.jpeg`,
   },
   {
     path: '/about',
@@ -28,7 +28,7 @@ const staticPages = [
     description: 'About the author, values, and approach of Novoe Konakovo.',
     keywords: 'Novoe Konakovo, about, values, project mission',
     type: 'profile',
-    image: `${SITE_URL}/1.jpeg`,
+    image: `${SITE_URL}/images/1.jpeg`,
   },
   {
     path: '/moose',
@@ -36,7 +36,7 @@ const staticPages = [
     description: 'Nature experiences and guided routes in Brotherhood of Moose.',
     keywords: 'Novoe Konakovo, brotherhood of moose, nature tours',
     type: 'article',
-    image: `${SITE_URL}/6.jpeg`,
+    image: `${SITE_URL}/images/6.jpeg`,
   },
   {
     path: '/volunteer',
@@ -44,7 +44,7 @@ const staticPages = [
     description: 'Volunteer opportunities and participation details.',
     keywords: 'Novoe Konakovo, volunteer programs, community',
     type: 'article',
-    image: `${SITE_URL}/7.jpeg`,
+    image: `${SITE_URL}/images/7.jpeg`,
   },
   {
     path: '/running-club',
@@ -52,7 +52,7 @@ const staticPages = [
     description: 'Regular running sessions and community in Konakovo.',
     keywords: 'Novoe Konakovo, running club, Konakovo',
     type: 'article',
-    image: `${SITE_URL}/8.webp`,
+    image: `${SITE_URL}/images/8.webp`,
   },
   {
     path: '/schedule',
@@ -60,7 +60,7 @@ const staticPages = [
     description: 'Updated schedule of practices and events.',
     keywords: 'Novoe Konakovo, schedule, practices',
     type: 'website',
-    image: `${SITE_URL}/9.jpeg`,
+    image: `${SITE_URL}/images/9.jpeg`,
   },
   {
     path: '/articles',
@@ -68,7 +68,7 @@ const staticPages = [
     description: 'Articles about mindfulness, rhythm, and wellbeing.',
     keywords: 'Novoe Konakovo, articles, mindfulness',
     type: 'article',
-    image: `${SITE_URL}/4.jpeg`,
+    image: `${SITE_URL}/images/4.jpeg`,
   },
   {
     path: '/news',
@@ -76,7 +76,7 @@ const staticPages = [
     description: 'Announcements and updates from Novoe Konakovo.',
     keywords: 'Novoe Konakovo, news, announcements',
     type: 'website',
-    image: `${SITE_URL}/5.jpeg`,
+    image: `${SITE_URL}/images/5.jpeg`,
   },
   {
     path: '/contacts',
@@ -84,7 +84,7 @@ const staticPages = [
     description: 'Contact details, map, and request form.',
     keywords: 'Novoe Konakovo, contacts, request form',
     type: 'website',
-    image: `${SITE_URL}/new_konakovo.png`,
+    image: `${SITE_URL}/images/new_konakovo.png`,
   },
   {
     path: '/privacy',
@@ -114,7 +114,7 @@ const newsPages = Array.isArray(newsItems)
         description: `News detail page for ${slug.replace(/-/g, ' ')} in Novoe Konakovo.`,
         keywords: 'Novoe Konakovo, news item',
         type: 'article',
-        image: `${SITE_URL}/5.jpeg`,
+        image: `${SITE_URL}/images/5.jpeg`,
       }))
   : []
 
@@ -202,4 +202,5 @@ for (const page of pages) {
 }
 
 console.log(`[seo] Prerendered ${pages.length} routes into ${DIST_DIR}`)
+
 

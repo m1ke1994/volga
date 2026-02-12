@@ -5,7 +5,7 @@ import { usePageData } from '../composables/usePageData'
 const { pageData } = usePageData('volunteering', {
   title: 'Волонтерские программы',
   subtitle: '',
-  heroImage: '/3.jpeg',
+  heroImage: '/images/3.jpeg',
   sections: [],
   gallery: [],
 })
@@ -14,3 +14,4 @@ const { pageData } = usePageData('volunteering', {
 <template>
   <PageTemplate v-bind="pageData" />
 </template>
+

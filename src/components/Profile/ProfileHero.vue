@@ -88,8 +88,8 @@ let observer = null
 let preloadLink = null
 let useScrollFallback = false
 
-const fallbackHeroTop = '/8.webp'
-const fallbackAvatar = '/9.jpeg'
+const fallbackHeroTop = '/images/8.webp'
+const fallbackAvatar = '/images/9.jpeg'
 
 const heroTopImage = computed(() => normalizeImageUrl(heroSection.value?.top_background_image || fallbackHeroTop))
 const avatarImage = computed(() => normalizeImageUrl(heroSection.value?.avatar_image || fallbackAvatar))
@@ -570,3 +570,4 @@ onUnmounted(() => {
   }
 }
 </style>
+

@@ -1,10 +1,12 @@
-const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '')
+import api from '../services/api'
 
+const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '')
 const isAbsoluteUrl = (value) => /^https?:\/\//i.test(value || '')
 
 export const buildApiUrl = (path) => {
   const normalizedPath = path.startsWith('/') ? path : `/${path}`
-  return apiBaseUrl ? `${apiBaseUrl}${normalizedPath}` : normalizedPath
+  if (normalizedPath.startsWith('/api/')) return normalizedPath
+  return `${apiBaseUrl}${normalizedPath}`
 }
 
 export const normalizeImageUrl = (value) => {
@@ -36,13 +38,9 @@ export const parseJsonField = (value, fallback = []) => {
 
 const requestJson = async (path, _options = {}) => {
   void _options
-  const url = buildApiUrl(path)
-  const response = await fetch(url, { cache: 'no-store' })
-  if (!response.ok) {
-    const text = await response.text()
-    throw new Error(`HTTP ${response.status}: ${text || 'Request failed'}`)
-  }
-  return response.json()
+  const normalizedPath = path.startsWith('/api/') ? path.slice('/api'.length) : path
+  const response = await api.get(normalizedPath)
+  return response.data
 }
 
 export const getSection = (slug, options = {}) => requestJson(`/api/sections/${slug}/`, options)

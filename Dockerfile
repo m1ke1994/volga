@@ -5,15 +5,18 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
+FROM deps AS dev
+
+COPY . .
+EXPOSE 5173
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "5173"]
+
 FROM deps AS build
 
 COPY . .
 RUN npm run build
 
-FROM node:20-alpine AS builder
+FROM nginx:1.27-alpine AS production
 
-WORKDIR /app
-
-COPY --from=build /app/dist /app/dist
-
-CMD ["sh", "-c", "mkdir -p /frontend-dist && rm -rf /frontend-dist/* && cp -r /app/dist/* /frontend-dist/ && tail -f /dev/null"]
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist /usr/share/nginx/html

@@ -75,7 +75,7 @@ const fallbackReviews = [
     rating: 5,
     service: 'Экскурсия',
     date: '15 октября 2024',
-    avatarUrl: '/avatar.png',
+    avatarUrl: '/images/avatar.png',
   },
 ]
 
@@ -89,7 +89,7 @@ const reviews = computed(() => {
     rating: Number(item.rating || 5),
     service: item.service || 'Отзыв',
     date: item.date || '',
-    avatarUrl: normalizeImageUrl(item.avatar || item.avatarUrl || '/avatar.png'),
+    avatarUrl: normalizeImageUrl(item.avatar || item.avatarUrl || '/images/avatar.png'),
   }))
 })
 
@@ -322,3 +322,4 @@ onUnmounted(() => {
   }
 }
 </style>
+

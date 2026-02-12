@@ -7,7 +7,7 @@ import { newsItems } from '../src/data/news.js'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-const SITE_URL = (process.env.VITE_SITE_URL || 'http://localhost:5173').replace(/\/$/, '')
+const SITE_URL = (process.env.VITE_SITE_URL || 'http://localhost').replace(/\/$/, '')
 
 const staticRoutes = [
   '/',
@@ -63,4 +63,3 @@ writeFileSync(resolve(publicDir, 'sitemap.xml'), sitemapXml, { encoding: 'utf8' 
 writeFileSync(resolve(publicDir, 'robots.txt'), robotsTxt, { encoding: 'utf8' })
 
 console.log(`[seo] Generated sitemap.xml and robots.txt for ${SITE_URL}`)
-

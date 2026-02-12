@@ -82,7 +82,7 @@ const fallbackCards = [
     desc: 'Заповедный маршрут, истории о лесах и живые встречи с природой.',
     duration: '3-4 часа',
     price: 'от 3 500 ₽',
-    image: '/1.jpeg',
+    image: '/images/1.jpeg',
     href: '',
     longDescription: ['Маршрут выстроен как мягкое погружение в ритм леса.'],
     details: ['Небольшая группа до 8 человек'],
@@ -248,3 +248,4 @@ watch(isModalOpen, (value) => {
   }
 }
 </style>
+

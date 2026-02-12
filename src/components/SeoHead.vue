@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useHead } from '@vueuse/head'
@@ -38,7 +38,7 @@ const seoHead = computed(() => {
     '@type': 'Organization',
     name: SITE_NAME,
     url: SITE_URL,
-    logo: absoluteUrl('/avatar.png'),
+    logo: absoluteUrl('/images/avatar.png'),
     contactPoint: [
       {
         '@type': 'ContactPoint',
@@ -115,3 +115,4 @@ useHead(seoHead)
 </script>
 
 <template></template>
+

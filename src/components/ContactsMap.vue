@@ -1,7 +1,8 @@
 ﻿<script setup>
 import { computed } from 'vue'
 
-import { buildApiUrl, parseJsonField } from '../api/client'
+import { parseJsonField } from '../api/client'
+import api from '../services/api'
 import { usePage } from '../composables/usePage'
 import { useSection } from '../composables/useSection'
 
@@ -63,15 +64,7 @@ const handleSubmit = async (event) => {
   if (!payload.phone && !payload.email) return
 
   try {
-    const response = await fetch(buildApiUrl('/api/contact-requests/'), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    })
-
-    if (!response.ok) {
-      throw new Error('REQUEST_FAILED')
-    }
+    await api.post('/contact-requests/', payload)
 
     form.reset()
     form.classList.remove('is-submitted')
