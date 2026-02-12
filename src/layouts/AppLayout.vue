@@ -2,6 +2,7 @@
 import { onMounted } from 'vue'
 import AppHeader from '../components/AppHeader.vue'
 import AppFooter from '../components/AppFooter.vue'
+import SeoHead from '../components/SeoHead.vue'
 
 const forceScrollTop = () => {
   if (typeof window === 'undefined') return
@@ -23,6 +24,7 @@ onMounted(() => {
 
 <template>
   <div class="app-layout">
+    <SeoHead />
     <AppHeader />
     <main class="app-main">
       <router-view />

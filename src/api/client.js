@@ -1,8 +1,11 @@
-﻿const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000').replace(/\/$/, '')
+const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '')
 
 const isAbsoluteUrl = (value) => /^https?:\/\//i.test(value || '')
 
-export const buildApiUrl = (path) => `${apiBaseUrl}${path.startsWith('/') ? path : `/${path}`}`
+export const buildApiUrl = (path) => {
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`
+  return apiBaseUrl ? `${apiBaseUrl}${normalizedPath}` : normalizedPath
+}
 
 export const normalizeImageUrl = (value) => {
   if (!value) return ''
@@ -37,7 +40,7 @@ const requestJson = async (path, _options = {}) => {
   const response = await fetch(url, { cache: 'no-store' })
   if (!response.ok) {
     const text = await response.text()
-    throw new Error(`HTTP ${response.status}: ${text || 'Ошибка запроса'}`)
+    throw new Error(`HTTP ${response.status}: ${text || 'Request failed'}`)
   }
   return response.json()
 }

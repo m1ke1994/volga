@@ -1,12 +1,19 @@
-﻿FROM node:20-alpine
+FROM node:20-alpine AS deps
 
 WORKDIR /app
 
 COPY package*.json ./
 RUN npm ci
 
+FROM deps AS build
+
 COPY . .
+RUN npm run build
 
-EXPOSE 5173
+FROM node:20-alpine AS builder
 
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "5173"]
+WORKDIR /app
+
+COPY --from=build /app/dist /app/dist
+
+CMD ["sh", "-c", "mkdir -p /frontend-dist && rm -rf /frontend-dist/* && cp -r /app/dist/* /frontend-dist/ && tail -f /dev/null"]

@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import { createHead } from '@vueuse/head'
 import './assets/css/main.css'
 import App from './App.vue'
 import router from './router'
@@ -21,4 +22,7 @@ const initTheme = () => {
 
 initTheme()
 
-createApp(App).use(router).directive('reveal', revealDirective).mount('#app')
+const app = createApp(App)
+const head = createHead()
+
+app.use(head).use(router).directive('reveal', revealDirective).mount('#app')
