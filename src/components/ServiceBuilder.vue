@@ -126,6 +126,15 @@ const toggleService = (id) => {
 
 const formatPrice = (value) => `${Number(value || 0).toLocaleString('ru-RU')} ₽`
 
+const reset = () => {
+  selectedIds.value = []
+  date.value = ''
+  guests.value = 1
+  comment.value = ''
+}
+
+defineExpose({ reset })
+
 watchEffect(() => {
   emit('update', {
     services: selectedServices.value,

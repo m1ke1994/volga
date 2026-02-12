@@ -32,22 +32,22 @@
 </template>
 
 <script setup>
-import { nextTick, onBeforeUnmount, ref, watch } from "vue"
+import { nextTick, onBeforeUnmount, ref, watch } from 'vue'
 
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
-  title: { type: String, default: "" },
+  title: { type: String, default: '' },
 })
 
-const emit = defineEmits(["update:modelValue"])
+const emit = defineEmits(['update:modelValue'])
 
 const closeButtonRef = ref(null)
 const panelRef = ref(null)
 const titleId = `app-modal-title-${Math.random().toString(36).slice(2, 9)}`
-const previousOverflow = ref("")
+const previousOverflow = ref('')
 
 const close = () => {
-  emit("update:modelValue", false)
+  emit('update:modelValue', false)
 }
 
 const focusFirst = async () => {
@@ -58,13 +58,13 @@ const focusFirst = async () => {
 }
 
 const onEsc = (event) => {
-  if (event.key === "Escape") {
+  if (event.key === 'Escape') {
     close()
   }
 }
 
 const onKeydown = (event) => {
-  if (event.key !== "Tab") return
+  if (event.key !== 'Tab') return
 
   const focusables = panelRef.value?.querySelectorAll(
     'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
@@ -94,12 +94,12 @@ watch(
   async (value) => {
     if (value) {
       previousOverflow.value = document.documentElement.style.overflow
-      document.documentElement.style.overflow = "hidden"
+      document.documentElement.style.overflow = 'hidden'
       await focusFirst()
-      document.addEventListener("keydown", onEsc)
+      document.addEventListener('keydown', onEsc)
     } else {
       document.documentElement.style.overflow = previousOverflow.value
-      document.removeEventListener("keydown", onEsc)
+      document.removeEventListener('keydown', onEsc)
     }
   },
   { immediate: true }
@@ -107,7 +107,7 @@ watch(
 
 onBeforeUnmount(() => {
   document.documentElement.style.overflow = previousOverflow.value
-  document.removeEventListener("keydown", onEsc)
+  document.removeEventListener('keydown', onEsc)
 })
 </script>
 

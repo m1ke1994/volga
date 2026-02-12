@@ -1,10 +1,11 @@
-﻿<script setup>
-import { computed } from 'vue'
+<script setup>
+import { computed, ref } from 'vue'
 
 import { parseJsonField } from '../api/client'
-import api from '../services/api'
 import { usePage } from '../composables/usePage'
 import { useSection } from '../composables/useSection'
+import api from '../services/api'
+import StatusModal from './ui/StatusModal.vue'
 
 const { data: contactsPage } = usePage('contacts')
 const { data: footerSection } = useSection('footer')
@@ -38,6 +39,18 @@ const contactsContent = computed(() => {
 
 const isEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
 
+const isStatusModalOpen = ref(false)
+const statusModalTitle = ref('')
+const statusModalMessage = ref('')
+const statusModalVariant = ref('success')
+
+const openStatusModal = (title, message, variant = 'success') => {
+  statusModalTitle.value = title
+  statusModalMessage.value = message
+  statusModalVariant.value = variant
+  isStatusModalOpen.value = true
+}
+
 const handleSubmit = async (event) => {
   const form = event.target
   form.classList.add('is-submitted')
@@ -68,9 +81,9 @@ const handleSubmit = async (event) => {
 
     form.reset()
     form.classList.remove('is-submitted')
-    window.alert('Заявка отправлена')
+    openStatusModal('Заявка отправлена', 'Ваша заявка отправлена', 'success')
   } catch {
-    window.alert('Не удалось отправить заявку')
+    openStatusModal('Ошибка отправки', 'Не удалось отправить заявку. Попробуйте еще раз.', 'error')
   }
 }
 </script>
@@ -173,6 +186,13 @@ const handleSubmit = async (event) => {
         <button class="contacts__submit" type="submit">Отправить</button>
       </form>
     </div>
+
+    <StatusModal
+      v-model="isStatusModalOpen"
+      :title="statusModalTitle"
+      :message="statusModalMessage"
+      :variant="statusModalVariant"
+    />
   </section>
 </template>
 
