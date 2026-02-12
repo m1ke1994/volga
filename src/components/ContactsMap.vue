@@ -1,7 +1,7 @@
 ﻿<script setup>
 import { computed } from 'vue'
 
-import { parseJsonField } from '../api/client'
+import { buildApiUrl, parseJsonField } from '../api/client'
 import { usePage } from '../composables/usePage'
 import { useSection } from '../composables/useSection'
 
@@ -35,12 +35,50 @@ const contactsContent = computed(() => {
   }
 })
 
-const emailLink = computed(() => `mailto:${contactsContent.value.email}`)
+const isEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
 
-const handleSubmit = (event) => {
+const handleSubmit = async (event) => {
   const form = event.target
   form.classList.add('is-submitted')
   if (!form.checkValidity()) return
+
+  const formData = new FormData(form)
+  const name = String(formData.get('name') || '').trim()
+  const contact = String(formData.get('contact') || '').trim()
+  const message = String(formData.get('message') || '').trim()
+
+  const payload = {
+    name,
+    phone: null,
+    email: null,
+    message,
+  }
+
+  if (isEmail(contact)) {
+    payload.email = contact
+  } else if (contact) {
+    payload.phone = contact
+  }
+
+  if (!payload.phone && !payload.email) return
+
+  try {
+    const response = await fetch(buildApiUrl('/api/contact-requests/'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+
+    if (!response.ok) {
+      throw new Error('REQUEST_FAILED')
+    }
+
+    form.reset()
+    form.classList.remove('is-submitted')
+    window.alert('Заявка отправлена')
+  } catch {
+    window.alert('Не удалось отправить заявку')
+  }
 }
 </script>
 
@@ -140,7 +178,6 @@ const handleSubmit = (event) => {
         </label>
 
         <button class="contacts__submit" type="submit">Отправить</button>
-        <a class="contacts__cta" :href="emailLink">Написать на email</a>
       </form>
     </div>
   </section>
