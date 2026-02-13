@@ -1,61 +1,184 @@
 <script setup>
-import PageTemplate from '../components/PageTemplate.vue';
-import AppHeader from '../components/AppHeader.vue';
-import AppFooter from '../components/AppFooter.vue';
+import AppHeader from "../components/AppHeader.vue";
+import AppFooter from "../components/AppFooter.vue";
 
-const pageData = {
-  title: 'Обо мне',
+const page = {
+  title: "Обо мне",
   subtitle:
-    'Это место про тишину. Про внимание. Про ощущение, что вам не нужно никуда спешить. В «Новом Конаково» время перестаёт давить — и начинает работать на вас.',
-  heroImage: '/1.jpeg',
-  sections: [
+    "История проекта «Новое Конаково», принципы работы и подход к созданию пространства, где отдых становится восстановлением.",
+  content: [
     {
-      title: 'Не проект. Место.',
-      text:
-        'Я не создаю “форматы отдыха”. Я собираю пространство, в котором человек может выдохнуть по-настоящему. Без расписаний на каждую минуту. Без шума. Без необходимости быть кем-то. Здесь можно просто быть.',
+      type: "text",
+      heading: "Как родилась идея",
+      value:
+        "Проект начался не как бизнес-идея, а как ответ на личный запрос: найти место, где можно замедлиться без чувства вины за паузу. Из этого постепенно выросла среда, где в центре не развлечение, а качество присутствия.",
     },
     {
-      title: 'Почему именно так',
-      text:
-        'Когда я переехала из города, стало очевидно: людям не нужен ещё один активный досуг. Им нужна пауза. Нужна тишина, в которой слышно себя. Нужна среда, где не требуют, а поддерживают.',
+      type: "text",
+      value:
+        "Я переехала из города в Конаково, чтобы вернуть себе более живой ритм. В процессе стало очевидно, что подобный запрос есть у многих: людям нужен не еще один быстрый формат, а безопасное пространство для восстановления.",
     },
     {
-      title: 'Философия места',
-      text:
-        'Медленно — значит качественно. Камерно — значит честно. Просто — значит продуманно. Мы убираем всё лишнее, чтобы осталось главное: природа, движение, разговоры, чай, дыхание.',
+      type: "image",
+      src: "/images/article-1.jpg",
+      alt: "Природный маршрут в Новом Конаково",
     },
     {
-      title: 'Как вы здесь живёте',
-      text:
-        'День может начаться с прогулки или лёгкого бега вдоль воды. Продолжиться чайной церемонией или экскурсией. А может — тишиной и временем без плана. Здесь нет “обязательной программы”. Есть выбор.',
+      type: "text",
+      heading: "Философия пространства",
+      value:
+        "Мы строим программы вокруг простых вещей: движение, тишина, внимание, диалог. Чем меньше визуального и информационного шума, тем лучше слышно себя и легче принимать решения без внутреннего давления.",
     },
     {
-      title: 'Форматы встреч',
-      text:
-        'Прогулки и маршруты по природным местам. Беговой клуб в комфортном темпе. Чайные церемонии. Небольшие практики. Камерные встречи. Всё можно сочетать — мы собираем день под ваше состояние.',
+      type: "text",
+      value:
+        "В «Новом Конаково» нет цели заполнить каждую минуту событиями. Наоборот, мы оставляем место для пауз, потому что именно они дают глубину любому формату — от прогулки до чайной встречи.",
     },
     {
-      title: 'Для кого это пространство',
-      text:
-        'Для тех, кто устал от перегруза. Для людей с чувством вкуса. Для тех, кто ценит атмосферу больше, чем развлечения. Для тех, кто понимает, что отдых — это не побег, а возвращение.',
+      type: "video",
+      src: "https://www.youtube.com/embed/ScMzIvxBSi4",
     },
     {
-      title: 'Что остаётся после',
-      text:
-        'Не “вау-эффект”, который быстро проходит. А ровное, спокойное состояние. Чувство собранности. Ясность. Иногда — важные разговоры. Иногда — редкую роскошь побыть в тишине.',
+      type: "text",
+      heading: "Как мы работаем с гостями",
+      value:
+        "Каждый сценарий собирается под состояние и запрос человека. Кому-то нужен активный день с маршрутом и практиками, а кому-то — спокойный темп, разговор и время у воды. Оба варианта одинаково ценны.",
     },
     {
-      title: 'Личное',
-      text:
-        'Я всегда лично вовлечена в то, как проходит ваш день. Сценарий, темп, паузы — всё имеет значение. Это не поток. Это живой процесс, где вы — не гость, а участник.',
+      type: "image",
+      src: "/images/article-2.jpg",
+      alt: "Береговая зона для отдыха",
+    },
+    {
+      type: "text",
+      heading: "Что остается после визита",
+      value:
+        "Главный результат — не вау-эффект на один вечер, а ровное устойчивое состояние. Участники чаще всего уезжают с ощущением ясности, собранности и пониманием, как сохранить этот ритм в обычной жизни.",
     },
   ],
-  gallery: ['/1.jpeg', '/2.jpeg', '/3.jpeg', '/4.jpeg', '/5.jpeg', '/6.jpeg'],
 };
 </script>
 
 <template>
   <AppHeader />
-  <PageTemplate v-bind="pageData" />
+
+  <main class="content-page">
+    <header class="content-page__hero">
+      <h1 class="content-page__title">{{ page.title }}</h1>
+      <p class="content-page__subtitle">{{ page.subtitle }}</p>
+    </header>
+
+    <section class="content-page__body">
+      <article v-for="(block, index) in page.content" :key="`about-${index}`" class="content-page__block">
+        <template v-if="block.type === 'text'">
+          <h2 v-if="block.heading" class="content-page__h2">{{ block.heading }}</h2>
+          <p class="content-page__text">{{ block.value }}</p>
+        </template>
+
+        <img
+          v-else-if="block.type === 'image'"
+          class="content-page__image"
+          :src="block.src"
+          :alt="block.alt || page.title"
+          loading="lazy"
+          decoding="async"
+        />
+
+        <div v-else-if="block.type === 'video'" class="content-page__video-wrap">
+          <iframe
+            class="content-page__video"
+            :src="block.src"
+            title="Видео"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </article>
+    </section>
+  </main>
+
   <AppFooter />
 </template>
+
+<style scoped>
+.content-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px 72px;
+  display: grid;
+  gap: 22px;
+}
+
+.content-page__hero {
+  display: grid;
+  gap: 10px;
+}
+
+.content-page__title {
+  margin: 0;
+  font-size: clamp(34px, 6vw, 52px);
+  line-height: 1.05;
+  color: var(--text-strong);
+}
+
+.content-page__subtitle {
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.content-page__body {
+  display: grid;
+  gap: 18px;
+}
+
+.content-page__block {
+  display: grid;
+  gap: 10px;
+}
+
+.content-page__h2 {
+  margin: 0;
+  font-size: clamp(22px, 4vw, 30px);
+  color: var(--text-strong);
+}
+
+.content-page__text {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--text);
+}
+
+.content-page__image {
+  width: 100%;
+  border-radius: 18px;
+  object-fit: cover;
+  display: block;
+}
+
+.content-page__video-wrap {
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.content-page__video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  display: block;
+}
+
+@media (max-width: 720px) {
+  .content-page {
+    padding: 0 14px 58px;
+  }
+
+  .content-page__text {
+    font-size: 15px;
+  }
+}
+</style>

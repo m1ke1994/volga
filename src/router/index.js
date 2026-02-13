@@ -11,7 +11,7 @@ const router = createRouter({
   routes: [
     { path: '/', name: 'home', component: () => import('../views/HomeView.vue') },
     { path: '/about', name: 'about', component: () => import('../views/AboutView.vue') },
-    { path: '/moose', name: 'moose', component: () => import('../views/BrotherhoodView.vue') },
+    { path: '/moose', name: 'moose', component: () => import('../views/MooseView.vue') },
     { path: '/volunteer', name: 'volunteer', component: () => import('../views/VolunteerView.vue') },
     { path: '/running-club', name: 'running-club', component: () => import('../views/RunningClubView.vue') },
     { path: '/bronze-club', redirect: '/running-club' },
