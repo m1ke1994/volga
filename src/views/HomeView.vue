@@ -9,12 +9,12 @@ import ReviewsSection from "../components/Profile/ReviewsSection.vue";
 
 const menuItems = [
   { label: 'Обо мне', to: '/about' },
-  { label: 'Братство лосей', to: '/moose' },
+  { label: 'Братство Лосей', to: '/moose' },
   { label: 'Волонтерские программы', to: '/volunteer' },
   { label: 'Беговой клуб', to: '/running-club' },
-  { label: 'Расписание занятий', to: '/schedule' },
-  { label: 'Статьи', to: '/articles' },
+  { label: 'Статьи / Видео', to: '/articles' },
   { label: 'Новости', to: '/news' },
+  { label: 'Расписание', to: '/schedule' },
   { label: 'Контакты', to: '/contacts' },
 ];
 </script>
@@ -131,4 +131,3 @@ const menuItems = [
   }
 }
 </style>
-

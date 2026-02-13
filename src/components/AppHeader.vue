@@ -1,19 +1,17 @@
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import BurgerMenuButton from './Profile/BurgerMenuButton.vue'
-import ThemeToggle from './ThemeToggle.vue'
 
 const route = useRoute()
 const menuItems = [
-  { label: 'Главная', to: '/' },
   { label: 'Обо мне', to: '/about' },
-  { label: 'Братство лосей', to: '/moose' },
+  { label: 'Братство Лосей', to: '/moose' },
   { label: 'Волонтерские программы', to: '/volunteer' },
   { label: 'Беговой клуб', to: '/running-club' },
-  { label: 'Расписание занятий', to: '/schedule' },
-  { label: 'Статьи', to: '/articles' },
+  { label: 'Статьи / Видео', to: '/articles' },
   { label: 'Новости', to: '/news' },
+  { label: 'Расписание', to: '/schedule' },
   { label: 'Контакты', to: '/contacts' },
 ]
 
@@ -32,6 +30,13 @@ const toggleMenu = () => {
 
 const closeMenu = () => {
   isMenuOpen.value = false
+}
+
+const setBodyScrollLock = (locked) => {
+  if (typeof document === 'undefined') return
+  const overflowValue = locked ? 'hidden' : ''
+  document.body.style.overflow = overflowValue
+  document.documentElement.style.overflow = overflowValue
 }
 
 const handleScroll = () => {
@@ -68,12 +73,17 @@ onMounted(() => {
   window.addEventListener('keydown', handleKeydown)
 })
 
+watch(isMenuOpen, (opened) => {
+  setBodyScrollLock(opened)
+})
+
 onUnmounted(() => {
   if (useScrollFallback) {
     window.removeEventListener('scroll', handleScroll)
   }
   observer?.disconnect()
   window.removeEventListener('keydown', handleKeydown)
+  setBodyScrollLock(false)
 })
 </script>
 
@@ -82,6 +92,8 @@ onUnmounted(() => {
     <div ref="stickySentinel" class="app-header__sentinel" aria-hidden="true"></div>
     <header class="app-header__bar" :class="{ 'app-header__bar--stuck': isSticky }">
       <div class="app-header__inner">
+        <router-link to="/" class="app-header__brand">Новое Конаково</router-link>
+
         <nav class="app-header__links">
           <router-link
             v-for="item in menuItems"
@@ -94,8 +106,8 @@ onUnmounted(() => {
             {{ item.label }}
           </router-link>
         </nav>
+
         <div class="app-header__actions">
-          <ThemeToggle icon-only />
           <BurgerMenuButton class="app-header__burger" @toggle="toggleMenu" />
         </div>
       </div>
@@ -104,8 +116,13 @@ onUnmounted(() => {
     <div class="app-header__spacer" aria-hidden="true"></div>
 
     <div class="app-header__overlay" :class="{ 'app-header__overlay--show': isMenuOpen }" @click="closeMenu"></div>
+
     <aside class="app-header__drawer" :class="{ 'app-header__drawer--open': isMenuOpen }">
-      <div class="app-header__drawer-title">Меню</div>
+      <div class="app-header__drawer-head">
+        <div class="app-header__drawer-title">Меню</div>
+        <button class="app-header__drawer-close" type="button" aria-label="Закрыть меню" @click="closeMenu">×</button>
+      </div>
+
       <router-link
         v-for="item in menuItems"
         :key="item.to"
@@ -165,6 +182,16 @@ onUnmounted(() => {
   box-sizing: border-box;
 }
 
+.app-header__brand {
+  margin-right: 20px;
+  color: var(--text-strong);
+  font-family: 'Hitch Hike', 'Cormorant Garamond', serif;
+  font-size: clamp(22px, 2.2vw, 30px);
+  line-height: 1;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
 .app-header__links {
   display: flex;
   flex-wrap: wrap;
@@ -207,7 +234,8 @@ onUnmounted(() => {
 .app-header__actions {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  margin-left: auto;
 }
 
 .app-header__burger {
@@ -234,9 +262,9 @@ onUnmounted(() => {
   position: fixed;
   top: 0;
   right: 0;
-  height: 100vh;
+  height: 100dvh;
   width: min(88vw, 360px);
-  background: color-mix(in srgb, var(--nav-surface) 80%, transparent);
+  background: color-mix(in srgb, var(--nav-surface) 88%, transparent);
   border-left: 1px solid rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(18px);
   transform: translateX(100%);
@@ -247,14 +275,19 @@ onUnmounted(() => {
   gap: 10px;
   z-index: 80;
   box-shadow: 0 24px 50px var(--shadow);
-  border-radius: 18px 0 0 18px;
-  max-height: calc(100vh - 120px);
+  border-radius: 20px 0 0 20px;
   overflow-y: auto;
-  margin: 60px 0;
 }
 
 .app-header__drawer--open {
   transform: translateX(0);
+}
+
+.app-header__drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .app-header__drawer-title {
@@ -264,6 +297,21 @@ onUnmounted(() => {
   margin-bottom: 10px;
   opacity: 0.7;
   letter-spacing: 0.2px;
+}
+
+.app-header__drawer-close {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: color-mix(in srgb, var(--card) 76%, transparent);
+  color: var(--text);
+  font-size: 20px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
 .app-header__drawer-link {
@@ -292,16 +340,47 @@ onUnmounted(() => {
     display: none;
   }
 
-  .app-header__inner {
-    justify-content: flex-end;
+  .app-header__bar {
+    background: transparent;
+    border-bottom: none;
+    box-shadow: none;
+    backdrop-filter: none;
   }
 
-  .app-header__actions {
-    margin-left: auto;
+  .app-header__bar--stuck {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .app-header__inner {
+    padding: 12px 14px;
+  }
+
+  .app-header__brand {
+    font-size: clamp(20px, 6.4vw, 28px);
+    margin-right: 10px;
   }
 
   .app-header__burger {
     display: inline-flex;
+  }
+
+  .app-header__spacer {
+    height: 68px;
+  }
+}
+
+@media (max-width: 414px) {
+  .app-header__inner {
+    padding: 10px 12px;
+  }
+
+  .app-header__brand {
+    font-size: clamp(19px, 7vw, 25px);
+  }
+
+  .app-header__drawer {
+    width: min(92vw, 340px);
   }
 }
 </style>

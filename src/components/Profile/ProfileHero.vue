@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <div class="hero">
         <div class="hero-nav__overlay" :class="{ 'hero-nav__overlay--show': isMenuOpen }" @click="closeMenu"></div>
         <aside class="hero-nav__drawer" :class="{ 'hero-nav__drawer--open': isMenuOpen }">
@@ -22,6 +22,8 @@
             <div ref="stickySentinel" class="hero__sentinel" aria-hidden="true"></div>
             <header class="hero-nav" :class="{ 'hero-nav--stuck': isSticky }">
                 <div class="hero-nav__inner">
+                    <router-link to="/" class="hero-nav__brand">Новое Конаково</router-link>
+
                     <nav class="hero-nav__links">
                         <router-link
                             v-for="item in menuItems"
@@ -33,13 +35,14 @@
                             {{ item.label }}
                         </router-link>
                     </nav>
+
                     <div class="hero-nav__actions">
-                        <ThemeToggle icon-only />
                         <BurgerMenuButton class="hero-nav__burger" @toggle="toggleMenu" />
                     </div>
                 </div>
             </header>
         </div>
+
         <div class="hero__bottom">
             <div class="avatar" v-reveal>
                 <img
@@ -75,7 +78,6 @@
 <script setup>
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 import BurgerMenuButton from './BurgerMenuButton.vue'
-import ThemeToggle from '../ThemeToggle.vue'
 
 defineProps({
     menuItems: { type: Array, required: true },
@@ -209,10 +211,22 @@ onUnmounted(() => {
     box-sizing: border-box;
 }
 
+.hero-nav__brand {
+    margin-right: 10px;
+    color: #f4ecdf;
+    font-family: 'Hitch Hike', 'Cormorant Garamond', serif;
+    font-size: clamp(23px, 2.4vw, 32px);
+    line-height: 1;
+    letter-spacing: 0.4px;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+    white-space: nowrap;
+}
+
 .hero-nav__links {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+    margin-right: auto;
 }
 
 .hero-nav__link {
@@ -255,7 +269,8 @@ onUnmounted(() => {
 .hero-nav__actions {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
+    margin-left: auto;
 }
 
 .hero-nav__burger {
@@ -280,33 +295,28 @@ onUnmounted(() => {
 
 .hero-nav__drawer {
     position: fixed;
-    top: 12px;
-    left: 12px;
-    right: 12px;
-    width: auto;
-    max-height: calc(100dvh - 24px);
+    top: 0;
+    right: 0;
+    width: min(88vw, 360px);
+    max-height: 100dvh;
+    height: 100dvh;
     background: color-mix(in srgb, var(--nav-surface) 86%, transparent);
-    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-left: 1px solid rgba(255, 255, 255, 0.14);
     backdrop-filter: blur(18px);
-    transform: translateY(-10px) scale(0.98);
-    opacity: 0;
-    transition: transform 240ms ease, opacity 240ms ease;
+    transform: translateX(100%);
+    transition: transform 240ms ease;
     padding: 14px;
     display: flex;
     flex-direction: column;
     gap: 8px;
     z-index: 80;
     box-shadow: 0 24px 50px var(--shadow);
-    border-radius: 18px;
+    border-radius: 20px 0 0 20px;
     overflow-y: auto;
-    margin: 0;
-    pointer-events: none;
 }
 
 .hero-nav__drawer--open {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-    pointer-events: auto;
+    transform: translateX(0);
 }
 
 .hero-nav__drawer-head {
@@ -486,14 +496,19 @@ onUnmounted(() => {
 @media (max-width: 768px) {
     .hero-nav {
         width: calc(100% - 24px);
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        backdrop-filter: none;
+    }
+
+    .hero-nav--stuck {
+        background: transparent;
+        box-shadow: none;
     }
 
     .hero-nav__inner {
-        justify-content: flex-end;
-    }
-
-    .hero-nav__actions {
-        margin-left: auto;
+        padding: 8px 0;
     }
 
     .hero-nav__links {
@@ -504,11 +519,12 @@ onUnmounted(() => {
         display: inline-flex;
     }
 
+    .hero-nav__brand {
+        font-size: clamp(20px, 7.2vw, 28px);
+    }
+
     .hero-nav__drawer {
-        top: 10px;
-        left: 10px;
-        right: 10px;
-        max-height: calc(100dvh - 20px);
+        width: min(92vw, 340px);
     }
 }
 
