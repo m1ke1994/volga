@@ -119,7 +119,7 @@ onUnmounted(() => {
 
     <aside class="app-header__drawer" :class="{ 'app-header__drawer--open': isMenuOpen }">
       <div class="app-header__drawer-head">
-        <div class="app-header__drawer-title">Новое Конаково</div>
+        <router-link to="/" class="app-header__drawer-title" @click="closeMenu">Новое Конаково</router-link>
         <button class="app-header__drawer-close" type="button" aria-label="Закрыть меню" @click="closeMenu">×</button>
       </div>
 
@@ -336,6 +336,10 @@ onUnmounted(() => {
 }
 
 @media (max-width: 900px) {
+  .app-header__brand {
+    display: none;
+  }
+
   .app-header__links {
     display: none;
   }
