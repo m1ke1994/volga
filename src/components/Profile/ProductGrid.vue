@@ -22,7 +22,7 @@
 
           <div class="meta">
             <span v-if="card.duration" class="chip">{{ card.duration }}</span>
-            <span v-if="card.price" class="price">{{ card.price }}</span>
+            <span v-if="card.priceLabel" class="price">{{ card.priceLabel }}</span>
           </div>
         </header>
 
@@ -121,16 +121,16 @@
         <h3 class="service-modal__h3">Тарифы</h3>
         <div class="service-modal__tariffs">
           <article
-            v-for="(tariff, index) in activeService.tariffs"
-            :key="`${activeService.id}-tariff-${index}`"
+            v-for="tariff in activeService.tariffs"
+            :key="tariff.id"
             class="service-modal__tariff-card"
           >
-            <h4 class="service-modal__tariff-title">{{ tariff.name }}</h4>
-            <p class="service-modal__tariff-price">{{ tariff.price }}</p>
-            <p class="service-modal__tariff-duration">{{ tariff.duration }}</p>
-            <ul class="service-modal__list">
-              <li v-for="(item, itemIndex) in tariff.includes" :key="`${index}-i-${itemIndex}`">{{ item }}</li>
-            </ul>
+            <h4 class="service-modal__tariff-title">{{ tariff.title }}</h4>
+            <p class="service-modal__tariff-description">{{ tariff.description }}</p>
+            <p class="service-modal__tariff-price">{{ formatPrice(tariff.price) }}</p>
+            <button class="service-modal__tariff-action btn-secondary" type="button" @click="chooseTariff(tariff.id)">
+              Выбрать
+            </button>
           </article>
         </div>
       </section>
@@ -148,168 +148,26 @@
 
 <script setup>
 import { computed, ref, watch } from "vue";
+import { services } from "../../data/services";
 import AppModal from "../ui/AppModal.vue";
 
 const isModalOpen = ref(false);
 const activeService = ref(null);
 const activeMediaIndex = ref(0);
 
-const cards = [
-  {
-    id: "moose",
-    title: "Экскурсия в «Братство Лосей»",
-    fullTitle: "Экскурсия в «Братство Лосей»",
-    desc: "Заповедный маршрут, живые истории о природе и глубокое погружение в ритм местности.",
-    duration: "3-4 часа",
-    price: "от 3 500 ₽",
-    image: "/images/service-moose-cover.jpg",
-    intro:
-      "Авторская экскурсия для тех, кто хочет не просто пройти по маршруту, а прочувствовать пространство: от тишины леса до живого диалога с проводником и группой.",
-    gallery: [
-      { type: "image", src: "/images/service-moose-1.jpg" },
-      { type: "image", src: "/images/service-moose-2.jpg" },
-      { type: "video", src: "https://www.youtube.com/embed/ScMzIvxBSi4" },
-      { type: "image", src: "/images/service-moose-3.jpg" },
-    ],
-    contentSections: [
-      {
-        title: "Как проходит программа",
-        paragraphs: [
-          "Мы начинаем встречу с короткого знакомства и настройки темпа. Важно, чтобы каждый участник сразу почувствовал себя комфортно и понял структуру маршрута.",
-          "Первая часть экскурсии проходит по лесной зоне: спокойный шаг, остановки в ключевых точках, наблюдение за ландшафтом и короткие комментарии проводника.",
-          "Во второй части маршрут выходит к воде. Здесь мы делаем длинную паузу: чай, обсуждение впечатлений и практики на внимание к телу и дыханию.",
-        ],
-        listTitle: "Внутри маршрута есть:",
-        list: [
-          "Три смысловые точки с разным ритмом",
-          "Адаптация темпа под группу",
-          "Простые практики без специальной подготовки",
-          "Финальный круг с персональными рекомендациями",
-        ],
-      },
-      {
-        title: "Кому подходит",
-        paragraphs: [
-          "Экскурсия подходит тем, кто чувствует перегруз и хочет выйти из интенсивного городского ритма в более устойчивое состояние.",
-          "Формат открыт для новичков: не требуется спортивный опыт или особая подготовка. Вся программа построена мягко и с запасом по нагрузке.",
-          "Для небольших команд и семей можно провести закрытую версию маршрута с фокусом на ваши задачи и интересы.",
-        ],
-      },
-    ],
-    tariffs: [
-      {
-        name: "Базовый",
-        price: "3 500 ₽",
-        duration: "3 часа",
-        includes: ["Маршрут с проводником", "Чай на привале", "Групповой формат до 8 человек"],
-      },
-      {
-        name: "Расширенный",
-        price: "5 200 ₽",
-        duration: "4 часа",
-        includes: ["Дополнительные практики", "Фото-точки и разбор маршрута", "Персональные рекомендации"],
-      },
-    ],
-    note: "Рекомендуем удобную обувь и ветровку по погоде. Детали встречи направляем после подтверждения.",
-  },
-  {
-    id: "tea",
-    title: "Чайная церемония",
-    fullTitle: "Чайная церемония в камерном формате",
-    desc: "Медленный ритм, качественный чай и пространство для восстановления внимания.",
-    duration: "1,5 часа",
-    price: "от 2 200 ₽",
-    image: "/images/service-tea-cover.jpg",
-    intro: "Формат для тех, кто хочет остановиться, восстановить внутренний темп и провести вечер в спокойной, тёплой атмосфере.",
-    gallery: [
-      { type: "image", src: "/images/service-tea-1.jpg" },
-      { type: "video", src: "https://www.youtube.com/embed/ysz5S6PUM-U" },
-      { type: "image", src: "/images/service-tea-2.jpg" },
-      { type: "image", src: "/images/service-tea-3.jpg" },
-    ],
-    contentSections: [
-      {
-        title: "Структура встречи",
-        paragraphs: [
-          "Встреча начинается с мягкой вводной: мы снимаем внешнюю спешку, выравниваем дыхание и переходим к церемонии в спокойном ритме.",
-          "Далее — несколько проливов чая с пояснениями по вкусу, состоянию и этапам раскрытия. Наша задача — дать участникам не информацию, а проживание процесса.",
-          "Завершаем коротким кругом наблюдений. Это помогает зафиксировать эффект и перенести его в обычный ритм жизни.",
-        ],
-      },
-      {
-        title: "Что вы получаете",
-        paragraphs: [
-          "После церемонии у участников обычно появляется больше ясности и устойчивости, снижается внутреннее напряжение, легче переключается внимание.",
-          "Формат также хорошо работает как точка восстановления для команд и небольших групп.",
-        ],
-        listTitle: "Дополнительно доступны:",
-        list: ["Парная церемония", "Закрытый формат для компании", "Тематика встречи под запрос"],
-      },
-    ],
-    tariffs: [
-      {
-        name: "Камерный круг",
-        price: "2 200 ₽",
-        duration: "1,5 часа",
-        includes: ["Чайная церемония", "Группа до 6 человек", "Сопровождение ведущего"],
-      },
-      {
-        name: "Индивидуальный",
-        price: "4 000 ₽",
-        duration: "2 часа",
-        includes: ["Персональный формат", "Чайная карта под запрос", "Рекомендации после встречи"],
-      },
-    ],
-    note: "Лучше не употреблять крепкий кофе за 2-3 часа до встречи, чтобы глубже почувствовать состояние церемонии.",
-  },
-  {
-    id: "energy",
-    title: "Утренние энергетические практики",
-    fullTitle: "Утренние энергетические практики",
-    desc: "Мягкий старт дня: дыхание, движение и настрой на устойчивое состояние.",
-    duration: "60 минут",
-    price: "от 1 500 ₽",
-    image: "/images/service-energy-cover.jpg",
-    intro: "Утренняя программа для мягкого включения тела и внимания, без перегруза и с акцентом на устойчивость в течение дня.",
-    gallery: [
-      { type: "image", src: "/images/service-energy-1.jpg" },
-      { type: "image", src: "/images/service-energy-2.jpg" },
-      { type: "video", src: "https://www.youtube.com/embed/jNQXAC9IVRw" },
-    ],
-    contentSections: [
-      {
-        title: "Формат занятия",
-        paragraphs: [
-          "Практика делится на три блока: дыхание, движение и короткая интеграция в тишине. Такой порядок помогает включиться в день без резких нагрузок.",
-          "Мы даем несколько уровней сложности, поэтому формат подходит и начинающим, и тем, кто уже регулярно занимается.",
-          "После занятия участники получают короткие инструкции для самостоятельной практики на 10-15 минут.",
-        ],
-      },
-      {
-        title: "Результат и эффект",
-        paragraphs: [
-          "Участники чаще всего отмечают бодрость без суеты, более ровный эмоциональный фон и лучшее удержание внимания в течение рабочего дня.",
-          "При регулярной практике улучшается ощущение ритма и легче восстанавливаться после интенсивных периодов.",
-        ],
-      },
-    ],
-    tariffs: [
-      {
-        name: "Группа",
-        price: "1 500 ₽",
-        duration: "60 минут",
-        includes: ["Занятие в группе", "Мат для практики", "Чек-лист для самостоятельной работы"],
-      },
-      {
-        name: "Персонально",
-        price: "3 200 ₽",
-        duration: "75 минут",
-        includes: ["Индивидуальная адаптация", "Разбор техники", "Программа на неделю"],
-      },
-    ],
-    note: "Берите удобную одежду и воду. При необходимости занятие можно провести в мягком восстановительном режиме.",
-  },
-];
+const formatPrice = (price) => `${Number(price || 0).toLocaleString("ru-RU")} ₽`;
+
+const cards = computed(() =>
+  services.map((service) => {
+    const minPrice = Math.min(...service.tariffs.map((tariff) => tariff.price));
+    return {
+      ...service,
+      desc: service.description,
+      duration: service.durationLabel,
+      priceLabel: `от ${formatPrice(minPrice)}`,
+    };
+  })
+);
 
 const activeServiceTitle = computed(() => activeService.value?.fullTitle || activeService.value?.title || "Подробнее");
 
@@ -330,6 +188,15 @@ const openDetails = (service) => {
 
 const closeDetails = () => {
   isModalOpen.value = false;
+};
+
+const chooseTariff = (tariffId) => {
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem("preferredTariffId", String(tariffId));
+    const feedbackSection = document.getElementById("feedback");
+    feedbackSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  closeDetails();
 };
 
 watch(isModalOpen, (value) => {
@@ -620,17 +487,22 @@ const markImageLoaded = (event) => {
   color: var(--text-strong);
 }
 
+.service-modal__tariff-description {
+  margin: 8px 0 10px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
 .service-modal__tariff-price {
-  margin: 6px 0 2px;
+  margin: 0 0 10px;
   font-size: 18px;
   color: var(--color-dark-deep);
   font-weight: 700;
 }
 
-.service-modal__tariff-duration {
-  margin: 0 0 8px;
-  font-size: 13px;
-  color: var(--muted);
+.service-modal__tariff-action {
+  width: 100%;
 }
 
 .service-modal__note {

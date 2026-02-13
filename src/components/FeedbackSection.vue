@@ -15,29 +15,40 @@
                 v-for="service in services"
                 :key="service.id"
                 class="builder__card"
-                :class="{ 'builder__card--selected': selectedIds.includes(service.id) }"
+                :class="{ 'builder__card--selected': isServiceSelected(service) }"
               >
                 <div class="builder__card-top">
-                  <h3 class="builder__title">{{ service.name }}</h3>
-                  <p class="builder__desc">{{ service.desc }}</p>
+                  <h3 class="builder__title">{{ service.title }}</h3>
+                  <p class="builder__desc">{{ service.description }}</p>
                 </div>
 
-                <div class="builder__footer">
-                  <span class="builder__price">{{ formatPrice(service.price) }}</span>
-
-                  <button
-                    class="builder__toggle"
-                    type="button"
-                    :class="{ 'builder__toggle--active': selectedIds.includes(service.id) }"
-                    @click="toggleService(service.id)"
+                <div class="builder__tariffs">
+                  <article
+                    v-for="tariff in service.tariffs"
+                    :key="tariff.id"
+                    class="builder__tariff"
+                    :class="{ 'builder__tariff--active': selectedTariffIds.includes(tariff.id) }"
                   >
-                    <span class="builder__toggle-icon" aria-hidden="true">
-                      {{ selectedIds.includes(service.id) ? "✓" : "+" }}
-                    </span>
-                    <span class="builder__toggle-text">
-                      {{ selectedIds.includes(service.id) ? "Убрать" : "Добавить" }}
-                    </span>
-                  </button>
+                    <div class="builder__tariff-head">
+                      <h4 class="builder__tariff-title">{{ tariff.title }}</h4>
+                      <span class="builder__price">{{ formatPrice(tariff.price) }}</span>
+                    </div>
+                    <p class="builder__tariff-desc">{{ tariff.description }}</p>
+
+                    <button
+                      class="builder__toggle"
+                      type="button"
+                      :class="{ 'builder__toggle--active': selectedTariffIds.includes(tariff.id) }"
+                      @click="toggleTariff(tariff.id)"
+                    >
+                      <span class="builder__toggle-icon" aria-hidden="true">
+                        {{ selectedTariffIds.includes(tariff.id) ? "✓" : "+" }}
+                      </span>
+                      <span class="builder__toggle-text">
+                        {{ selectedTariffIds.includes(tariff.id) ? "Убрать" : "Выбрать" }}
+                      </span>
+                    </button>
+                  </article>
                 </div>
               </article>
             </div>
@@ -103,9 +114,9 @@
       </div>
 
       <div>
-        <p class="feedback__preview-label">Услуги</p>
+        <p class="feedback__preview-label">Тарифы</p>
         <p class="feedback__preview-value">
-          {{ preview.services.length ? preview.services.map((s) => s.name).join(", ") : "—" }}
+          {{ preview.tariffs.length ? preview.tariffs.map((t) => `${t.serviceTitle} — ${t.title}`).join(", ") : "—" }}
         </p>
       </div>
 
@@ -126,37 +137,44 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
+import { services } from "../data/services";
 
-const services = [
-  { id: 1, name: "Экскурсия в «Братство лосей»", desc: "Тихий маршрут и живые истории природы.", price: 3500 },
-  { id: 2, name: "Чайная церемония", desc: "Неспешный ритуал и вкус момента.", price: 2200 },
-  { id: 3, name: "Утренние практики", desc: "Дыхание, внимание и мягкий старт дня.", price: 1500 },
-  { id: 4, name: "Мастер-класс", desc: "Тёплая групповая практика.", price: 2000 },
-  { id: 5, name: "Mindfulness", desc: "Фокус, устойчивость, восстановление.", price: 1800 },
-  { id: 6, name: "Игра «Лила»", desc: "Глубокий диалог с собой.", price: 2800 },
-];
-
-const selectedIds = ref([]);
+const selectedTariffIds = ref([]);
 const date = ref("");
 const guests = ref(1);
 const comment = ref("");
 
-const selectedServices = computed(() => services.filter((s) => selectedIds.value.includes(s.id)));
-const total = computed(() => selectedServices.value.reduce((sum, s) => sum + s.price, 0));
+const selectedTariffs = computed(() =>
+  services.flatMap((service) =>
+    service.tariffs
+      .filter((tariff) => selectedTariffIds.value.includes(tariff.id))
+      .map((tariff) => ({
+        tariffId: tariff.id,
+        title: tariff.title,
+        price: tariff.price,
+        serviceId: service.id,
+        serviceTitle: service.title,
+      }))
+  )
+);
+
+const total = computed(() => selectedTariffs.value.reduce((sum, tariff) => sum + tariff.price, 0));
+
+const isServiceSelected = (service) => service.tariffs.some((tariff) => selectedTariffIds.value.includes(tariff.id));
 
 const preview = computed(() => ({
-  services: selectedServices.value,
+  tariffs: selectedTariffs.value,
   total: total.value,
   date: date.value,
   guests: guests.value,
   comment: comment.value,
 }));
 
-const toggleService = (id) => {
-  selectedIds.value = selectedIds.value.includes(id)
-    ? selectedIds.value.filter((x) => x !== id)
-    : [...selectedIds.value, id];
+const toggleTariff = (tariffId) => {
+  selectedTariffIds.value = selectedTariffIds.value.includes(tariffId)
+    ? selectedTariffIds.value.filter((id) => id !== tariffId)
+    : [...selectedTariffIds.value, tariffId];
 };
 
 const formatPrice = (value) => `${Number(value || 0).toLocaleString("ru-RU")} ₽`;
@@ -166,6 +184,18 @@ const handleConfirm = () => {
   // TODO: backend integration.
   console.log(payload);
 };
+
+onMounted(() => {
+  if (typeof window === "undefined") return;
+  const rawTariffId = window.localStorage.getItem("preferredTariffId");
+  if (!rawTariffId) return;
+  const tariffId = Number(rawTariffId);
+  const hasTariff = services.some((service) => service.tariffs.some((tariff) => tariff.id === tariffId));
+  if (hasTariff && !selectedTariffIds.value.includes(tariffId)) {
+    selectedTariffIds.value = [...selectedTariffIds.value, tariffId];
+  }
+  window.localStorage.removeItem("preferredTariffId");
+});
 </script>
 
 <style scoped>
@@ -365,6 +395,45 @@ const handleConfirm = () => {
   justify-content: space-between;
   align-items: center;
   gap: 10px;
+}
+
+.builder__tariffs {
+  display: grid;
+  gap: 10px;
+}
+
+.builder__tariff {
+  border-radius: 14px;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--border) 75%, transparent);
+  background: color-mix(in srgb, var(--bg-elevated) 70%, transparent);
+  display: grid;
+  gap: 8px;
+}
+
+.builder__tariff--active {
+  border-color: color-mix(in srgb, var(--primary) 55%, var(--border));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--primary) 30%, transparent);
+}
+
+.builder__tariff-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.builder__tariff-title {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-strong);
+}
+
+.builder__tariff-desc {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--muted);
 }
 
 .builder__price {

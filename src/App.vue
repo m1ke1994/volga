@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted } from 'vue'
+import FloatingContactButtons from './components/FloatingContactButtons.vue'
 
 const forceScrollTop = () => {
   if (typeof window === 'undefined') return
@@ -21,4 +22,5 @@ onMounted(() => {
 
 <template>
   <router-view />
+  <FloatingContactButtons />
 </template>
