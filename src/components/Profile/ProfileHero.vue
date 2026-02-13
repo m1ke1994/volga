@@ -41,6 +41,7 @@
                     </div>
                 </div>
             </header>
+            <div class="hero__project-title">Новое Конаково</div>
         </div>
 
         <div class="hero__bottom">
@@ -213,12 +214,12 @@ onUnmounted(() => {
 
 .hero-nav__brand {
     margin-right: 10px;
-    color: #f4ecdf;
+    color: #111111;
     font-family: 'Hitch Hike', 'Cormorant Garamond', serif;
     font-size: clamp(23px, 2.4vw, 32px);
     line-height: 1;
     letter-spacing: 0.4px;
-    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+    text-shadow: none;
     white-space: nowrap;
 }
 
@@ -398,6 +399,22 @@ onUnmounted(() => {
     z-index: 1;
 }
 
+.hero__project-title {
+    position: absolute;
+    top: 56%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    font-family: 'Hitch Hike', 'Cormorant Garamond', serif;
+    font-size: clamp(44px, 8.4vw, 120px);
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    color: #111111;
+    text-align: center;
+    pointer-events: none;
+    width: min(90%, 1100px);
+}
+
 .hero__title {
     font-size: 28px;
     color: #f7f2ea;
@@ -523,6 +540,12 @@ onUnmounted(() => {
         font-size: clamp(20px, 7.2vw, 28px);
     }
 
+    .hero__project-title {
+        top: 58%;
+        font-size: clamp(34px, 10vw, 64px);
+        width: min(92%, 560px);
+    }
+
     .hero-nav__drawer {
         width: min(92vw, 340px);
     }
@@ -555,6 +578,12 @@ onUnmounted(() => {
 
   .hero__top {
     background-position: calc(50% - clamp(8px, 3vw, 16px)) center;
+  }
+
+  .hero__project-title {
+    top: 60%;
+    font-size: clamp(30px, 11vw, 48px);
+    letter-spacing: 0.01em;
   }
 }
 </style>
