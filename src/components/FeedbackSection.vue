@@ -1,9 +1,9 @@
-<template>
+﻿<template>
   <div class="feedback">
     <div class="feedback__surface">
-      <form class="feedback__form">
-        <ServiceBuilder ref="builderRef" @update="handleBuilderUpdate" />
-      </form>
+      <div class="feedback__form">
+        <ServiceBuilder @update="handleBuilderUpdate" />
+      </div>
     </div>
 
     <div class="feedback__preview">
@@ -35,28 +35,10 @@
         <p class="feedback__preview-value">{{ preview.comment || '—' }}</p>
       </div>
 
-      <div class="feedback__contact-grid">
-        <label class="feedback__field">
-          <span class="feedback__preview-label">Имя</span>
-          <input v-model.trim="requestName" class="feedback__input" type="text" name="name" autocomplete="name" />
-        </label>
-        <label class="feedback__field">
-          <span class="feedback__preview-label">Телефон или Email</span>
-          <input v-model.trim="requestContact" class="feedback__input" type="text" name="contact" autocomplete="email" />
-        </label>
-      </div>
-
-      <button class="feedback__preview-cta" type="button" @click="handleConfirm">
-        Согласовать план
-      </button>
+      <p class="feedback__preview-hint">
+        Для отправки используйте кнопку «Отправить сценарий» в правом блоке конструктора.
+      </p>
     </div>
-
-    <StatusModal
-      v-model="isStatusModalOpen"
-      :title="statusModalTitle"
-      :message="statusModalMessage"
-      :variant="statusModalVariant"
-    />
   </div>
 </template>
 
@@ -64,17 +46,6 @@
 import { computed, ref } from 'vue'
 
 import ServiceBuilder from './ServiceBuilder.vue'
-import StatusModal from './ui/StatusModal.vue'
-import api from '../services/api'
-
-const builderRef = ref(null)
-const requestName = ref('')
-const requestContact = ref('')
-
-const isStatusModalOpen = ref(false)
-const statusModalTitle = ref('')
-const statusModalMessage = ref('')
-const statusModalVariant = ref('success')
 
 const builderData = ref({
   services: [],
@@ -91,77 +62,6 @@ const handleBuilderUpdate = (payload) => {
 }
 
 const formatPrice = (value) => `${Number(value || 0).toLocaleString('ru-RU')} ₽`
-const isEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
-
-const openStatusModal = (title, message, variant = 'success') => {
-  statusModalTitle.value = title
-  statusModalMessage.value = message
-  statusModalVariant.value = variant
-  isStatusModalOpen.value = true
-}
-
-const resetRequest = () => {
-  requestName.value = ''
-  requestContact.value = ''
-  builderData.value = {
-    services: [],
-    total: 0,
-    date: '',
-    guests: 1,
-    comment: '',
-  }
-  builderRef.value?.reset?.()
-}
-
-const handleConfirm = async () => {
-  const name = requestName.value.trim()
-  const contact = requestContact.value.trim()
-
-  if (!name) {
-    openStatusModal('Проверьте данные', 'Укажите имя для отправки заявки.', 'error')
-    return
-  }
-
-  if (!contact) {
-    openStatusModal('Проверьте данные', 'Укажите телефон или email.', 'error')
-    return
-  }
-
-  if (!preview.value.services.length) {
-    openStatusModal('Проверьте данные', 'Выберите минимум один пункт сценария дня.', 'error')
-    return
-  }
-
-  const payload = {
-    name,
-    phone: null,
-    email: null,
-    visit_date: preview.value.date || null,
-    guests: Number(preview.value.guests || 1),
-    selected_items: preview.value.services.map((service) => ({
-      id: service.id,
-      name: service.name,
-      desc: service.desc,
-      price: Number(service.price || 0),
-    })),
-    total_price: Number(preview.value.total || 0),
-    comment: preview.value.comment || '',
-  }
-
-  if (isEmail(contact)) {
-    payload.email = contact
-  } else {
-    payload.phone = contact
-  }
-
-  try {
-    await api.post('/day-scenario-requests/', payload)
-    resetRequest()
-    openStatusModal('Заявка отправлена', 'Спасибо, ваш сценарий дня собран. Заявка отправлена.', 'success')
-  } catch {
-    openStatusModal('Ошибка отправки', 'Не удалось отправить заявку. Попробуйте еще раз.', 'error')
-  }
-}
 </script>
 
 <style scoped>
@@ -246,65 +146,10 @@ const handleConfirm = async () => {
   color: var(--text);
 }
 
-.feedback__contact-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.feedback__field {
-  display: grid;
-  gap: 4px;
-}
-
-.feedback__input {
-  width: 100%;
-  border-radius: 12px;
-  border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
-  background: color-mix(in srgb, var(--bg-elevated) 70%, transparent);
-  padding: 10px 12px;
-  font-size: 14px;
-  color: var(--text);
-  outline: none;
-}
-
-.feedback__input:focus-visible {
-  border-color: color-mix(in srgb, var(--primary) 60%, var(--border));
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent);
-}
-
-.feedback__preview-cta {
-  border: 0;
-  cursor: pointer;
-  border-radius: 999px;
-  padding: 8px 14px;
-  width: auto;
-  min-width: 240px;
-  justify-self: end;
-  font-weight: 650;
-  background: color-mix(in srgb, var(--text-strong) 88%, transparent);
-  color: color-mix(in srgb, var(--bg) 85%, white);
-  box-shadow: 0 12px 22px var(--feedback-shadow);
-  transition: transform 200ms ease, box-shadow 200ms ease;
-}
-
-@media (min-width: 900px) {
-  .feedback__preview-cta {
-    padding: 10px 22px;
-    font-size: 13px;
-  }
-}
-
-@media (max-width: 720px) {
-  .feedback__preview-cta {
-    width: 100%;
-    min-width: 0;
-  }
-}
-
-.feedback__preview-cta:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 14px 26px var(--feedback-shadow);
+.feedback__preview-hint {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--muted);
 }
 
 @media (max-width: 720px) {
@@ -313,10 +158,6 @@ const handleConfirm = async () => {
   }
 
   .feedback__preview-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .feedback__contact-grid {
     grid-template-columns: 1fr;
   }
 

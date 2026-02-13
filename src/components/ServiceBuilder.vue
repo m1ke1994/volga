@@ -1,5 +1,5 @@
 ﻿<template>
-  <div class="builder">
+  <form class="builder" method="post" action="/api/day-scenario-request/" @submit.prevent="handleSubmit">
     <section class="builder__column">
       <header class="builder__header">
         <p class="builder__eyebrow">Выбор форматов</p>
@@ -64,6 +64,32 @@
         </div>
 
         <label class="field field--full">
+          <span class="field__label">Имя</span>
+          <div class="field__control">
+            <input
+              class="field__input"
+              type="text"
+              v-model.trim="name"
+              placeholder="Как к вам обращаться"
+              autocomplete="name"
+            />
+          </div>
+        </label>
+
+        <label class="field field--full">
+          <span class="field__label">Почта или телефон</span>
+          <div class="field__control">
+            <input
+              class="field__input"
+              type="text"
+              v-model.trim="contact"
+              placeholder="name@example.com или +7..."
+              autocomplete="email"
+            />
+          </div>
+        </label>
+
+        <label class="field field--full">
           <span class="field__label">Комментарий</span>
           <div class="field__control">
             <textarea
@@ -76,9 +102,20 @@
         </label>
 
         <p class="panel__note">План обновляется автоматически — ничего нажимать не нужно.</p>
+
+        <button class="panel__submit" type="submit" :disabled="isSubmitting">
+          {{ isSubmitting ? 'Отправка...' : 'Отправить сценарий' }}
+        </button>
       </div>
     </aside>
-  </div>
+
+    <StatusModal
+      v-model="isStatusModalOpen"
+      title="Заявка отправлена"
+      message="Спасибо, ваш сценарий дня отправлен."
+      variant="success"
+    />
+  </form>
 </template>
 
 <script setup>
@@ -86,6 +123,7 @@ import { computed, ref, watchEffect } from 'vue'
 
 import { parseJsonField } from '../api/client'
 import { useSection } from '../composables/useSection'
+import StatusModal from './ui/StatusModal.vue'
 
 const emit = defineEmits(['update'])
 
@@ -113,7 +151,11 @@ const services = computed(() => {
 const selectedIds = ref([])
 const date = ref('')
 const guests = ref(1)
+const name = ref('')
+const contact = ref('')
 const comment = ref('')
+const isSubmitting = ref(false)
+const isStatusModalOpen = ref(false)
 
 const selectedServices = computed(() => services.value.filter((s) => selectedIds.value.includes(s.id)))
 const total = computed(() => selectedServices.value.reduce((sum, s) => sum + Number(s.price || 0), 0))
@@ -125,11 +167,68 @@ const toggleService = (id) => {
 }
 
 const formatPrice = (value) => `${Number(value || 0).toLocaleString('ru-RU')} ₽`
+const isEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+
+const handleSubmit = async () => {
+  const normalizedName = name.value.trim()
+  const normalizedContact = contact.value.trim()
+
+  if (!normalizedName) {
+    console.error('Failed to submit day scenario request: name is required')
+    return
+  }
+
+  if (!normalizedContact) {
+    console.error('Failed to submit day scenario request: email or phone is required')
+    return
+  }
+
+  const payload = {
+    name: normalizedName,
+    email: isEmail(normalizedContact) ? normalizedContact : null,
+    phone: isEmail(normalizedContact) ? null : normalizedContact,
+    services: selectedServices.value.map((service) => ({
+      id: service.id,
+      name: service.name,
+      desc: service.desc,
+      price: Number(service.price || 0),
+    })),
+    total: Number(total.value || 0),
+    date: date.value || null,
+    guests: Number(guests.value || 1),
+    comment: comment.value || '',
+  }
+
+  isSubmitting.value = true
+
+  try {
+    const response = await fetch('/api/day-scenario-request/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+
+    if (!response.ok) {
+      throw new Error(`Request failed with status ${response.status}`)
+    }
+
+    isStatusModalOpen.value = true
+    reset()
+  } catch (error) {
+    console.error('Failed to submit day scenario request', error)
+  } finally {
+    isSubmitting.value = false
+  }
+}
 
 const reset = () => {
   selectedIds.value = []
   date.value = ''
   guests.value = 1
+  name.value = ''
+  contact.value = ''
   comment.value = ''
 }
 
@@ -141,6 +240,8 @@ watchEffect(() => {
     total: total.value,
     date: date.value,
     guests: guests.value,
+    name: name.value,
+    contact: contact.value,
     comment: comment.value,
   })
 })
@@ -350,6 +451,30 @@ watchEffect(() => {
   margin: 0;
   font-size: 12px;
   color: var(--muted);
+}
+
+.panel__submit {
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 16px;
+  cursor: pointer;
+  justify-self: start;
+  font-size: 13px;
+  font-weight: 650;
+  background: color-mix(in srgb, var(--text-strong) 88%, transparent);
+  color: color-mix(in srgb, var(--bg) 85%, white);
+  box-shadow: 0 12px 22px var(--shadow);
+  transition: transform 200ms ease, box-shadow 200ms ease, opacity 200ms ease;
+}
+
+.panel__submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 24px var(--shadow-strong);
+}
+
+.panel__submit:disabled {
+  opacity: 0.72;
+  cursor: default;
 }
 
 @media (max-width: 980px) {
