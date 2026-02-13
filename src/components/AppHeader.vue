@@ -184,7 +184,7 @@ onUnmounted(() => {
 
 .app-header__brand {
   margin-right: 20px;
-  color: #111111;
+  color: var(--color-dark-deep);
   font-family: 'Hitch Hike', 'Cormorant Garamond', serif;
   font-size: clamp(22px, 2.2vw, 30px);
   line-height: 1;

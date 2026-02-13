@@ -31,7 +31,7 @@
         </p>
 
         <footer class="bottom">
-          <button class="btn btn--ghost" type="button" @click="openDetails(card)">
+          <button class="btn-outline product-grid__more" type="button" @click="openDetails(card)">
             Подробнее
             <span class="arrow">→</span>
           </button>
@@ -140,7 +140,7 @@
       </p>
 
       <div class="service-modal__cta">
-        <button class="service-modal__btn service-modal__btn--ghost" type="button" @click="closeDetails">Закрыть</button>
+        <button class="service-modal__btn btn-outline" type="button" @click="closeDetails">Закрыть</button>
       </div>
     </div>
   </AppModal>
@@ -465,33 +465,8 @@ const markImageLoaded = (event) => {
   align-items: center;
 }
 
-.btn {
-  border: none;
-  cursor: pointer;
-  border-radius: 999px;
-  padding: 10px 14px;
+.product-grid__more {
   font-size: 14px;
-  color: #2b2520;
-  background: var(--primary);
-  box-shadow: 0 10px 22px var(--shadow);
-  transition: transform 200ms ease, box-shadow 200ms ease, filter 200ms ease;
-}
-
-.btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 14px 30px var(--shadow);
-  filter: brightness(1.02);
-}
-
-.btn--ghost {
-  background: transparent;
-  color: var(--text-strong);
-  border: 1px solid var(--border);
-  box-shadow: none;
-}
-
-.btn--ghost:hover {
-  background: var(--bg-elevated);
 }
 
 .arrow {
@@ -648,7 +623,7 @@ const markImageLoaded = (event) => {
 .service-modal__tariff-price {
   margin: 6px 0 2px;
   font-size: 18px;
-  color: #2b2520;
+  color: var(--color-dark-deep);
   font-weight: 700;
 }
 
@@ -674,18 +649,8 @@ const markImageLoaded = (event) => {
   justify-content: flex-end;
 }
 
-.service-modal__btn--ghost {
-  border: 1px solid var(--border);
-  cursor: pointer;
-  border-radius: 999px;
-  padding: 11px 16px;
+.service-modal__btn {
   font-size: 14px;
-  color: var(--text-strong);
-  background: transparent;
-}
-
-.service-modal__btn--ghost:hover {
-  background: var(--bg-elevated);
 }
 
 @media (max-width: 980px) {

@@ -108,8 +108,8 @@ const filteredMaterials = computed(() => sortedMaterials.value.filter((item) => 
 }
 
 .articles-page__tab--active {
-  background: linear-gradient(135deg, #c8b89f, #b7a58c);
-  color: #2b2520;
+  background: color-mix(in srgb, var(--color-sand) 90%, var(--color-warm-yellow));
+  color: var(--color-dark-deep);
   box-shadow: 0 10px 20px var(--shadow);
 }
 

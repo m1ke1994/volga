@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 const props = defineProps({
   item: {
     type: Object,
@@ -20,7 +20,7 @@ const props = defineProps({
     <div class="article-card__content">
       <h3 class="article-card__title">{{ item.title }}</h3>
       <p v-if="showDescription" class="article-card__description">{{ item.description }}</p>
-      <router-link class="article-card__action" :to="`/articles/${item.id}`">Читать далее</router-link>
+      <router-link class="article-card__action btn-primary" :to="`/articles/${item.id}`">Читать далее</router-link>
     </div>
   </article>
 </template>
@@ -52,8 +52,8 @@ const props = defineProps({
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(17, 17, 17, 0.78);
-  color: #fff;
+  background: color-mix(in srgb, var(--color-dark-deep) 78%, transparent);
+  color: var(--color-background-light);
   font-size: 14px;
 }
 
@@ -83,20 +83,6 @@ const props = defineProps({
 
 .article-card__action {
   justify-self: start;
-  padding: 10px 16px;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, #b7a58c 40%, var(--border));
-  background: linear-gradient(135deg, #c8b89f, #b7a58c);
-  color: #2b2520;
-  font-size: 13px;
-  font-weight: 600;
-  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
-}
-
-.article-card__action:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 12px 22px var(--shadow);
-  filter: brightness(1.03);
 }
 
 @media (max-width: 768px) {
@@ -109,3 +95,7 @@ const props = defineProps({
   }
 }
 </style>
+
+
+
+

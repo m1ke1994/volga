@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { computed } from "vue";
 
 const props = defineProps({
@@ -24,7 +24,7 @@ const formattedDate = computed(() =>
       <p class="news-card__date">{{ formattedDate }}</p>
       <h3 class="news-card__title">{{ item.title }}</h3>
       <p class="news-card__description">{{ item.description }}</p>
-      <router-link class="news-card__action" :to="`/news/${item.id}`">Читать дальше</router-link>
+      <router-link class="news-card__action btn-primary" :to="`/news/${item.id}`">Читать дальше</router-link>
     </div>
   </article>
 </template>
@@ -75,20 +75,6 @@ const formattedDate = computed(() =>
 .news-card__action {
   justify-self: start;
   margin-top: 2px;
-  padding: 10px 16px;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, #b7a58c 40%, var(--border));
-  background: linear-gradient(135deg, #c8b89f, #b7a58c);
-  color: #2b2520;
-  font-size: 13px;
-  font-weight: 600;
-  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
-}
-
-.news-card__action:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 12px 22px var(--shadow);
-  filter: brightness(1.03);
 }
 
 @media (max-width: 768px) {
@@ -101,3 +87,5 @@ const formattedDate = computed(() =>
   }
 }
 </style>
+
+

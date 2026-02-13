@@ -69,7 +69,7 @@
                         путешествие под ваш ритм и интересы. А для местных создаю сообщество, где есть движение, поддержка,
                         общение и ощущение «своего места».
                     </div>
-                    <router-link class="info__btn" to="/contacts">Связаться со мной</router-link>
+                    <router-link class="info__btn btn-primary" to="/contacts">Связаться со мной</router-link>
                 </div>
             </div>
         </div>
@@ -214,7 +214,7 @@ onUnmounted(() => {
 
 .hero-nav__brand {
     margin-right: 10px;
-    color: #111111;
+    color: var(--color-dark-deep);
     font-family: 'Hitch Hike', 'Cormorant Garamond', serif;
     font-size: clamp(23px, 2.4vw, 32px);
     line-height: 1;
@@ -409,7 +409,7 @@ onUnmounted(() => {
     font-size: clamp(44px, 8.4vw, 120px);
     line-height: 0.95;
     letter-spacing: 0.02em;
-    color: #111111;
+    color: var(--color-dark-deep);
     text-align: center;
     pointer-events: none;
     width: min(90%, 1100px);
@@ -417,7 +417,7 @@ onUnmounted(() => {
 
 .hero__title {
     font-size: 28px;
-    color: #f7f2ea;
+    color: var(--color-background-light);
     letter-spacing: 0.6px;
     background: rgba(36, 30, 24, 0.45);
     padding: 10px 22px;
@@ -481,21 +481,7 @@ onUnmounted(() => {
 }
 
 .info__btn {
-    background: linear-gradient(135deg, #c8b89f, #b7a58c);
-    border: none;
-    padding: 10px 18px;
-    font-size: 13px;
-    color: #2b2520;
-    cursor: pointer;
-    border-radius: 999px;
-    box-shadow: 0 8px 16px var(--shadow);
-    transition: transform 200ms ease, box-shadow 200ms ease;
     justify-self: flex-start;
-}
-
-.info__btn:hover {
-    transform: translateY(-1px) scale(1.02);
-    box-shadow: 0 10px 18px var(--shadow);
 }
 
 @media (max-width: 1100px) {

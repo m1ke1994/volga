@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { computed } from "vue";
 import AppHeader from "../components/AppHeader.vue";
 import AppFooter from "../components/AppFooter.vue";
@@ -56,7 +56,7 @@ const latestNews = computed(() =>
           <div class="app-section__inner">
             <div class="articles-home__head">
               <h2 class="app-section__title articles-home__title">Статьи</h2>
-              <router-link class="articles-home__link" to="/articles">Смотреть все материалы</router-link>
+              <router-link class="articles-home__link btn-secondary" to="/articles">Смотреть все материалы</router-link>
             </div>
 
             <div class="articles-home__grid">
@@ -101,7 +101,7 @@ const latestNews = computed(() =>
           <div class="app-section__inner">
             <div class="news-home__head">
               <h2 class="app-section__title news-home__title">Новости</h2>
-              <router-link class="news-home__link" to="/news">Смотреть все новости</router-link>
+              <router-link class="news-home__link btn-secondary" to="/news">Смотреть все новости</router-link>
             </div>
             <div class="news-home__grid">
               <NewsCard v-for="item in latestNews" :key="item.id" :item="item" />
@@ -174,22 +174,6 @@ const latestNews = computed(() =>
   margin-bottom: 0;
 }
 
-.articles-home__link {
-  padding: 10px 16px;
-  border-radius: 999px;
-  font-size: 13px;
-  border: 1px solid var(--border);
-  background: var(--primary-soft);
-  color: var(--text-strong);
-  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
-}
-
-.articles-home__link:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 18px var(--shadow);
-  background: color-mix(in srgb, var(--primary) 18%, var(--primary-soft));
-}
-
 .articles-home__grid {
   margin-top: 22px;
   display: grid;
@@ -205,22 +189,6 @@ const latestNews = computed(() =>
 
 .news-home__title {
   margin-bottom: 0;
-}
-
-.news-home__link {
-  padding: 10px 16px;
-  border-radius: 999px;
-  font-size: 13px;
-  border: 1px solid var(--border);
-  background: var(--primary-soft);
-  color: var(--text-strong);
-  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
-}
-
-.news-home__link:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 18px var(--shadow);
-  background: color-mix(in srgb, var(--primary) 18%, var(--primary-soft));
 }
 
 .news-home__grid {

@@ -114,7 +114,7 @@ const handleSubmit = (event) => {
             title="Карта — Конаково"
           ></iframe>
 
-          <a class="contacts__cta" href="https://yandex.com/maps/-/CCU05ZxoWA" target="_blank" rel="noopener">
+          <a class="contacts__cta btn-secondary" href="https://yandex.com/maps/-/CCU05ZxoWA" target="_blank" rel="noopener">
             Открыть в Яндекс Картах
           </a>
         </div>
@@ -136,7 +136,7 @@ const handleSubmit = (event) => {
           <textarea class="contacts__input contacts__input--area" name="message" rows="5" placeholder=" " required></textarea>
         </label>
 
-        <button class="contacts__submit" type="submit">Отправить</button>
+        <button class="contacts__submit btn-primary" type="submit">Отправить</button>
       </form>
     </div>
   </section>
@@ -241,23 +241,6 @@ const handleSubmit = (event) => {
 
 .contacts__cta {
   justify-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  border-radius: 999px;
-  background: var(--primary-soft);
-  color: var(--text-strong);
-  text-decoration: none;
-  font-size: 13px;
-  border: 1px solid var(--border);
-  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
-}
-
-.contacts__cta:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 18px var(--shadow);
-  background: color-mix(in srgb, var(--primary) 18%, var(--primary-soft));
 }
 
 .contacts__form {
@@ -302,27 +285,12 @@ const handleSubmit = (event) => {
 }
 
 .contacts__form.is-submitted .contacts__input:invalid {
-  border-color: color-mix(in srgb, #c46a5f 60%, var(--border));
-  box-shadow: 0 0 0 3px color-mix(in srgb, #c46a5f 20%, transparent);
+  border-color: color-mix(in srgb, var(--color-warm-brown) 60%, var(--border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-warm-brown) 20%, transparent);
 }
 
 .contacts__submit {
   justify-self: flex-start;
-  border: none;
-  border-radius: 999px;
-  padding: 10px 18px;
-  background: linear-gradient(135deg, #c8b89f, #b7a58c);
-  color: #2b2520;
-  cursor: pointer;
-  font-size: 13px;
-  box-shadow: 0 12px 24px var(--shadow);
-  transition: transform 200ms ease, box-shadow 200ms ease, filter 200ms ease;
-}
-
-.contacts__submit:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 16px 30px var(--shadow);
-  filter: brightness(1.02);
 }
 
 @media (max-width: 900px) {

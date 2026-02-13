@@ -114,7 +114,7 @@
         <p class="feedback__preview-value">{{ preview.comment || "—" }}</p>
       </div>
 
-      <button class="feedback__preview-cta" type="button" @click="handleConfirm">
+      <button class="feedback__preview-cta btn-primary" type="button" @click="handleConfirm">
         Согласовать план
       </button>
 
@@ -251,18 +251,11 @@ const handleConfirm = () => {
 }
 
 .feedback__preview-cta {
-  border: 0;
-  cursor: pointer;
-  border-radius: 999px;
   padding: 8px 14px;
   width: auto;
   min-width: 240px;
   justify-self: end;
   font-weight: 650;
-  background: color-mix(in srgb, var(--text-strong) 88%, transparent);
-  color: color-mix(in srgb, var(--bg) 85%, white);
-  box-shadow: 0 12px 22px var(--feedback-shadow);
-  transition: transform 200ms ease, box-shadow 200ms ease;
 }
 
 @media (min-width: 900px) {
@@ -277,11 +270,6 @@ const handleConfirm = () => {
     width: 100%;
     min-width: 0;
   }
-}
-
-.feedback__preview-cta:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 14px 26px var(--feedback-shadow);
 }
 
 .feedback__preview-hint {

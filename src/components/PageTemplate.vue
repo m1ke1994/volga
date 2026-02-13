@@ -108,7 +108,7 @@ onUnmounted(() => {
         <article v-for="section in sections" :key="section.title" class="page__section glass-card" v-reveal>
           <h2 class="page__section-title">{{ section.title }}</h2>
           <p class="page__section-text">{{ section.text }}</p>
-          <a v-if="section.action" class="page__action" :href="section.action.href">{{ section.action.label }}</a>
+          <a v-if="section.action" class="page__action btn-secondary" :href="section.action.href">{{ section.action.label }}</a>
           <div v-if="section.isMap" class="page__map">Map placeholder</div>
         </article>
       </div>
@@ -143,7 +143,7 @@ onUnmounted(() => {
       <div v-if="cta" class="page__cta glass-card" v-reveal>
         <h2 class="page__cta-title">{{ cta.title }}</h2>
         <p class="page__cta-text">{{ cta.text }}</p>
-        <button v-if="cta.buttonText" class="page__cta-button" type="button">
+        <button v-if="cta.buttonText" class="page__cta-button btn-primary" type="button">
           {{ cta.buttonText }}
         </button>
       </div>
@@ -178,7 +178,7 @@ onUnmounted(() => {
 .page__title {
   font-size: 32px;
   margin: 0 0 12px;
-  color: #f7f2ea;
+  color: var(--color-background-light);
 }
 
 .page__subtitle {
@@ -308,12 +308,6 @@ onUnmounted(() => {
 
 .page__action {
   display: inline-flex;
-  padding: 8px 14px;
-  border-radius: 999px;
-  background: var(--primary-soft);
-  color: var(--text-strong);
-  text-decoration: none;
-  font-size: 13px;
 }
 
 .page__map {
@@ -394,16 +388,6 @@ onUnmounted(() => {
 .page__cta-text {
   margin: 0 0 12px;
   color: var(--muted);
-}
-
-.page__cta-button {
-  border: none;
-  border-radius: 999px;
-  padding: 10px 18px;
-  background: linear-gradient(135deg, #c8b89f, #b7a58c);
-  color: #2b2520;
-  cursor: pointer;
-  font-size: 13px;
 }
 
 @media (max-width: 768px) {
