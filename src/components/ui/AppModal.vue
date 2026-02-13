@@ -5,6 +5,7 @@
         <div
           ref="panelRef"
           class="app-modal__panel"
+          :style="panelStyle"
           role="dialog"
           aria-modal="true"
           :aria-labelledby="titleId"
@@ -32,11 +33,13 @@
 </template>
 
 <script setup>
-import { nextTick, onBeforeUnmount, ref, watch } from "vue"
+import { computed, nextTick, onBeforeUnmount, ref, watch } from "vue"
 
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
   title: { type: String, default: "" },
+  panelWidth: { type: String, default: "min(860px, 92vw)" },
+  panelMaxHeight: { type: String, default: "86vh" },
 })
 
 const emit = defineEmits(["update:modelValue"])
@@ -49,6 +52,11 @@ const previousOverflow = ref("")
 const close = () => {
   emit("update:modelValue", false)
 }
+
+const panelStyle = computed(() => ({
+  width: props.panelWidth,
+  maxHeight: props.panelMaxHeight,
+}))
 
 const focusFirst = async () => {
   await nextTick()

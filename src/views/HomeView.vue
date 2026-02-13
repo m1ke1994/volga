@@ -8,7 +8,9 @@ import ScheduleSection from "../components/ScheduleSection.vue";
 import FeedbackSection from "../components/FeedbackSection.vue";
 import ReviewsSection from "../components/Profile/ReviewsSection.vue";
 import ArticleCard from "../components/ArticleCard.vue";
+import NewsCard from "../components/NewsCard.vue";
 import { materials } from "../data/articles";
+import { newsItems } from "../data/news";
 
 const menuItems = [
   { label: "Обо мне", to: "/about" },
@@ -23,6 +25,12 @@ const menuItems = [
 
 const latestMaterials = computed(() =>
   [...materials]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 4)
+);
+
+const latestNews = computed(() =>
+  [...newsItems]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 4)
 );
@@ -85,6 +93,18 @@ const latestMaterials = computed(() =>
             <h2 class="app-section__title">Отзывы</h2>
             <div class="app-section__content">
               <ReviewsSection />
+            </div>
+          </div>
+        </section>
+
+        <section id="news" class="app-section" v-reveal>
+          <div class="app-section__inner">
+            <div class="news-home__head">
+              <h2 class="app-section__title news-home__title">Новости</h2>
+              <router-link class="news-home__link" to="/news">Смотреть все новости</router-link>
+            </div>
+            <div class="news-home__grid">
+              <NewsCard v-for="item in latestNews" :key="item.id" :item="item" />
             </div>
           </div>
         </section>
@@ -177,8 +197,45 @@ const latestMaterials = computed(() =>
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+.news-home__head {
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+}
+
+.news-home__title {
+  margin-bottom: 0;
+}
+
+.news-home__link {
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  border: 1px solid var(--border);
+  background: var(--primary-soft);
+  color: var(--text-strong);
+  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.news-home__link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 18px var(--shadow);
+  background: color-mix(in srgb, var(--primary) 18%, var(--primary-soft));
+}
+
+.news-home__grid {
+  margin-top: 22px;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 @media (max-width: 1200px) {
   .articles-home__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .news-home__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -197,6 +254,10 @@ const latestMaterials = computed(() =>
   }
 
   .articles-home__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .news-home__grid {
     grid-template-columns: 1fr;
   }
 }

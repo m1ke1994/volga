@@ -1,8 +1,6 @@
 <template>
   <div class="services">
-    <article v-for="card in cards" :key="card.id" class="card" :class="{ clickable: !!card.href }" v-reveal>
-      <a v-if="card.href" class="card-link" :href="card.href" aria-label="РћС‚РєСЂС‹С‚СЊ СѓСЃР»СѓРіСѓ"></a>
-
+    <article v-for="card in cards" :key="card.id" class="card" v-reveal>
       <div class="media">
         <img
           :src="card.image"
@@ -34,8 +32,8 @@
 
         <footer class="bottom">
           <button class="btn btn--ghost" type="button" @click="openDetails(card)">
-            РџРѕРґСЂРѕР±РЅРµРµ
-            <span class="arrow">в†’</span>
+            Подробнее
+            <span class="arrow">→</span>
           </button>
         </footer>
       </div>
@@ -45,268 +43,305 @@
   <AppModal
     v-model="isModalOpen"
     :title="activeServiceTitle"
+    panel-width="min(1120px, 95vw)"
+    panel-max-height="92vh"
   >
     <div v-if="activeService" class="service-modal">
-      <div class="service-modal__lead">
-        <p
-          v-for="(paragraph, index) in activeService.longDescription"
-          :key="index"
-          class="service-modal__paragraph"
+      <section class="service-modal__intro">
+        <h2 class="service-modal__h2">{{ activeService.title }}</h2>
+        <p class="service-modal__intro-text">{{ activeService.intro }}</p>
+      </section>
+
+      <section class="service-modal__section service-modal__section--gallery">
+        <h3 class="service-modal__h3">Галерея</h3>
+
+        <div class="service-modal__viewer glass-card">
+          <img
+            v-if="activeGalleryItem?.type === 'image'"
+            :src="activeGalleryItem.src"
+            :alt="activeService.title"
+            class="service-modal__viewer-image"
+            loading="lazy"
+            decoding="async"
+          />
+          <iframe
+            v-else
+            :src="activeGalleryItem?.src"
+            class="service-modal__viewer-video"
+            title="Видео услуги"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
+        </div>
+
+        <div class="service-modal__thumbs">
+          <button
+            v-for="(item, index) in activeService.gallery"
+            :key="`${activeService.id}-${index}`"
+            class="service-modal__thumb"
+            :class="{ 'service-modal__thumb--active': index === activeMediaIndex }"
+            type="button"
+            @click="selectGalleryMedia(index)"
+          >
+            <img
+              v-if="item.type === 'image'"
+              :src="item.src"
+              :alt="`Превью ${index + 1}`"
+              loading="lazy"
+              decoding="async"
+            />
+            <span v-else class="service-modal__thumb-video">▶ Видео</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="service-modal__section">
+        <h3 class="service-modal__h3">Описание услуги</h3>
+        <div
+          v-for="(block, blockIndex) in activeService.contentSections"
+          :key="`${activeService.id}-content-${blockIndex}`"
+          class="service-modal__content-block"
         >
-          {{ paragraph }}
-        </p>
-      </div>
+          <h4 class="service-modal__h4">{{ block.title }}</h4>
+          <p v-for="(paragraph, pIndex) in block.paragraphs" :key="`${blockIndex}-p-${pIndex}`" class="service-modal__paragraph">
+            {{ paragraph }}
+          </p>
+          <div v-if="block.list?.length" class="service-modal__list-wrap">
+            <p v-if="block.listTitle" class="service-modal__list-title">{{ block.listTitle }}</p>
+            <ul class="service-modal__list">
+              <li v-for="(item, lIndex) in block.list" :key="`${blockIndex}-l-${lIndex}`">{{ item }}</li>
+            </ul>
+          </div>
+        </div>
+      </section>
 
-      <div class="service-modal__grid">
-        <section class="service-modal__section">
-          <h3 class="service-modal__title">Детали</h3>
-          <ul class="service-modal__list">
-            <li v-for="(item, index) in activeService.details" :key="index">
-              {{ item }}
-            </li>
-          </ul>
-        </section>
-
-        <section class="service-modal__section">
-          <h3 class="service-modal__title">Длительность</h3>
-          <p class="service-modal__text">{{ activeService.duration }}</p>
-
-          <h3 class="service-modal__title service-modal__title--spaced">Что входит</h3>
-          <ul class="service-modal__list">
-            <li v-for="(item, index) in activeService.includes" :key="index">
-              {{ item }}
-            </li>
-          </ul>
-        </section>
-      </div>
+      <section class="service-modal__section">
+        <h3 class="service-modal__h3">Тарифы</h3>
+        <div class="service-modal__tariffs">
+          <article
+            v-for="(tariff, index) in activeService.tariffs"
+            :key="`${activeService.id}-tariff-${index}`"
+            class="service-modal__tariff-card"
+          >
+            <h4 class="service-modal__tariff-title">{{ tariff.name }}</h4>
+            <p class="service-modal__tariff-price">{{ tariff.price }}</p>
+            <p class="service-modal__tariff-duration">{{ tariff.duration }}</p>
+            <ul class="service-modal__list">
+              <li v-for="(item, itemIndex) in tariff.includes" :key="`${index}-i-${itemIndex}`">{{ item }}</li>
+            </ul>
+          </article>
+        </div>
+      </section>
 
       <p v-if="activeService.note" class="service-modal__note">
         {{ activeService.note }}
       </p>
 
       <div class="service-modal__cta">
-        <button class="service-modal__btn service-modal__btn--ghost" type="button" @click="closeDetails">
-          Закрыть
-        </button>
+        <button class="service-modal__btn service-modal__btn--ghost" type="button" @click="closeDetails">Закрыть</button>
       </div>
     </div>
   </AppModal>
 </template>
 
 <script setup>
-import { computed, ref, watch } from "vue"
-import AppModal from "../ui/AppModal.vue"
+import { computed, ref, watch } from "vue";
+import AppModal from "../ui/AppModal.vue";
 
-const isModalOpen = ref(false)
-const activeService = ref(null)
+const isModalOpen = ref(false);
+const activeService = ref(null);
+const activeMediaIndex = ref(0);
 
 const cards = [
   {
     id: "moose",
-    title: "Экскурсия в «Братство лосей»",
-    fullTitle: "Экскурсия в «Братство лосей»",
-    desc: "Заповедный маршрут, истории о лесах и живые встречи с природой.",
-    duration: "3–4 часа",
+    title: "Экскурсия в «Братство Лосей»",
+    fullTitle: "Экскурсия в «Братство Лосей»",
+    desc: "Заповедный маршрут, живые истории о природе и глубокое погружение в ритм местности.",
+    duration: "3-4 часа",
     price: "от 3 500 ₽",
-    image: "/1.jpeg",
-    href: "",
-    longDescription: [
-      "Маршрут выстроен как мягкое погружение в ритм леса: мы идём неторопливо, слушаем тишину, читаем следы и узнаём историю местности через природные знаки.",
-      "Экскурсия сочетает наблюдение, созерцание и спокойные беседы. Формат подходит тем, кто ценит живой контакт с природой и хочет почувствовать присутствие без суеты.",
+    image: "/images/service-moose-cover.jpg",
+    intro:
+      "Авторская экскурсия для тех, кто хочет не просто пройти по маршруту, а прочувствовать пространство: от тишины леса до живого диалога с проводником и группой.",
+    gallery: [
+      { type: "image", src: "/images/service-moose-1.jpg" },
+      { type: "image", src: "/images/service-moose-2.jpg" },
+      { type: "video", src: "https://www.youtube.com/embed/ScMzIvxBSi4" },
+      { type: "image", src: "/images/service-moose-3.jpg" },
     ],
-    details: [
-      "Небольшая группа до 8 человек",
-      "Маршрут с остановками для наблюдений и фото",
-      "Лёгкий темп с возможностью пауз",
-      "Сопровождение проводника и рассказ о местной экосистеме",
-      "Подходит для новичков, специальная подготовка не нужна",
+    contentSections: [
+      {
+        title: "Как проходит программа",
+        paragraphs: [
+          "Мы начинаем встречу с короткого знакомства и настройки темпа. Важно, чтобы каждый участник сразу почувствовал себя комфортно и понял структуру маршрута.",
+          "Первая часть экскурсии проходит по лесной зоне: спокойный шаг, остановки в ключевых точках, наблюдение за ландшафтом и короткие комментарии проводника.",
+          "Во второй части маршрут выходит к воде. Здесь мы делаем длинную паузу: чай, обсуждение впечатлений и практики на внимание к телу и дыханию.",
+        ],
+        listTitle: "Внутри маршрута есть:",
+        list: [
+          "Три смысловые точки с разным ритмом",
+          "Адаптация темпа под группу",
+          "Простые практики без специальной подготовки",
+          "Финальный круг с персональными рекомендациями",
+        ],
+      },
+      {
+        title: "Кому подходит",
+        paragraphs: [
+          "Экскурсия подходит тем, кто чувствует перегруз и хочет выйти из интенсивного городского ритма в более устойчивое состояние.",
+          "Формат открыт для новичков: не требуется спортивный опыт или особая подготовка. Вся программа построена мягко и с запасом по нагрузке.",
+          "Для небольших команд и семей можно провести закрытую версию маршрута с фокусом на ваши задачи и интересы.",
+        ],
+      },
     ],
-    includes: [
-      "Проводник и навигация по маршруту",
-      "Тёплый чай на привале",
-      "Короткие практики на внимание и дыхание",
+    tariffs: [
+      {
+        name: "Базовый",
+        price: "3 500 ₽",
+        duration: "3 часа",
+        includes: ["Маршрут с проводником", "Чай на привале", "Групповой формат до 8 человек"],
+      },
+      {
+        name: "Расширенный",
+        price: "5 200 ₽",
+        duration: "4 часа",
+        includes: ["Дополнительные практики", "Фото-точки и разбор маршрута", "Персональные рекомендации"],
+      },
     ],
-    note: "Рекомендуем удобную обувь и слой по погоде.",
+    note: "Рекомендуем удобную обувь и ветровку по погоде. Детали встречи направляем после подтверждения.",
   },
   {
     id: "tea",
     title: "Чайная церемония",
-    fullTitle: "Чайная церемония в тихом пространстве",
-    desc: "Спокойный ритуал, вкус момента и пространство для тишины.",
+    fullTitle: "Чайная церемония в камерном формате",
+    desc: "Медленный ритм, качественный чай и пространство для восстановления внимания.",
     duration: "1,5 часа",
     price: "от 2 200 ₽",
-    image: "/2.jpeg",
-    href: "",
-    longDescription: [
-      "Церемония строится вокруг качества присутствия: мы замедляем темп, наблюдаем вкус и аромат, слышим тонкие переходы настоя.",
-      "Это формат для восстановления и ясности. Подходит тем, кто хочет на час-полтора выйти из потока и вернуть внимание к себе.",
+    image: "/images/service-tea-cover.jpg",
+    intro: "Формат для тех, кто хочет остановиться, восстановить внутренний темп и провести вечер в спокойной, тёплой атмосфере.",
+    gallery: [
+      { type: "image", src: "/images/service-tea-1.jpg" },
+      { type: "video", src: "https://www.youtube.com/embed/ysz5S6PUM-U" },
+      { type: "image", src: "/images/service-tea-2.jpg" },
+      { type: "image", src: "/images/service-tea-3.jpg" },
     ],
-    details: [
-      "Камерная группа до 6 человек",
-      "Традиционная подача и пояснения к каждому проливу",
-      "Спокойный темп без спешки",
-      "Возможность тихой беседы или полного молчания",
+    contentSections: [
+      {
+        title: "Структура встречи",
+        paragraphs: [
+          "Встреча начинается с мягкой вводной: мы снимаем внешнюю спешку, выравниваем дыхание и переходим к церемонии в спокойном ритме.",
+          "Далее — несколько проливов чая с пояснениями по вкусу, состоянию и этапам раскрытия. Наша задача — дать участникам не информацию, а проживание процесса.",
+          "Завершаем коротким кругом наблюдений. Это помогает зафиксировать эффект и перенести его в обычный ритм жизни.",
+        ],
+      },
+      {
+        title: "Что вы получаете",
+        paragraphs: [
+          "После церемонии у участников обычно появляется больше ясности и устойчивости, снижается внутреннее напряжение, легче переключается внимание.",
+          "Формат также хорошо работает как точка восстановления для команд и небольших групп.",
+        ],
+        listTitle: "Дополнительно доступны:",
+        list: ["Парная церемония", "Закрытый формат для компании", "Тематика встречи под запрос"],
+      },
     ],
-    includes: [
-      "Отборный чай и посуда",
-      "Вода правильной температуры",
-      "Небольшие авторские сладости",
+    tariffs: [
+      {
+        name: "Камерный круг",
+        price: "2 200 ₽",
+        duration: "1,5 часа",
+        includes: ["Чайная церемония", "Группа до 6 человек", "Сопровождение ведущего"],
+      },
+      {
+        name: "Индивидуальный",
+        price: "4 000 ₽",
+        duration: "2 часа",
+        includes: ["Персональный формат", "Чайная карта под запрос", "Рекомендации после встречи"],
+      },
     ],
-    note: "Лучше прийти без сильного кофеина за 2–3 часа до церемонии.",
+    note: "Лучше не употреблять крепкий кофе за 2-3 часа до встречи, чтобы глубже почувствовать состояние церемонии.",
   },
   {
     id: "energy",
     title: "Утренние энергетические практики",
     fullTitle: "Утренние энергетические практики",
-    desc: "Мягкое включение тела, дыхание и настрой на день.",
+    desc: "Мягкий старт дня: дыхание, движение и настрой на устойчивое состояние.",
     duration: "60 минут",
     price: "от 1 500 ₽",
-    image: "/3.jpeg",
-    href: "",
-    longDescription: [
-      "Комплекс выстроен так, чтобы мягко пробудить тело и дыхание, снять утреннюю инерцию и включить внимание.",
-      "Практики не требуют особой подготовки: темп спокойный, акцент на ощущениях и корректной технике.",
+    image: "/images/service-energy-cover.jpg",
+    intro: "Утренняя программа для мягкого включения тела и внимания, без перегруза и с акцентом на устойчивость в течение дня.",
+    gallery: [
+      { type: "image", src: "/images/service-energy-1.jpg" },
+      { type: "image", src: "/images/service-energy-2.jpg" },
+      { type: "video", src: "https://www.youtube.com/embed/jNQXAC9IVRw" },
     ],
-    details: [
-      "Работа с дыханием и мобильностью",
-      "Нежная суставная разминка",
-      "Фокус на осанке и лёгкости",
-      "Короткая медитация в конце",
+    contentSections: [
+      {
+        title: "Формат занятия",
+        paragraphs: [
+          "Практика делится на три блока: дыхание, движение и короткая интеграция в тишине. Такой порядок помогает включиться в день без резких нагрузок.",
+          "Мы даем несколько уровней сложности, поэтому формат подходит и начинающим, и тем, кто уже регулярно занимается.",
+          "После занятия участники получают короткие инструкции для самостоятельной практики на 10-15 минут.",
+        ],
+      },
+      {
+        title: "Результат и эффект",
+        paragraphs: [
+          "Участники чаще всего отмечают бодрость без суеты, более ровный эмоциональный фон и лучшее удержание внимания в течение рабочего дня.",
+          "При регулярной практике улучшается ощущение ритма и легче восстанавливаться после интенсивных периодов.",
+        ],
+      },
     ],
-    includes: [
-      "Коврики и пледы",
-      "Небольшой чай после практики",
-      "Рекомендации для самостоятельного повторения",
+    tariffs: [
+      {
+        name: "Группа",
+        price: "1 500 ₽",
+        duration: "60 минут",
+        includes: ["Занятие в группе", "Мат для практики", "Чек-лист для самостоятельной работы"],
+      },
+      {
+        name: "Персонально",
+        price: "3 200 ₽",
+        duration: "75 минут",
+        includes: ["Индивидуальная адаптация", "Разбор техники", "Программа на неделю"],
+      },
     ],
-    note: "Формат подходит для любого уровня, приходите в удобной одежде.",
+    note: "Берите удобную одежду и воду. При необходимости занятие можно провести в мягком восстановительном режиме.",
   },
-  {
-    id: "workshop",
-    title: "Мастер-класс",
-    fullTitle: "Авторский мастер-класс",
-    desc: "Разбор темы, обмен опытом и спокойная практика в группе.",
-    duration: "2 часа",
-    price: "от 2 000 ₽",
-    image: "/4.jpeg",
-    href: "",
-    longDescription: [
-      "Каждый мастер-класс — это короткая теория и аккуратная практика, где важны ясность и ощущение безопасности в группе.",
-      "Формат подходит тем, кто хочет осмыслить тему глубже, задать вопросы и получить конкретные техники.",
-    ],
-    details: [
-      "Небольшая группа до 10 человек",
-      "Комбинация объяснений и практики",
-      "Время на вопросы и обсуждения",
-      "Материалы для самостоятельной работы",
-    ],
-    includes: [
-      "Методические заметки",
-      "Чай/вода во время встречи",
-      "Поддержка после занятия в чате",
-    ],
-    note: "Если есть запрос на конкретную тему — напишите заранее.",
-  },
-  {
-    id: "mindfulness",
-    title: "Mindfulness",
-    fullTitle: "Mindfulness-сессия",
-    desc: "Простые техники для фокуса, дыхания и внутренней устойчивости.",
-    duration: "60–75 минут",
-    price: "от 1 800 ₽",
-    image: "/5.jpeg",
-    href: "",
-    longDescription: [
-      "Сессия выстроена вокруг наблюдения, дыхания и тонкой настройки внимания. Мы учимся видеть процесс мыслей и возвращаться в настоящее.",
-      "Формат поддерживает спокойную концентрацию и устойчивость, помогает мягко разгружать нервную систему.",
-    ],
-    details: [
-      "Пошаговое ведение практики",
-      "Упражнения на концентрацию и мягкую регуляцию",
-      "Тёплое завершение с интеграцией",
-      "Подходит для начинающих",
-    ],
-    includes: [
-      "Гайд с практиками на неделю",
-      "Запись короткой медитации",
-    ],
-    note: "Можно прийти после рабочего дня — практика будет мягкой и восстанавливающей.",
-  },
-  {
-    id: "leela",
-    title: "Игра «Лила»",
-    fullTitle: "Игра самопознания «Лила»",
-    desc: "Глубокий диалог с собой в мягком и поддерживающем формате.",
-    duration: "3 часа",
-    price: "от 2 800 ₽",
-    image: "/6.jpeg",
-    href: "",
-    longDescription: [
-      "Лила — это медитативная игра, которая помогает увидеть внутренние сценарии и почувствовать, где сейчас находится ваш фокус.",
-      "Мы играем в атмосфере уважения и тишины, где есть место внимательному исследованию и честности к себе.",
-    ],
-    details: [
-      "Пошаговое ведение и безопасное пространство",
-      "Возможность индивидуального разбора",
-      "Темп без давления и спешки",
-      "Небольшая группа до 5 человек",
-    ],
-    includes: [
-      "Игровое поле и материалы",
-      "Чай и лёгкие закуски",
-      "Короткие рекомендации по интеграции опыта",
-    ],
-    note: "Лучше приходить с намерением или вопросом, который сейчас важен.",
-  },
-  {
-    id: "custom",
-    title: "Авторские программы",
-    fullTitle: "Авторские программы под ваш запрос",
-    desc: "Индивидуальные форматы под ваш запрос и глубину опыта.",
-    duration: "по запросу",
-    price: "по запросу",
-    image: "/7.jpeg",
-    href: "",
-    longDescription: [
-      "Программы создаются под конкретный запрос: от мягких ретритов до персональных маршрутов на природе.",
-      "Мы согласуем цели, длительность и желаемую глубину, чтобы формат работал именно на ваш ритм.",
-    ],
-    details: [
-      "Индивидуальный сценарий и согласование деталей",
-      "Возможность закрытого формата 1:1",
-      "Подбор пространства и времени",
-      "Поддержка до и после встречи",
-    ],
-    includes: [
-      "Персональная консультация перед стартом",
-      "Материалы и практики для самостоятельной работы",
-      "Индивидуальные рекомендации",
-    ],
-    note: "Оптимально, если вы заранее сформулируете цель или состояние, к которому хотите прийти.",
-  },
-]
+];
 
-const activeServiceTitle = computed(() => {
-  return activeService.value?.fullTitle || activeService.value?.title || "Подробнее"
-})
+const activeServiceTitle = computed(() => activeService.value?.fullTitle || activeService.value?.title || "Подробнее");
+
+const activeGalleryItem = computed(() => {
+  if (!activeService.value?.gallery?.length) return null;
+  return activeService.value.gallery[activeMediaIndex.value] || activeService.value.gallery[0];
+});
+
+const selectGalleryMedia = (index) => {
+  activeMediaIndex.value = index;
+};
 
 const openDetails = (service) => {
-  activeService.value = service
-  isModalOpen.value = true
-}
+  activeService.value = service;
+  activeMediaIndex.value = 0;
+  isModalOpen.value = true;
+};
 
 const closeDetails = () => {
-  isModalOpen.value = false
-}
+  isModalOpen.value = false;
+};
 
 watch(isModalOpen, (value) => {
   if (!value) {
-    activeService.value = null
+    activeService.value = null;
+    activeMediaIndex.value = 0;
   }
-})
+});
 
 const markImageLoaded = (event) => {
-  event.target.classList.add("is-loaded")
-}
+  event.target.classList.add("is-loaded");
+};
 </script>
 
 <style scoped>
@@ -324,27 +359,17 @@ const markImageLoaded = (event) => {
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--border);
-  box-shadow:
-    0 18px 40px var(--shadow),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  box-shadow: 0 18px 40px var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.35);
   transition: transform 280ms ease, box-shadow 280ms ease, border-color 280ms ease;
   display: grid;
   grid-template-rows: 180px 1fr;
   min-height: 360px;
 }
 
-.card.clickable:hover {
+.card:hover {
   transform: translateY(-4px);
   border-color: var(--border);
-  box-shadow:
-    0 28px 60px var(--shadow),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
-}
-
-.card-link {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
+  box-shadow: 0 28px 60px var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 .media {
@@ -364,24 +389,17 @@ const markImageLoaded = (event) => {
   display: block;
 }
 
-.card.clickable:hover .media__img {
+.card:hover .media__img {
   transform: scale(1.06);
 }
 
 .media-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.0) 0%,
-    rgba(0, 0, 0, 0.10) 55%,
-    rgba(0, 0, 0, 0.18) 100%
-  );
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.1) 55%, rgba(0, 0, 0, 0.18) 100%);
 }
 
 .content {
-  position: relative;
-  z-index: 3;
   padding: 16px 16px 18px;
   display: flex;
   flex-direction: column;
@@ -418,7 +436,6 @@ const markImageLoaded = (event) => {
   color: var(--text);
   background: var(--bg-elevated);
   border: 1px solid var(--border);
-  backdrop-filter: blur(10px);
 }
 
 .price {
@@ -446,14 +463,9 @@ const markImageLoaded = (event) => {
   margin-top: auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
 }
 
 .btn {
-  position: relative;
-  z-index: 4;
   border: none;
   cursor: pointer;
   border-radius: 999px;
@@ -471,11 +483,6 @@ const markImageLoaded = (event) => {
   filter: brightness(1.02);
 }
 
-.btn:active {
-  transform: translateY(0);
-  box-shadow: 0 10px 22px var(--shadow);
-}
-
 .btn--ghost {
   background: transparent;
   color: var(--text-strong);
@@ -485,75 +492,169 @@ const markImageLoaded = (event) => {
 
 .btn--ghost:hover {
   background: var(--bg-elevated);
-  transform: translateY(-1px);
-}
-
-.btn--ghost:active {
-  transform: translateY(0);
 }
 
 .arrow {
   margin-left: 8px;
-  opacity: 0.9;
 }
 
 .service-modal {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  color: var(--text);
-}
-
-.service-modal__lead {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.service-modal__paragraph {
-  margin: 0;
-  font-size: 15px;
-  line-height: 1.7;
-  color: var(--text);
-}
-
-.service-modal__grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
+  gap: 22px;
+  color: var(--text);
 }
 
 .service-modal__section {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  padding-top: 18px;
+  border-top: 1px solid color-mix(in srgb, var(--border) 85%, transparent);
 }
 
-.service-modal__title {
-  margin: 0 0 10px;
-  font-size: 15px;
+.service-modal__section--gallery {
+  display: grid;
+  gap: 14px;
+}
+
+.service-modal__h2 {
+  margin: 0;
+  font-size: clamp(24px, 4vw, 34px);
+  line-height: 1.15;
   color: var(--text-strong);
 }
 
-.service-modal__title--spaced {
+.service-modal__h3 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  color: var(--text-strong);
+}
+
+.service-modal__h4 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  color: var(--text-strong);
+}
+
+.service-modal__intro-text {
+  margin: 10px 0 0;
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+.service-modal__viewer {
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.service-modal__viewer-image,
+.service-modal__viewer-video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  display: block;
+  object-fit: cover;
+}
+
+.service-modal__thumbs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.service-modal__thumb {
+  border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+  border-radius: 12px;
+  padding: 0;
+  overflow: hidden;
+  background: var(--bg-elevated);
+  cursor: pointer;
+  min-height: 72px;
+}
+
+.service-modal__thumb img {
+  width: 100%;
+  height: 100%;
+  min-height: 72px;
+  object-fit: cover;
+  display: block;
+}
+
+.service-modal__thumb-video {
+  width: 100%;
+  height: 100%;
+  min-height: 72px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-strong);
+  font-size: 13px;
+  background: color-mix(in srgb, var(--bg-elevated) 85%, transparent);
+}
+
+.service-modal__thumb--active {
+  border-color: color-mix(in srgb, var(--primary) 55%, var(--border));
+  box-shadow: 0 8px 18px var(--shadow);
+}
+
+.service-modal__content-block + .service-modal__content-block {
   margin-top: 16px;
+}
+
+.service-modal__paragraph {
+  margin: 0 0 10px;
+  font-size: 15px;
+  line-height: 1.72;
+  color: var(--text);
+}
+
+.service-modal__list-wrap {
+  margin-top: 8px;
+}
+
+.service-modal__list-title {
+  margin: 0 0 6px;
+  font-size: 14px;
+  color: var(--text-strong);
 }
 
 .service-modal__list {
   margin: 0;
   padding-left: 18px;
   display: grid;
-  gap: 8px;
+  gap: 6px;
   color: var(--muted);
   font-size: 14px;
   line-height: 1.6;
 }
 
-.service-modal__text {
+.service-modal__tariffs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.service-modal__tariff-card {
+  background: color-mix(in srgb, var(--bg-elevated) 84%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.service-modal__tariff-title {
   margin: 0;
-  font-size: 14px;
+  font-size: 16px;
+  color: var(--text-strong);
+}
+
+.service-modal__tariff-price {
+  margin: 6px 0 2px;
+  font-size: 18px;
+  color: #2b2520;
+  font-weight: 700;
+}
+
+.service-modal__tariff-duration {
+  margin: 0 0 8px;
+  font-size: 13px;
   color: var(--muted);
 }
 
@@ -570,10 +671,7 @@ const markImageLoaded = (event) => {
 
 .service-modal__cta {
   display: flex;
-  align-items: center;
   justify-content: flex-end;
-  gap: 12px;
-  flex-wrap: wrap;
 }
 
 .service-modal__btn--ghost {
@@ -584,28 +682,29 @@ const markImageLoaded = (event) => {
   font-size: 14px;
   color: var(--text-strong);
   background: transparent;
-  box-shadow: none;
-  transition: transform 200ms ease, background 200ms ease;
 }
 
 .service-modal__btn--ghost:hover {
   background: var(--bg-elevated);
-  transform: translateY(-1px);
-}
-
-.service-modal__btn--ghost:active {
-  transform: translateY(0);
 }
 
 @media (max-width: 980px) {
   .services {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .service-modal__thumbs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 780px) {
-  .service-modal__grid {
+  .service-modal__tariffs {
     grid-template-columns: 1fr;
+  }
+
+  .service-modal__thumbs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
