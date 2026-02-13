@@ -377,7 +377,7 @@ onUnmounted(() => {
 
 .hero__top {
     position: relative;
-    background: url('/8.webp') center/cover no-repeat;
+    background: url('/8.jpeg') center/cover no-repeat;
     height: 420px;
     display: flex;
     align-items: flex-start;

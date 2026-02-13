@@ -1,4 +1,5 @@
 <script setup>
+import { computed } from "vue";
 import AppHeader from "../components/AppHeader.vue";
 import AppFooter from "../components/AppFooter.vue";
 import ProfileHero from "../components/Profile/ProfileHero.vue";
@@ -6,17 +7,25 @@ import ProductGrid from "../components/Profile/ProductGrid.vue";
 import ScheduleSection from "../components/ScheduleSection.vue";
 import FeedbackSection from "../components/FeedbackSection.vue";
 import ReviewsSection from "../components/Profile/ReviewsSection.vue";
+import ArticleCard from "../components/ArticleCard.vue";
+import { materials } from "../data/articles";
 
 const menuItems = [
-  { label: 'Обо мне', to: '/about' },
-  { label: 'Братство Лосей', to: '/moose' },
-  { label: 'Волонтерские программы', to: '/volunteer' },
-  { label: 'Беговой клуб', to: '/running-club' },
-  { label: 'Статьи / Видео', to: '/articles' },
-  { label: 'Новости', to: '/news' },
-  { label: 'Расписание', to: '/schedule' },
-  { label: 'Контакты', to: '/contacts' },
+  { label: "Обо мне", to: "/about" },
+  { label: "Братство Лосей", to: "/moose" },
+  { label: "Волонтерские программы", to: "/volunteer" },
+  { label: "Беговой клуб", to: "/running-club" },
+  { label: "Статьи / Видео", to: "/articles" },
+  { label: "Новости", to: "/news" },
+  { label: "Расписание", to: "/schedule" },
+  { label: "Контакты", to: "/contacts" },
 ];
+
+const latestMaterials = computed(() =>
+  [...materials]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 4)
+);
 </script>
 
 <template>
@@ -31,6 +40,24 @@ const menuItems = [
             <h2 class="app-section__title">Услуги и форматы</h2>
             <div class="app-section__content">
               <ProductGrid />
+            </div>
+          </div>
+        </section>
+
+        <section id="articles" class="app-section" v-reveal>
+          <div class="app-section__inner">
+            <div class="articles-home__head">
+              <h2 class="app-section__title articles-home__title">Статьи</h2>
+              <router-link class="articles-home__link" to="/articles">Смотреть все материалы</router-link>
+            </div>
+
+            <div class="articles-home__grid">
+              <ArticleCard
+                v-for="item in latestMaterials"
+                :key="item.id"
+                :item="item"
+                :show-description="false"
+              />
             </div>
           </div>
         </section>
@@ -117,6 +144,45 @@ const menuItems = [
   width: 100%;
 }
 
+.articles-home__head {
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+}
+
+.articles-home__title {
+  margin-bottom: 0;
+}
+
+.articles-home__link {
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  border: 1px solid var(--border);
+  background: var(--primary-soft);
+  color: var(--text-strong);
+  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.articles-home__link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 18px var(--shadow);
+  background: color-mix(in srgb, var(--primary) 18%, var(--primary-soft));
+}
+
+.articles-home__grid {
+  margin-top: 22px;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 1200px) {
+  .articles-home__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 720px) {
   .app-section {
     padding: var(--section-padding-mobile, 40px) 0;
@@ -128,6 +194,10 @@ const menuItems = [
 
   .app-section__title {
     font-size: 24px;
+  }
+
+  .articles-home__grid {
+    grid-template-columns: 1fr;
   }
 }
 </style>
