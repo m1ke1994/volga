@@ -3,7 +3,7 @@
         <div class="hero-nav__overlay" :class="{ 'hero-nav__overlay--show': isMenuOpen }" @click="closeMenu"></div>
         <aside class="hero-nav__drawer" :class="{ 'hero-nav__drawer--open': isMenuOpen }">
             <div class="hero-nav__drawer-head">
-                <div class="hero-nav__drawer-title">Меню</div>
+                <div class="hero-nav__drawer-title">Новое Конаково</div>
                 <button class="hero-nav__drawer-close" type="button" aria-label="Закрыть меню" @click="closeMenu">×</button>
             </div>
             <router-link
@@ -312,7 +312,7 @@ onUnmounted(() => {
     gap: 8px;
     z-index: 80;
     box-shadow: 0 24px 50px var(--shadow);
-    border-radius: 20px 0 0 20px;
+    border-radius: 0;
     overflow-y: auto;
 }
 
@@ -328,12 +328,12 @@ onUnmounted(() => {
 }
 
 .hero-nav__drawer-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-strong);
+    font-size: clamp(22px, 6vw, 30px);
+    color: var(--color-dark-deep);
+    font-family: 'Hitch Hike', 'Cormorant Garamond', serif;
+    line-height: 1;
     margin-bottom: 10px;
-    opacity: 0.7;
-    letter-spacing: 0.2px;
+    letter-spacing: 0.3px;
 }
 
 .hero-nav__drawer-close {

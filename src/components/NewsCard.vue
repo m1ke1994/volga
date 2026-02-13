@@ -33,6 +33,9 @@ const formattedDate = computed(() =>
 .news-card {
   border-radius: 20px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .news-card__image {
@@ -44,8 +47,10 @@ const formattedDate = computed(() =>
 
 .news-card__content {
   padding: 16px;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 10px;
+  flex: 1;
 }
 
 .news-card__date {
@@ -73,8 +78,8 @@ const formattedDate = computed(() =>
 }
 
 .news-card__action {
-  justify-self: start;
-  margin-top: 2px;
+  align-self: flex-start;
+  margin-top: auto;
 }
 
 @media (max-width: 768px) {

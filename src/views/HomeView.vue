@@ -56,7 +56,6 @@ const latestNews = computed(() =>
           <div class="app-section__inner">
             <div class="articles-home__head">
               <h2 class="app-section__title articles-home__title">Статьи</h2>
-              <router-link class="articles-home__link btn-secondary" to="/articles">Смотреть все материалы</router-link>
             </div>
 
             <div class="articles-home__grid">
@@ -66,6 +65,9 @@ const latestNews = computed(() =>
                 :item="item"
                 :show-description="false"
               />
+            </div>
+            <div class="articles-home__footer">
+              <router-link class="articles-home__link btn-secondary" to="/articles">Все материалы / Видео</router-link>
             </div>
           </div>
         </section>
@@ -101,10 +103,12 @@ const latestNews = computed(() =>
           <div class="app-section__inner">
             <div class="news-home__head">
               <h2 class="app-section__title news-home__title">Новости</h2>
-              <router-link class="news-home__link btn-secondary" to="/news">Смотреть все новости</router-link>
             </div>
             <div class="news-home__grid">
               <NewsCard v-for="item in latestNews" :key="item.id" :item="item" />
+            </div>
+            <div class="news-home__footer">
+              <router-link class="news-home__link btn-secondary" to="/news">Все новости</router-link>
             </div>
           </div>
         </section>
@@ -181,6 +185,12 @@ const latestNews = computed(() =>
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+.articles-home__footer {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .news-home__head {
   display: grid;
   gap: 12px;
@@ -196,6 +206,12 @@ const latestNews = computed(() =>
   display: grid;
   gap: 18px;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.news-home__footer {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 @media (max-width: 1200px) {
@@ -227,6 +243,16 @@ const latestNews = computed(() =>
 
   .news-home__grid {
     grid-template-columns: 1fr;
+  }
+
+  .articles-home__footer,
+  .news-home__footer {
+    justify-content: center;
+  }
+
+  .articles-home__link,
+  .news-home__link {
+    width: 100%;
   }
 }
 </style>
