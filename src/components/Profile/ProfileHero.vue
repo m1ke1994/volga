@@ -409,7 +409,7 @@ onUnmounted(() => {
     font-size: clamp(44px, 8.4vw, 120px);
     line-height: 0.95;
     letter-spacing: 0.02em;
-    color: var(--color-dark-deep);
+    color: white;
     text-align: center;
     pointer-events: none;
     width: min(90%, 1100px);
