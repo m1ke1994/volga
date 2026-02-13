@@ -1,5 +1,7 @@
 <script setup>
 import LegalDocument from '../components/legal/LegalDocument.vue'
+import AppHeader from '../components/AppHeader.vue'
+import AppFooter from '../components/AppFooter.vue'
 
 const sections = [
   {
@@ -69,10 +71,12 @@ const sections = [
 </script>
 
 <template>
+  <AppHeader />
   <LegalDocument
     title="Условия использования"
     subtitle="Правила доступа к сайту, использования материалов и взаимодействия с сервисом."
     updated-at="11 февраля 2026"
     :sections="sections"
   />
+  <AppFooter />
 </template>

@@ -1,5 +1,7 @@
 <script setup>
 import LegalDocument from '../components/legal/LegalDocument.vue'
+import AppHeader from '../components/AppHeader.vue'
+import AppFooter from '../components/AppFooter.vue'
 
 const sections = [
   {
@@ -69,10 +71,12 @@ const sections = [
 </script>
 
 <template>
+  <AppHeader />
   <LegalDocument
     title="Политика конфиденциальности"
     subtitle="Мы бережно относимся к персональным данным и обрабатываем их только в рамках законных целей работы сервиса."
     updated-at="11 февраля 2026"
     :sections="sections"
   />
+  <AppFooter />
 </template>

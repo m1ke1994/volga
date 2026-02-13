@@ -2,6 +2,8 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { getNewsBySlug } from '../data/news'
+import AppHeader from '../components/AppHeader.vue'
+import AppFooter from '../components/AppFooter.vue'
 
 const route = useRoute()
 
@@ -9,6 +11,7 @@ const newsItem = computed(() => getNewsBySlug(route.params.slug))
 </script>
 
 <template>
+  <AppHeader />
   <section class="news-detail">
     <div v-if="newsItem" class="news-detail__content">
       <router-link class="news-detail__back" to="/news">← Все новости</router-link>
@@ -37,6 +40,7 @@ const newsItem = computed(() => getNewsBySlug(route.params.slug))
       <router-link class="news-detail__back" to="/news">Перейти к списку новостей</router-link>
     </div>
   </section>
+  <AppFooter />
 </template>
 
 <style scoped>

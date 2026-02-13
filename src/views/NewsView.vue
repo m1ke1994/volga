@@ -1,8 +1,11 @@
 <script setup>
+import AppHeader from '../components/AppHeader.vue'
+import AppFooter from '../components/AppFooter.vue'
 import { newsItems } from '../data/news'
 </script>
 
 <template>
+  <AppHeader />
   <section class="news">
     <header class="news__hero">
       <h1 class="news__title">Новости</h1>
@@ -35,6 +38,7 @@ import { newsItems } from '../data/news'
       </router-link>
     </div>
   </section>
+  <AppFooter />
 </template>
 
 <style scoped>

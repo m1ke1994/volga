@@ -1,5 +1,7 @@
 <script setup>
 import PageTemplate from '../components/PageTemplate.vue';
+import AppHeader from '../components/AppHeader.vue';
+import AppFooter from '../components/AppFooter.vue';
 
 const pageData = {
   title: 'Обо мне',
@@ -53,5 +55,7 @@ const pageData = {
 </script>
 
 <template>
+  <AppHeader />
   <PageTemplate v-bind="pageData" />
+  <AppFooter />
 </template>
