@@ -13,11 +13,14 @@ const props = defineProps({
 
 <template>
   <article class="article-card glass-card">
-    <img class="article-card__image" :src="item.image" :alt="item.title" loading="lazy" decoding="async" />
+    <div class="article-card__media">
+      <img class="article-card__image" :src="item.image" :alt="item.title" loading="lazy" decoding="async" />
+      <span v-if="item.type === 'video'" class="article-card__video-badge" aria-hidden="true">▶</span>
+    </div>
     <div class="article-card__content">
       <h3 class="article-card__title">{{ item.title }}</h3>
       <p v-if="showDescription" class="article-card__description">{{ item.description }}</p>
-      <router-link class="article-card__action" to="/articles">Читать далее</router-link>
+      <router-link class="article-card__action" :to="`/articles/${item.id}`">Читать далее</router-link>
     </div>
   </article>
 </template>
@@ -28,11 +31,30 @@ const props = defineProps({
   border-radius: 20px;
 }
 
+.article-card__media {
+  position: relative;
+}
+
 .article-card__image {
   width: 100%;
   height: 210px;
   object-fit: cover;
   display: block;
+}
+
+.article-card__video-badge {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(17, 17, 17, 0.78);
+  color: #fff;
+  font-size: 14px;
 }
 
 .article-card__content {

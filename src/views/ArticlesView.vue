@@ -26,7 +26,7 @@ const filteredMaterials = computed(() => sortedMaterials.value.filter((item) => 
     <section class="articles-page__hero">
       <h1 class="articles-page__title">Статьи / Видео</h1>
       <p class="articles-page__subtitle">
-        Подборка материалов о жизни в «Новом Конаково»: маршруты, практики, события и короткие видео-истории.
+        Подборка материалов о жизни в «Новом Конаково»: маршруты, практики, события и видео-статьи со встроенными роликами.
       </p>
     </section>
 
