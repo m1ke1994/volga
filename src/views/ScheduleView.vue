@@ -1,40 +1,60 @@
 <script setup>
-import PageTemplate from '../components/PageTemplate.vue';
 import AppHeader from '../components/AppHeader.vue';
 import AppFooter from '../components/AppFooter.vue';
-
-const pageData = {
-    title: 'Расписание занятий',
-    subtitle:
-        'Ритм «Нового Конаково» построен на мягких повторяющихся практиках, чтобы каждый мог выбрать свой темп и день.',
-    heroImage: '/5.jpeg',
-    sections: [
-        {
-            title: 'Еженедельный цикл',
-            text: 'Расписание меняется сезонно, но базовые практики остаются, чтобы вы могли планировать заранее.',
-            items: [
-                'Пн / Ср / Пт — утренняя практика и дыхание',
-                'Вт — прогулка-наблюдение у воды',
-                'Чт — чайная церемония и беседа',
-                'Сб — семейные активности и мастер-класс',
-                'Вс — день тишины и индивидуальные сессии',
-            ],
-        },
-        {
-            title: 'Запись и напоминания',
-            text: 'Мы заранее подтверждаем участие и присылаем короткие напоминания, чтобы вы чувствовали себя спокойно.',
-        },
-        {
-            title: 'Индивидуальные форматы',
-            text: 'Если вам нужен другой ритм — подберём персональный формат и время.',
-        },
-    ],
-    gallery: ['/5.jpeg', '/1.jpeg', '/3.jpeg', '/4.jpeg', '/6.jpeg'],
-};
+import ScheduleSection from '../components/ScheduleSection.vue';
 </script>
 
 <template>
     <AppHeader />
-    <PageTemplate v-bind="pageData" />
+    <main class="schedule-view">
+        <div class="schedule-view__inner">
+            <header class="schedule-view__head">
+                <h1 class="schedule-view__title">Расписание занятий</h1>
+                <p class="schedule-view__subtitle">
+                    Выберите удобный день и посмотрите доступные программы с деталями.
+                </p>
+            </header>
+            <ScheduleSection />
+        </div>
+    </main>
     <AppFooter />
 </template>
+
+<style scoped>
+.schedule-view {
+  padding: 12px 0 80px;
+}
+
+.schedule-view__inner {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.schedule-view__head {
+  display: grid;
+  gap: 8px;
+}
+
+.schedule-view__title {
+  margin: 0;
+  font-size: clamp(30px, 5vw, 44px);
+  color: var(--text-strong);
+}
+
+.schedule-view__subtitle {
+  margin: 0;
+  max-width: 720px;
+  color: var(--muted);
+}
+
+@media (max-width: 720px) {
+  .schedule-view {
+    padding: 8px 0 64px;
+  }
+
+  .schedule-view__inner {
+    padding: 0 16px;
+  }
+}
+</style>
